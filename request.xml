@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<request>
+
+  <date>2020-09-01</date>
+  <key>JHGLG:PKH:S646565</key>
+  <doc>OGU.PROLETARSKE.REGIM.HOUR</doc>
+
+  <row n="0">
+	<col n="0" value="00:08"/>
+  	<col n="1" id="P-00-00-01" fx="SumInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="P" p3="7"/>
+  	<col n="2" id="P-00-00-02" fx="SumInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="T" p3="7"/>
+  	<col n="3" id="P-00-00-03" fx="SumInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="Q" p3="7"/>
+  	<col n="4" id="P-00-00-04" fx="SumInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="Qday" p3="7"/>
+  </row>
+
+  <row n="1">
+	<col n="0" value="00:10"/>
+  	<col n="1" id="P-00-00-05" fx="AvgInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="P" p3="9"/>
+  	<col n="2" id="P-00-00-06" fx="AvgInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="T" p3="9"/>
+  	<col n="3" id="P-00-00-07" fx="AvgInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="Q" p3="9"/>
+  	<col n="4" id="P-00-00-08" fx="AvgInst" p1="[ S-00-1, S-00-2, S-00-3, S-00-4]" p2="Qday" p3="9"/>
+  </row>
+
+  <row n="2">
+	<col n="0" value="00:12"/>
+  	<col n="1" id="P-00-00-09" fx="Inst" p1="[ S-00-1]" p2="P" p3="11"/>
+  	<col n="2" id="P-00-00-10" fx="Inst" p1="[ S-00-2]" p2="T" p3="11"/>
+  	<col n="3" id="P-00-00-11" fx="Inst" p1="[ S-00-3]" p2="Q" p3="11"/>
+  	<col n="4" id="P-00-00-12" fx="Inst" p1="[ S-00-4]" p2="Qday" p3="11"/>
+  </row>
+
+  <row n="3">
+	<col n="0" value="00:14"/>
+  	<col n="1" id="P-00-00-13" />
+  	<col n="2" id="P-00-00-14" />
+  	<col n="3" id="P-00-00-15" />
+  	<col n="4" id="P-00-00-16" />
+  </row>
+
+</request>
