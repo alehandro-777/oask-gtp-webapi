@@ -10,12 +10,12 @@
 	<col n="1">00:08</col>
 	<col n="2">		
 		<func>
-			InstantSumm("Sensor-00-1, Sensor-00-2, Sensor-00-3", "P", date, 7, true)
+			SelectSingle("Sensor-00-1", "P", date, 7, true)
 		</func>
 	</col>
 	<col n="3">		
 		<func>
-			InstantSumm("Sensor-00-1, Sensor-00-2, Sensor-00-3", "T", date, 7, true)
+			SelectSingle("Sensor-00-1", "T", date, 7, true)
 		</func>
 	</col>
 
