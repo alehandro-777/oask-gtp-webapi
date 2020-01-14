@@ -1,12 +1,15 @@
 
-function Single(
+
+//return array of objects
+function SelectSingle(
 	collection,
-	datetime?,
-	attributes?,
-	precision?
+	datetime?,		//timestamp
+	attributes?, 	//array of values
+	precision? 		// true - точное совпадение метки времени, false - nearest
 )
 
-function Many(
+//return 2-dimensions array of objects
+function SelectMany(
 	collection,
 	start?,
 	end?,
