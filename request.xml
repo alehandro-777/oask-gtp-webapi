@@ -8,7 +8,7 @@
 
   <row>
 	<col>
-		String("00:08")
+		00:08
 	</col>
 	<col  id="P-00-00-01">
 		SelectSingle("Sensor-00-1", "P", date, 7, true)

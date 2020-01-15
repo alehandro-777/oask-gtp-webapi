@@ -1,4 +1,4 @@
-
+const processreq = require('../request.processor');
 
 
 // POST
@@ -12,24 +12,7 @@ exports.select = (req, res) => {
         //return res.status(404).send({
         //console.log(req.body); 
 
-    req.body.request.row.forEach( function(item, i, arr) { 
-
-        let date;
-
-        function SelectSingle(p1, p2, p3, p4, p5)
-        {
-            console.log(p1);
-            return 111;
-        }
-
-        //console.log(item.col[1]._); 
-        try{
-            let res = eval(item.col[1]._);
-            console.log(res); 
-        }
-        catch{}
-
-    });
+    processreq(req.body.request);
 
     var xml2js = require('xml2js');
     var builder = new xml2js.Builder();
