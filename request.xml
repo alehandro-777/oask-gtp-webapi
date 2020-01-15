@@ -6,21 +6,13 @@
   <key>JHGLG:PKH:S646565</key>
   <doc>OGU.PROLETARSKE.REGIM.HOUR</doc>
 
-  <row n="1">
-	<col n="1">00:08</col>
-	<col n="2">		
-		<func>
-			SelectSingle("Sensor-00-1", "P", date, 7, true)
-		</func>
+  <row>
+	<col>
+		String("00:08")
 	</col>
-	<col n="3">		
-		<func>
-			SelectSingle("Sensor-00-1", "T", date, 7, true)
-		</func>
+	<col  id="P-00-00-01">
+		SelectSingle("Sensor-00-1", "P", date, 7, true)
 	</col>
-
   </row>
-
-
 
 </request>

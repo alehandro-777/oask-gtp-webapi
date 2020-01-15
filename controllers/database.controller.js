@@ -1,33 +1,52 @@
 
-// Create and Save a new Object
+
+
+// POST
 exports.create = (req, res) => {
-
-    if(!req.body.name) {
-        return res.status(400).send({
-            message: "Entity name can not be empty"
-        });
-    }
-
-    return res.send(;
+    //return res.status(400).send({ message: "Entity name can not be empty" });
+    return res.send();
 };
 
-// Retrieve and return all or page#.
+// GET
 exports.select = (req, res) => {
+        //return res.status(404).send({
+        //console.log(req.body); 
 
-    if(!data) {
-        return res.status(404).send({
-            message: "Empty collection !!! "
-        });            
-    }
-    return res.send();             
+    req.body.request.row.forEach( function(item, i, arr) { 
+
+        let date;
+
+        function SelectSingle(p1, p2, p3, p4, p5)
+        {
+            console.log(p1);
+            return 111;
+        }
+
+        //console.log(item.col[1]._); 
+        try{
+            let res = eval(item.col[1]._);
+            console.log(res); 
+        }
+        catch{}
+
+    });
+
+    var xml2js = require('xml2js');
+    var builder = new xml2js.Builder();
+    var xml = builder.buildObject(req.body);
+
+    res.set('Content-Type', 'text/xml');       
+    return res.send(xml);             
 };
 
-// Find a single object with a Id
+
+
+// GET with a Id
 exports.findOne = (req, res) => {
     res.send();
 };
 
-// Update a note identified by the noteId in the request
+// PUT
 exports.update = (req, res) => {
     if(!req.body) {
         return res.status(400).send({
@@ -37,12 +56,12 @@ exports.update = (req, res) => {
     res.send();
 };
 
-// Delete a object with the specified noteId in the request
+// DELETE
 exports.delete = (req, res) => {
     res.send();
 };
 
-// Update a object identified by the noteId in the request
+// PATCH
 exports.partialupdate = (req, res) => {
     
     if(!req.body) {

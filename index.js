@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
+const xmlparser = require('express-xml-bodyparser');
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
+
+app.use(xmlparser());
 
 app.get('/', (req, res) => {
   res.json({"message": "Welcome to REST web API"});

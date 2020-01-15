@@ -8,68 +8,13 @@
 
   <doc>OGU.PROLETARSKE.REGIM.HOUR</doc>
 
-  <row n="0">
-	<col n="0">00:08</col>
-  	<col n="1" id="P-00-00-01">56.7</col>
-  	<col n="2" id="P-00-00-02">56.7</col>
-  	<col n="3" id="P-00-00-03">56.7</col>
-  	<col n="4" id="P-00-00-04">56.7</col>
+  <row>
+	<col>00:08</col>
+  	<col id="P-00-00-01">56.7</col>
+  	<col id="P-00-00-02">56.7</col>
+  	<col id="P-00-00-03">56.7</col>
+  	<col id="P-00-00-04">56.7</col>
   </row>
 
-  <row n="1">
-	<col n="0">00:10</col>
-  	<col n="1" id="P-00-00-01">56.7</col>
-  	<col n="2" id="P-00-00-02">56.7</col>
-  	<col n="3" id="P-00-00-03">56.7</col>
-  	<col n="4" id="P-00-00-04">56.7</col>
-  </row>
-
-  <row n="2">
-	<col n="0">00:12</col>
-  	<col n="1" id="P-00-00-01">56.7</col>
-  	<col n="2" id="P-00-00-02">56.7</col>
-  	<col n="3" id="P-00-00-03">56.7</col>
-  	<col n="4" id="P-00-00-04">56.7</col>
-  </row>
-
-  <row n="3">
-	<col n="0">00:14</col>
-  	<col n="1" id="P-00-00-01"></col>
-  	<col n="2" id="P-00-00-02"></col>
-  	<col n="3" id="P-00-00-03"></col>
-  	<col n="4" id="P-00-00-04"></col>
-  </row>
-
-  <row n="4">
-	<col n="0">00:08</col>
-  	<col n="1" id="P-00-00-01">56.7</col>
-  	<col n="2" id="P-00-00-02">56.7</col>
-  	<col n="3" id="P-00-00-03">56.7</col>
-  	<col n="4" id="P-00-00-04">56.7</col>
-  </row>
-
-  <row n="5">
-	<col n="0">00:10</col>
-  	<col n="1" id="P-00-00-01">56.7</col>
-  	<col n="2" id="P-00-00-02">56.7</col>
-  	<col n="3" id="P-00-00-03">56.7</col>
-  	<col n="4" id="P-00-00-04">56.7</col>
-  </row>
-
-  <row n="6">
-	<col n="0">00:12</col>
-  	<col n="1" id="P-00-00-01">56.7</col>
-  	<col n="2" id="P-00-00-02">56.7</col>
-  	<col n="3" id="P-00-00-03">56.7</col>
-  	<col n="4" id="P-00-00-04">56.7</col>
-  </row>
-
-  <row n="7">
-	<col n="0">00:14</col>
-  	<col n="1" id="P-00-00-01"></col>
-  	<col n="2" id="P-00-00-02"></col>
-  	<col n="3" id="P-00-00-03"></col>
-  	<col n="4" id="P-00-00-04"></col>
-  </row>
 
 </response>
