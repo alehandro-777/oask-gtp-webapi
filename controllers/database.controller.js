@@ -6,12 +6,18 @@ const xml2js = require('xml2js');
 exports.create = (req, res) => {
     //return res.status(400).send({ message: "Entity name can not be empty" });
 
-    let doc = req.body.request.doc;
+    let doc = req.body.request.doc[0];
     let date = new Date(req.body.request.date);
 
     try{
-        repository.create(doc, req.body);
-        return res.send({ message: doc + "  Created Ok" });  
+        var result = processreq(req.body.request);
+        var builder = new xml2js.Builder();
+        var xml = builder.buildObject(req.body);
+        result.xml = xml;
+
+        repository.create(doc, result);
+        res.set('Content-Type', 'text/xml');
+        return res.send(xml);  
     }
     catch(err){
         return res.status(500).send(err);
