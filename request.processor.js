@@ -12,11 +12,12 @@ module.exports = (request) => {
 
     request.row.forEach( function(item, i, arr) { 
         item.col.forEach( function(item, i, arr) {
-        //console.log(item); 
+        //обработка каждой ячейки, если не известная функция или константа выводится без вычисления 
         try{
-            result[item.$.id.toLowerCase()] = item._.toLowerCase();
-            result[item.$.id.toLowerCase()] =  eval(result[item.$.id.toLowerCase()]);
-            item._ = result[item.$.id.toLowerCase()];
+            let key = item.$.id.toUpperCase();
+            result[key] = item._.toLowerCase();
+            result[key] = item._= eval(result[key]);
+            item._= result[key];
         }
         catch (err){
 //            console.log(err); 
