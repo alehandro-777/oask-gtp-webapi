@@ -7,7 +7,7 @@
   <doc>OGU.PROLETARSKE.REGIM.HOUR</doc>
 
   <row>
-	<col>
+	<col id="P-00-00-00">
 		00:08
 	</col>
 	<col  id="P-00-00-01">
