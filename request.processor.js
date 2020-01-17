@@ -6,8 +6,7 @@ module.exports = (request) => {
     let result = {};
     let date = new Date(request.date);
 
-
-    result['date'] = JSON.stringify(date);
+    result['date'] = date;
     result['doc'] = request.doc[0];
 
     request.row.forEach( function(item, i, arr) { 
@@ -20,7 +19,7 @@ module.exports = (request) => {
             item._= result[key];
         }
         catch (err){
-//            console.log(err); 
+            //console.log(err); 
         }
 
         });

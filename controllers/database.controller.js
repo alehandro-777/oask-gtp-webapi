@@ -40,27 +40,44 @@ exports.select = (req, res) => {
 };
 
 
-
 // GET with a Id
 exports.findOne = (req, res) => {
 
     let collection = req.params.id;
     let date = new Date(req.query.date);
 
-    var result = repository.findOne(collection, (d)=> d);
-    
-    var builder = new xml2js.Builder();
-    var xml = builder.buildObject(result);
-
-    res.set('Content-Type', 'text/xml');
-    res.send(xml);
+    try{
+        var result = repository.findOne(collection, { "date": { $gte: date } });
+        console.log(result);  
+        res.set('Content-Type', 'text/xml');
+        return res.send(result.xml);    
+    }
+    catch(err){
+        return res.status(500).send(err);
+    }
 };
 
 // PUT
 exports.update = (req, res) => {
 
+    let collection = req.params.id;
 
-    res.send();
+    try{
+        var result = processreq(req.body.request);
+        var builder = new xml2js.Builder();
+        var xml = builder.buildObject(req.body);
+        result.xml = xml;
+        result.created = new Date();
+
+        repository.create(collection, result);
+
+        var xmlOk = builder.buildObject({message: collection + " updated Ok"});
+        res.set('Content-Type', 'text/xml');
+        return res.send(xmlOk);  
+    }
+    catch(err){
+        return res.status(500).send(err);
+    }
 };
 
 
@@ -69,13 +86,3 @@ exports.delete = (req, res) => {
     res.send();
 };
 
-// PATCH
-exports.partialupdate = (req, res) => {
-    
-    if(!req.body) {
-        return res.status(400).send({
-            message: "Object body can not be empty"
-        });
-    }
-    res.send();
-};

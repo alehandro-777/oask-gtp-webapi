@@ -5,6 +5,7 @@ module.exports = (app) => {
     app.post('/docs', docscontroll.create);
     app.get('/docs', docscontroll.select);
     app.get('/docs/:id', docscontroll.findOne);
+    app.put('/docs/:id', docscontroll.update);
     
     //app.delete('/mpoints/:id', mpoint.delete);
     //app.put('/mpoints/:id', mpoint.update);
