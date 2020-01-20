@@ -7,12 +7,15 @@
   <doc>OGU.PROLETARSKE.REGIM.HOUR</doc>
 
   <row>
-	<col id="P-00-00-00">
+	<col1 id="P000000">
 		00:08
-	</col>
-	<col  id="P-00-00-01">
+	</col1>
+	<col2  id="P000001">
 		SelectSingle("Sensor-00-1", "P", date, 7, true)
-	</col>
+	</col2>
+	<col3  id="P000003">
+		SelectSingle("Sensor-00-1", "P", date, 7, true)
+	</col3>
   </row>
 
 </request>
