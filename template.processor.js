@@ -1,13 +1,14 @@
 const repository = require('./repository');
 
-// обработка xml шаблона - результат- ассоциативный  массив "параметр : значение"
-// если вычисление не возможно - присвоить исходное значение
+// обработка xml шаблона - результат- создает из атрибутов ХМЛ ассоциативный  массив "параметр : значение"
+// производит вычисление функции - если вычисление не возможно - присвоить исходное значение
 module.exports = (request) => {
 
     let result = {};
-    let date = new Date(request.date);
 
-    result['date'] = date;
+    let date = new Date(request.date);  //параметр нужен для функций из шаблона
+
+    result['date'] = request.date[0];
     result['doc'] = request.doc[0];
 
     request.row.forEach( function(row, i, arr) { 

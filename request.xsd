@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="request">
+    <xsd:complexType>
+      <xsd:sequence>
+
+<!-- Parameters -->       
+        <xsd:element minOccurs="0" maxOccurs="1" name="doc" type="xsd:string"/>
+        <xsd:element minOccurs="0" maxOccurs="1" name="date" type="xsd:date"/>
+        <xsd:element minOccurs="0" maxOccurs="1" name="time" type="xsd:time"/>
+        <xsd:element minOccurs="0" maxOccurs="1" name="version" type="xsd:integer"/>
+        <xsd:element minOccurs="0" maxOccurs="1" name="created" type="xsd:dateTime"/>
+        <xsd:element minOccurs="0" maxOccurs="1" name="key" type="xsd:string"/>
+
+<!-- Rows -->       
+        <xsd:element minOccurs="0" maxOccurs="unbounded" name="row">
+          <xsd:complexType>
+            <xsd:sequence>
+
+              <xsd:element  name="col1">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col2">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col3">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col4">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col5">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col6">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col7">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col8">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col9">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col10">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col11">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                        <xsd:attribute name = "id" type = "xsd:string"/>            
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

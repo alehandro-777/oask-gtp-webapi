@@ -5,16 +5,16 @@ const xml2js = require('xml2js');
 exports.create = (req, res) => {
     try{
         var result = {};
-        var builder = new xml2js.Builder();
-        var xml = builder.buildObject(req.body);
-        result.xml = xml;
+        result.body = JSON.stringify(req.body);
         result.created = Date();
         result.doc = req.body.request.doc[0];
 
         repository.create("templates", result).then(
             result=>{
+                var builder = new xml2js.Builder();
+                var xmlOk = builder.buildObject({message: result.ops[0].doc + " updated Ok"});
                 res.set('Content-Type', 'text/xml');
-                return res.send(result.ops[0].xml);          
+                return res.send(xmlOk);           
             },
             error=>{
                 return res.status(500).send(error);        
@@ -24,7 +24,6 @@ exports.create = (req, res) => {
     catch(err){
         return res.status(500).send(err);
     }
-
 };
 
 exports.findOne = (req, res) => {

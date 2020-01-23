@@ -6,46 +6,14 @@ var parseString = require('xml2js').parseString;
 
 // POST
 exports.create = (req, res) => {
-    try{
-        let doc = req.params.id;
-        let date = new Date(req.query.date);
+    console.log(req.body);
 
-        repository.findOne("templates", { doc : doc  }).then(
-            result=>{
-                
-                            let body = JSON.parse(result.body);
-                            body.request.date[0] = date;
-                            var r = processreq(body.request);
-                            r.body = body;
+    var builder = new xml2js.Builder();
+    var xml = builder.buildObject(req.body);
+    res.set('Content-Type', 'text/xml');
+    return res.send(xml);  
 
-                            var builder = new xml2js.Builder();
-                            var xml = builder.buildObject(r.body);
-                            res.set('Content-Type', 'text/xml');
-                            return res.send(xml);          
-                    
-
-                            r.created = Date();
-                            repository.create(r.doc, r).then(
-                                result=>{
-                                    res.set('Content-Type', 'text/xml');
-                                    return res.send(result.ops[0].xml);          
-                                },
-                                error=>{
-                                    return res.status(500).send(error);        
-                                }
-                            );           
-
-                
-                    },
-            error=>{
-                console.log(error);
-            }
-        );      
-    }
-    catch(err){
-        return res.status(500).send(err);
-    }
-
+    //res.send(req.body);
 };
 
 // GET
@@ -160,54 +128,21 @@ exports.select = (req, res) => {
 
 // GET with a Id
 exports.findOne = (req, res) => {
+    console.log(req.body)
+    return res.send(req.body);
 
-    let collection = req.params.id;
-    let date = new Date(req.query.date);
-
-    repository.findOne(collection, { date : date  }).then(//repository.findOne(collection, { "date": { $gte: date } }).then(
-        result=>{
-            res.set('Content-Type', 'text/xml');
-            return res.send(result.xml);    
-        }
-    ).catch(
-        error=>{
-            return res.status(500).send(error);
-        }
-    );
 };
 
 // PUT
 exports.update = (req, res) => {
-    console.log(req.body.request)
-    try{
-        var result = processreq(req.body.request);
-        
-
-        
-        var builder = new xml2js.Builder();
-        var xml = builder.buildObject(req.body);
-        result.xml = xml;
-        result.created = new Date();
-
-        repository.create(result.doc, result).then(
-            result=>{
-                var xmlOk = builder.buildObject({message: result.ops[0].doc + " updated Ok"});
-                res.set('Content-Type', 'text/xml');
-                return res.send(xmlOk);  
-            },
-            error=>{
-                return res.status(500).send(error);        
-            }
-        );
-    }
-    catch(err){
-        return res.status(500).send(err);
-    }
+    console.log(req.body)
+    return res.send(req.body);
 };
 
 
 // DELETE
 exports.delete = (req, res) => {
-    res.send();
+    console.log(req.body)
+    return res.send(req.body);
 };
 

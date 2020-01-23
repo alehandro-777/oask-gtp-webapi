@@ -97,3 +97,37 @@ Sub macroPOST()
         'Do something
     End If
 End Sub 
+
+Sub Êíîïêà2_Ùåë÷îê()
+
+ActiveWorkbook.XmlMaps("response_map").Export URL:="c:\temp\2.xml", Overwrite:=True
+Dim doc
+Dim root As Object
+Dim XmlDoc
+Set XmlDoc = CreateObject("MSXML2.DomDocument")
+
+XmlDoc.async = False
+
+XmlDoc.Load ("c:\temp\2.xml")
+
+//-----------------------------------------------------------
+
+Set root = XmlDoc.DocumentElement
+Set doc = root.getElementsByTagName("doc")
+ 
+  
+    Set objHTTP = CreateObject("MSXML2.ServerXMLHTTP")
+    URL = "http://localhost:3000/docs/" & doc(0).Text
+    objHTTP.Open "PUT", URL, False
+    objHTTP.setRequestHeader "Content-Type", "text/xml"
+    objHTTP.send XmlDoc.XML
+    
+    replyTXT = objHTTP.responseText
+
+    If objHTTP.Status = "200" Then 'success
+        MsgBox replyTXT
+    Else
+        MsgBox "Error request" 'Do something
+    End If
+
+End Sub
