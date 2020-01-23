@@ -13,22 +13,16 @@ exports.create = (req, res) => {
         repository.findOne("templates", { doc : doc  }).then(
             result=>{
                 
-                            let body = JSON.parse(result.body);
-                            body.request.date[0] = date;
-                            var r = processreq(body.request);
-                            r.body = body;
-
-                            var builder = new xml2js.Builder();
-                            var xml = builder.buildObject(r.body);
-                            res.set('Content-Type', 'text/xml');
-                            return res.send(xml);          
-                    
-
-                            r.created = Date();
-                            repository.create(r.doc, r).then(
+                            let body = JSON.parse(result.bodyStr);
+                            var docObj = processreq(body.request);
+                            docObj.bodyStr = JSON.stringify(body);
+                            docObj.created = Date();
+                            repository.create(doc, docObj).then(
                                 result=>{
+                                    var builder = new xml2js.Builder();
+                                    var xmlOk = builder.buildObject({message: "Template created Ok"});
                                     res.set('Content-Type', 'text/xml');
-                                    return res.send(result.ops[0].xml);          
+                                    return res.send(xmlOk);          
                                 },
                                 error=>{
                                     return res.status(500).send(error);        
@@ -166,8 +160,10 @@ exports.findOne = (req, res) => {
 
     repository.findOne(collection, { date : date  }).then(//repository.findOne(collection, { "date": { $gte: date } }).then(
         result=>{
+            var builder = new xml2js.Builder();
+            var xml = builder.buildObject(result.bodyStr);
             res.set('Content-Type', 'text/xml');
-            return res.send(result.xml);    
+            return res.send(xml);    
         }
     ).catch(
         error=>{
@@ -178,7 +174,6 @@ exports.findOne = (req, res) => {
 
 // PUT
 exports.update = (req, res) => {
-    console.log(req.body.request)
     try{
         var result = processreq(req.body.request);
         
