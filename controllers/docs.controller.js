@@ -1,40 +1,29 @@
 const tmpprocessor = require('../template.processor');
 const repository = require('../repository');
 const xml2js = require('xml2js');
-var parseString = require('xml2js').parseString;
 
 
 // POST
 exports.create = (req, res) => {
+    let result;
+    
     try{
-        let doc = req.params.id;
-        let date = new Date(req.query.date);
-
-        repository.findOne("templates", { doc : doc  }).then(
+        let values = tmpprocessor.estract(req.body.request);
+        result = {...values};
+        result.bodyStr = JSON.stringify(req.body);
+        result.created = new Date();
+        repository.create(result.doc, result).then(
             result=>{
-                
-                            let body = JSON.parse(result.bodyStr);
-//                            var docObj = processreq(body.request);
-                            docObj.bodyStr = JSON.stringify(body);
-                            docObj.created = Date();
-                            repository.create(doc, docObj).then(
-                                result=>{
-                                    var builder = new xml2js.Builder();
-                                    var xmlOk = builder.buildObject({message: "Template created Ok"});
-                                    res.set('Content-Type', 'text/xml');
-                                    return res.send(xmlOk);          
-                                },
-                                error=>{
-                                    return res.status(500).send(error);        
-                                }
-                            );           
-
-                
-                    },
+                var builder = new xml2js.Builder();
+                var xmlOk = builder.buildObject({message: "Document created Ok"});
+                res.set('Content-Type', 'text/xml');
+                return res.send(xmlOk);          
+            },
             error=>{
-                console.log(error);
+                return res.status(500).send(error);        
             }
-        );      
+        );
+     
     }
     catch(err){
         return res.status(500).send(err);
@@ -161,7 +150,8 @@ exports.findOne = (req, res) => {
     repository.findOne(collection, { date : date  }).then(//repository.findOne(collection, { "date": { $gte: date } }).then(
         result=>{
             var builder = new xml2js.Builder();
-            var xml = builder.buildObject(result.bodyStr);
+            var xml = builder.buildObject(JSON.parse(result.bodyStr));
+
             res.set('Content-Type', 'text/xml');
             return res.send(xml);    
         }

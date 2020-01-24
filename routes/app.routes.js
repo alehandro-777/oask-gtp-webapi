@@ -4,7 +4,7 @@ const testcontroller = require('../controllers/test.controller');
 
 module.exports = (app) => {
     
-    app.post('/docs/:id', docscontroll.create);
+    app.post('/docs', docscontroll.create);
     app.get('/docs', docscontroll.select);
     app.get('/docs/:id', docscontroll.findOne);
     app.put('/docs', docscontroll.update);  
