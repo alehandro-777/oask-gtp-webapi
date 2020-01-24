@@ -1,4 +1,4 @@
-const processreq = require('../template.processor');
+const tmpprocessor = require('../template.processor');
 const repository = require('../repository');
 const xml2js = require('xml2js');
 var parseString = require('xml2js').parseString;
@@ -14,7 +14,7 @@ exports.create = (req, res) => {
             result=>{
                 
                             let body = JSON.parse(result.bodyStr);
-                            var docObj = processreq(body.request);
+//                            var docObj = processreq(body.request);
                             docObj.bodyStr = JSON.stringify(body);
                             docObj.created = Date();
                             repository.create(doc, docObj).then(
@@ -175,7 +175,7 @@ exports.findOne = (req, res) => {
 // PUT
 exports.update = (req, res) => {
     try{
-        var result = processreq(req.body.request);
+  //      var result = processreq(req.body.request);
         
 
         

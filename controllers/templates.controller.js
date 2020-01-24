@@ -1,13 +1,14 @@
 const repository = require('../repository');
 const xml2js = require('xml2js');
+const tmpprocessor = require('../template.processor');
 
 // POST
 exports.create = (req, res) => {
     try{
         var templateObj = {};
-        templateObj.strBody = JSON.stringify(req.body);
+        templateObj.strBody = JSON.stringify(req.body); //string JSON body
         templateObj.created = Date();
-        templateObj.doc = req.body.request.doc[0];
+        templateObj.doc = req.body.request.doc[0];  //параметр фильтрации
 
         repository.create("templates", templateObj).then(
             result=>{
@@ -26,6 +27,8 @@ exports.create = (req, res) => {
     }
 };
 
+//поведение зависит от параметра(-ов) query.date может возвращать исх шаблон либо пытается транслировать
+
 exports.findOne = (req, res) => {
 
     let doc = req.params.id;
@@ -33,9 +36,13 @@ exports.findOne = (req, res) => {
 
     try{
         repository.findOne("templates", { doc : doc  }).then(
-            result=>{
+            searchRes=>{
+                let templateObj = JSON.parse(searchRes.strBody);
+
+                tmpprocessor.translate(templateObj.request, {date:date});
+                
                 var builder = new xml2js.Builder();
-                var xml = builder.buildObject(result.strBody);
+                var xml = builder.buildObject(templateObj);
                 res.set('Content-Type', 'text/xml');
                 return res.send(xml);    
                     },
@@ -47,4 +54,5 @@ exports.findOne = (req, res) => {
     catch(err){
         return res.status(500).send(err);
     }
+
 };

@@ -1,44 +1,82 @@
 const repository = require('./repository');
 
-// обработка xml шаблона - результат- создает из атрибутов ХМЛ ассоциативный  массив "параметр : значение"
-// производит вычисление функции - если вычисление не возможно - присвоить исходное значение
-module.exports = (request) => {
+
+// обработка root - объекта xml шаблона - результат- создает из атрибутов и одиночных элементов словарь "параметр : значение"
+// внимание ! строки имеют жесткое имя "row" в ХМЛ !!!!!!!!!!!
+
+exports.estract = (xmlObject) => {
 
     let result = {};
 
-    let date = new Date(request.date);  //параметр нужен для функций из шаблона
+    //обработка одиночных элементов
+    let keys = Object.keys(xmlObject);   // – возвращает массив ключей.
 
-    result['date'] = request.date[0];
-    result['doc'] = request.doc[0];
+    keys.forEach( function(xmlelm, i, arr) {
+        if(xmlelm !== "row") {
+            result[xmlelm] = xmlObject[xmlelm][0];  //create simple key:value
+        }
+        else{
+            //обработка строк
+            xmlObject.row.forEach( function(row, i, arr) { 
 
-    request.row.forEach( function(row, i, arr) { 
-        /*
-        row: [
-            { col1: [Array], col2: [Array] },
-            { col1: [Array], col2: [Array] },
-            { col1: [Array], col2: [Array] }
-        ]
-        */
+                let keys = Object.keys(row);   // – возвращает массив ключей.
 
-        let keys = Object.keys(row);   // – возвращает массив ключей.
-
-        keys.forEach( function(col, i, arr) {
-        //обработка каждой ячейки, если не известная функция или константа выводится без вычисления 
-        row[col].forEach( function(cell, i, arr) {
-            try{
-                let key = cell.$.id.toUpperCase();  //аттрибут 
-                result[key] = cell._.toLowerCase(); //значение элемента
-                result[key] = cell._= eval(result[key]);    //попытка вычислить 
-                cell._= result[key];    //изменения исходной ХМЛ
-            }
-            catch (err){
-                //console.log(err); 
-            }   
-        }); //column elements loop       
-        }); //inner column loop
-    });     //rows loop
+                keys.forEach( function(col, i, arr) {
+                //обработка каждой ячейки, если не известная функция или константа выводится без вычисления 
+                row[col].forEach( function(cell, i, arr) {
+                    try{
+                        let key = cell.$.id;    //аттрибут id
+                        result[key] = cell._;   //значение элемента
+                    }
+                    catch (err){
+                        //console.log(err); 
+                    }   
+                }); //column elements loop       
+                }); //inner column loop
+            });     //rows loop
+        }        
+    });
     return result;
 }
+
+//обработка root - объекта xml шаблона
+//преобразование "объект шаблона" -> "объект отчет"
+//return ничего не возвращает - модифицирует исходный объект
+exports.translate = (xmlObject, par) => {
+    //обработка одиночных элементов
+    let keys = Object.keys(xmlObject);   // – возвращает массив ключей.
+    keys.forEach( function(xmlelm, i, arr) {
+        if(xmlelm !== "row") {
+            try{
+                xmlObject[xmlelm][0] = eval(xmlObject[xmlelm][0]);  //try evaluate  Date.parse(par["date"]) - со временем не понятно...
+            }
+            catch (err){
+                //console.log("Translate error ", xmlelm, "  " , err); 
+            }   
+        }
+        else{
+            //обработка строк
+            xmlObject.row.forEach( function(row, i, arr) { 
+
+                let keys = Object.keys(row);   // – возвращает массив ключей в строке.
+
+                keys.forEach( function(col, i, arr) {
+                //обработка каждой ячейки, если не известная функция или константа выводится без вычисления 
+                row[col].forEach( function(cell, i, arr) {
+                    try{
+                        //console.log(xmlelm, " 2 ", xmlObject[xmlelm]);
+                        cell._ = eval(cell._.toLowerCase());  //try to evaluate
+                    }
+                    catch (err){
+                        //console.log("Translate error ", cell._, "  " , err); 
+                    }   
+                }); //column elements loop       
+                }); //inner column loop
+            });     //rows loop
+        }              
+    });//all keys loop
+}
+
 
 //набор разрешенных в шаблоне функций
 function selectsingle(collection, datetime, attributes, precision, p5)
