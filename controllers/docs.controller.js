@@ -22,7 +22,10 @@ exports.create = (req, res) => {
             error=>{
                 return res.status(500).send(error);        
             }
-        );
+        ).catch(
+            error=>{
+                return res.status(500).send(error);
+            });
      
     }
     catch(err){

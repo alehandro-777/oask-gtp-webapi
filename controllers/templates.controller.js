@@ -20,7 +20,10 @@ exports.create = (req, res) => {
             error=>{
                 return res.status(500).send(error);        
             }
-        );       
+        ).catch(
+            error=>{
+                return res.status(500).send(error);
+            });       
     }
     catch(err){
         return res.status(500).send(err);
@@ -34,7 +37,6 @@ exports.findOne = (req, res) => {
     let doc = req.params.id;
     let date = new Date(req.query.date);
 
-    try{
         repository.findOne("templates", { doc : doc  }).then(
             searchRes=>{
                 let templateObj = JSON.parse(searchRes.strBody);
@@ -49,10 +51,10 @@ exports.findOne = (req, res) => {
             error=>{
                 return res.status(500).send(error);
             }
+        ).catch(
+            error=>{
+                return res.status(500).send(error);
+            }
         );
-    }
-    catch(err){
-        return res.status(500).send(err);
-    }
 
 };
