@@ -35,7 +35,7 @@ exports.create = (req, res) => {
 exports.findOne = (req, res) => {
 
     let doc = req.params.id;
-    let date = new Date(req.query.date);
+    let date = req.query.date;
 
         repository.findOne("templates", { doc : doc  }).then(
             searchRes=>{
