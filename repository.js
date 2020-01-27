@@ -47,10 +47,10 @@ exports.findOne = (collection, query) => {
       
             let db = client.db(databasename);
             let coll = db.collection(collection);
-          
+
             coll.find(query).toArray( function(err, result){
                 client.close();
-                
+                    
                 if(err) {  reject(err); return; } 
 
                 let last = result[result.length-1];    

@@ -79,8 +79,8 @@ exports.translate = (xmlObject, par) => {
 
 
 //набор разрешенных в шаблоне функций
-function selectsingle(collection, datetime, attributes, precision, p5)
+function selectsingle(collection, datetime, attributes, offset)
 {
     //console.log(collection, datetime, attributes, precision, p5);
-    return 111+0.223;
+    return Math.random().toFixed(2);
 }

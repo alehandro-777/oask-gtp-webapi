@@ -148,7 +148,7 @@ exports.select = (req, res) => {
 exports.findOne = (req, res) => {
 
     let collection = req.params.id;
-    let date = new Date(req.query.date);
+    let date = req.query.date;
 
     repository.findOne(collection, { date : date  }).then(//repository.findOne(collection, { "date": { $gte: date } }).then(
         result=>{

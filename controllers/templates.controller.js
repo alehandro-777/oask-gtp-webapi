@@ -42,7 +42,7 @@ exports.findOne = (req, res) => {
                 let templateObj = JSON.parse(searchRes.strBody);
 
                 tmpprocessor.translate(templateObj.request, {date:date});
-                
+
                 var builder = new xml2js.Builder();
                 var xml = builder.buildObject(templateObj);
                 res.set('Content-Type', 'text/xml');
