@@ -62,3 +62,31 @@ exports.findOne = (collection, query) => {
       });
 
 };
+
+exports.find = (collection, query) => {
+
+    return new Promise((resolve, reject) => {
+
+        const mongoClient = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
+        mongoClient.connect( (err, client) => {
+            if(err) {  
+                reject(err);  
+                return;
+            }              
+      
+            let db = client.db(databasename);
+            let coll = db.collection(collection);
+
+            coll.find(query).toArray( function(err, result){
+                client.close();
+                    
+                if(err) {  reject(err); return; } 
+
+                resolve(result);
+
+            });        
+        });   
+          
+      });
+
+};

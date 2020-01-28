@@ -1,6 +1,7 @@
 const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const testcontroller = require('../controllers/test.controller');
+const collcontroller = require('../controllers/collection.controller');
 
 module.exports = (app) => {
     
@@ -20,4 +21,7 @@ module.exports = (app) => {
     app.get('/test', testcontroller.select);
     app.get('/test/:id', testcontroller.findOne);
     app.put('/test', testcontroller.update);
+
+    app.get('/collection/:id', collcontroller.findOne);
+
 }

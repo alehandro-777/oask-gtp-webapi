@@ -33,15 +33,13 @@ exports.create = (req, res) => {
 //поведение зависит от параметра(-ов) query.date может возвращать исх шаблон либо пытается транслировать
 
 exports.findOne = (req, res) => {
+    let collection = req.params.id;
 
-    let doc = req.params.id;
-    let date = req.query.date;
-
-        repository.findOne("templates", { doc : doc  }).then(
+        repository.findOne("templates", {doc : collection}).then(
             searchRes=>{
                 let templateObj = JSON.parse(searchRes.strBody);
 
-                tmpprocessor.translate(templateObj.request, {date:date});
+                tmpprocessor.translate(templateObj.request, req.query);
 
                 var builder = new xml2js.Builder();
                 var xml = builder.buildObject(templateObj);

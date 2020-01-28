@@ -1,7 +1,7 @@
 const tmpprocessor = require('../template.processor');
 const repository = require('../repository');
 const xml2js = require('xml2js');
-
+const builder = new xml2js.Builder();
 
 // POST
 exports.create = (req, res) => {
@@ -36,111 +36,7 @@ exports.create = (req, res) => {
 
 // GET
 exports.select = (req, res) => {
-
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>
-    <response>  
-      <date>2022-09-01</date>
-      <time>12:01:00.333</time>
-      <version>2022-09-01</version>  
-      <doc>OGU.PROLETARSKE.REGIM.HOUR</doc>    
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>        
-
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>        
-
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>
-      <row>
-          <col1 id="P-00-00-01">56.7</col1>
-          <col2 id="P-00-00-02">56.7</col2>
-          <col3 id="P-00-00-03">56.7</col3>
-          <col4 id="P-00-00-04">56.7</col4>
-      </row>        
-
-
-      </response>`;
-
-    res.set('Content-Type', 'text/xml');       
-    return res.send(xml);             
+    return res.send("Not implemented");           
 };
 
 
