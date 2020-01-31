@@ -77,6 +77,35 @@ exports.translate = (xmlObject, par) => {
     });//all keys loop
 }
 
+// обработка root - объекта xml шаблона - результат- создает массив объектов "эл-т : значение"
+// внимание ! строки имеют жесткое имя "row" в ХМЛ !!!!!!!!!!!
+
+exports.estractMany = (xmlObject) => {
+  
+    let result = {row:[]};
+    //обработка одиночных элементов
+    let keys = xmlObject.row;   // – возвращает массив row.
+
+    keys.forEach( function(xmlelm, i, arr) {
+        let resrow = [];
+
+        //обработка каждой row      
+
+        let columns = Object.keys(xmlelm);   // – возвращает массив ключей-columns.
+            //обработка col
+            columns.forEach( function(col, i, arr) { 
+                let rescolumn = {};                
+                rescolumn[col] = xmlelm[col][0];   //create key : value 
+                resrow.push(rescolumn);
+              });   //inner column loop
+              
+              result.row.push(resrow);
+
+            });     //rows loop
+    return result;
+}
+
+
 
 //набор разрешенных в шаблоне функций
 function selectsingle(collection, datetime, attributes, offset)

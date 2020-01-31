@@ -18,9 +18,9 @@ module.exports = (app) => {
     //app.patch('/mpoints/:id', mpoint.partialupdate);
     
     app.post('/test/:id', testcontroller.create);
-    app.get('/test', testcontroller.select);
-    app.get('/test/:id', testcontroller.findOne);
-    app.put('/test', testcontroller.update);
+    app.get('/test/:id', testcontroller.select);
+    app.delete('/test/:id', testcontroller.delete);
+    app.put('/test/:id', testcontroller.update);
 
     app.get('/collection/:id', collcontroller.findOne);
 

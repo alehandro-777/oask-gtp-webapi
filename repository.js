@@ -34,6 +34,36 @@ exports.create = (collection, obj) => {
     });
 };
 
+exports.createMany = (collection, obj) => {
+
+    return new Promise((resolve, reject) => {
+
+        const mongoClient = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
+        mongoClient.connect( (err, client) => {
+
+            if(err){  
+                reject(err);
+                return;  
+            }
+          
+            let db = client.db(databasename);
+            let coll = db.collection(collection);
+          
+            coll.insertMany(obj, function(err, result){ 
+                client.close();
+                if(err) {  
+                    reject(err);
+                    return;  
+                }                
+                //All OK                
+                resolve(result);
+            });        
+          });    
+    });
+};
+
+
+
 exports.findOne = (collection, query) => {
 
     return new Promise((resolve, reject) => {

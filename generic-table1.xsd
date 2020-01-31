@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="root">
+    <xsd:complexType>
+      <xsd:sequence>
+
+<!-- Rows -->       
+        <xsd:element minOccurs="0" maxOccurs="unbounded" name="row">
+          <xsd:complexType>
+            <xsd:sequence>
+
+              <xsd:element  name="col1">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:decimal">
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="col2">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:decimal">
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+
+
+              
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>
