@@ -10,13 +10,17 @@ exports.create = (req, res) => {
 
     let collection = req.params.id;
 
-    let arr = processreq.estractMany(req.body.root)  
+    //console.log(req.body);
 
-    console.log(arr.row);
+    let arr = processreq.estractMany(req.body.root)  //[{ col1: '12.23', col2: '6.3' }, ...]
+    processreq.add_created_version(arr);
 
-    repository.createMany(collection, arr.row).then(
+    repository.createMany(collection, arr).then(
         result=>{
-            return res.send(xmlOk);          
+            let xmlRead = processreq.formatToXmlFriendly(result.ops);
+            let xml = builder.buildObject({root:xmlRead});
+            res.set('Content-Type', 'text/xml');
+            return res.send(xml);          
         },
         error=>{
             return res.status(500).send(error);        
@@ -31,8 +35,21 @@ exports.create = (req, res) => {
 exports.select = (req, res) => {
     let collection = req.params.id;
 
-    res.set('Content-Type', 'text/xml');       
-    return res.send(xml);             
+    repository.find(collection, {}).then(
+        result=>{
+
+            let xmlRead = processreq.formatToXmlFriendly(result);
+            let xml = builder.buildObject({root:xmlRead});
+            res.set('Content-Type', 'text/xml');
+            return res.send(xml);          
+        },
+        error=>{
+            return res.status(500).send(error);        
+        }
+    ).catch(
+        error=>{
+            return res.status(500).send(error);
+        });            
 };
 
 
@@ -40,8 +57,23 @@ exports.select = (req, res) => {
 exports.update = (req, res) => {
     let collection = req.params.id;
 
-    console.log(req.body)
-    return res.send(req.body);
+    let arr = processreq.estractMany(req.body.root)  //[{ col1: '12.23', col2: '6.3' }, ...]
+    processreq.add_uppdated_incversion(arr);
+
+    repository.updateMany(collection, arr).then(
+        result=>{
+            let xmlRead = processreq.formatToXmlFriendly(result);
+            let xml = builder.buildObject({root:xmlRead});
+            res.set('Content-Type', 'text/xml');
+            return res.send(xml);          
+        },
+        error=>{
+            return res.status(500).send(error);        
+        }
+    ).catch(
+        error=>{
+            return res.status(500).send(error);
+        });
 };
 
 
@@ -49,7 +81,21 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     let collection = req.params.id;
 
-    console.log(req.body)
-    return res.send(req.body);
+    let arr = processreq.estractMany(req.body.root)  //[{ col1: '12.23', col2: '6.3' }, ...]
+
+    repository.deleteMany(collection, arr).then(
+        result=>{
+            let xmlRead = processreq.formatToXmlFriendly(result);
+            let xml = builder.buildObject({root:xmlRead});
+            res.set('Content-Type', 'text/xml');
+            return res.send(xml);          
+        },
+        error=>{
+            return res.status(500).send(error);        
+        }
+    ).catch(
+        error=>{
+            return res.status(500).send(error);
+        });
 };
 
