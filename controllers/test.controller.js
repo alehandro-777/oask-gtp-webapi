@@ -13,12 +13,14 @@ exports.create = (req, res) => {
     //console.log(req.body);
 
     let arr = processreq.estractMany(req.body.root)  //[{ col1: '12.23', col2: '6.3' }, ...]
+ 
     processreq.add_created_version(arr);
+    processreq.remove_id(arr);
 
     repository.createMany(collection, arr).then(
         result=>{
-            let xmlRead = processreq.formatToXmlFriendly(result.ops);
-            let xml = builder.buildObject({root:xmlRead});
+            console.log(result);
+            let xml = builder.buildObject({insertedCount : result.insertedCount});
             res.set('Content-Type', 'text/xml');
             return res.send(xml);          
         },
@@ -62,8 +64,7 @@ exports.update = (req, res) => {
 
     repository.updateMany(collection, arr).then(
         result=>{
-            let xmlRead = processreq.formatToXmlFriendly(result);
-            let xml = builder.buildObject({root:xmlRead});
+            let xml = builder.buildObject(result);
             res.set('Content-Type', 'text/xml');
             return res.send(xml);          
         },
@@ -85,8 +86,7 @@ exports.delete = (req, res) => {
 
     repository.deleteMany(collection, arr).then(
         result=>{
-            let xmlRead = processreq.formatToXmlFriendly(result);
-            let xml = builder.buildObject({root:xmlRead});
+            let xml = builder.buildObject(result);
             res.set('Content-Type', 'text/xml');
             return res.send(xml);          
         },

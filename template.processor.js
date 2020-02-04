@@ -95,8 +95,8 @@ exports.estractMany = (xmlObject) => {
 
         let columns = Object.keys(xmlelm);   // – возвращает массив ключей-columns.
             //обработка col
-        columns.forEach( function(col, i, arr) { 
-            row[col] = xmlelm[col][0];   //create key : value 
+        columns.forEach( function(col, i, arr) {
+                row[col] = xmlelm[col][0];   //create key : value 
             });   //inner column loop 
             result.push(row);
         });     //rows loop
@@ -111,7 +111,7 @@ exports.add_created_version = (collection) => {
 
     collection.forEach( function(obj, i, arr) {
         obj["created_at"] = new Date().toISOString();
-        obj["version"] = 1;
+        obj["version"] = Number('1');
     });
  return collection;
 }
@@ -120,11 +120,17 @@ exports.add_uppdated_incversion = (collection) => {
 
     collection.forEach( function(obj, i, arr) {
         obj["updated_at"] = new Date().toISOString();
-        obj["version"] = obj["version"] + 1;
+        obj["version"] = Number(obj["version"]) + Number('1');
     });
     return collection;
 }
+exports.remove_id = (collection) => {
 
+    collection.forEach( function(obj, i, arr) {
+        delete obj['_id'];            //immutable field _id !!!!!!!!!!!
+    });
+ return collection;
+}
 
 //[{ col1: '12.23', col2: '6.3' }, ...] => root:{row:[ [Object], [Object], [Object],.... ]}}
 

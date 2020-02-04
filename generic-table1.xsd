@@ -27,9 +27,43 @@
                 </xsd:complexType>
               </xsd:element>
 
+              <xsd:element  name="_id">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:string">
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="created_at">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:dateTime">
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="updated_at">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:dateTime">
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
+
+              <xsd:element  name="version">
+                <xsd:complexType>
+                <xsd:simpleContent>
+                    <xsd:extension base="xsd:int">
+                    </xsd:extension>
+                </xsd:simpleContent>              
+                </xsd:complexType>
+              </xsd:element>
 
 
-              
             </xsd:sequence>
           </xsd:complexType>
         </xsd:element>

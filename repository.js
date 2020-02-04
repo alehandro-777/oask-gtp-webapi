@@ -34,146 +34,96 @@ exports.create = (collection, obj) => {
     });
 };
 
+//immutable fields:  _id, created_at, ... !!!!!!!!!!! 
 exports.createMany = (collection, obj) => {
-
     return new Promise((resolve, reject) => {
 
-        const mongoClient = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
-        mongoClient.connect( (err, client) => {
-
-            if(err){  
-                reject(err);
-                return;  
-            }
-          
-            let db = client.db(databasename);
-            let coll = db.collection(collection);
-          
-            coll.insertMany(obj, function(err, result){ 
-                client.close();
-                if(err) {  
-                    reject(err);
-                    return;  
-                }                
-                //All OK                
-                resolve(result);
-            });        
-          });    
-    });
-};
-
-exports.updateMany = (collection, obj) => {
-
-    return new Promise((resolve, reject) => {
-
-        let retResult = [];        
+        let commands = [];
 
         obj.forEach( function(item, i, arr) {
-
-            let id = new ObjectId(item["_id"]);
-
-            updateOne(collection, {"_id" : id },  item).then(
-                result=>{
-                    retResult.push(result.ops);
-                },
-                err=>{
-                    console.log(err);
+            let cmd =    { insertOne :
+                {
+                   document : item
                 }
-            );
-        });
-        resolve(retResult);   
-    });
-};
-
-function updateOne(collection, query,  newValues) {
-    return new Promise((resolve, reject) => { 
+             }
+             commands.push(cmd);
+        });//foreach
+        
         const dbclient = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
         dbclient.connect( (err, client) => {
-
-            if(err){  
-                reject(err);
-                return;  
-            }          
+            if(err){  reject(err); return;  }
             let db = client.db(databasename);
-            let coll = db.collection(collection);            
-            
-            delete newValues['_id'];    //immutable field _id !!!!!!!!!!!
-            
-            coll.updateOne( query, {$set: newValues}, function(err, result){
-
+            let coll = db.collection(collection);                      
+            coll.bulkWrite(commands).then(function(r){
                 client.close();
-
-                if(err) {  
-                    console.log(err);
-                    reject(err);
-                    return;  
-                }
-                //All OK
-                console.log(result.result.nModified + " document(s) updated");                
-                
-                //console.log(result);
-                resolve(result);
-            });    
-          });    
+                resolve(r);
+            });
+        });    
     });
 };
 
+
+//immutable fields:  _id, created_at, ... !!!!!!!!!!! 
+
+exports.updateMany = (collection, obj) => {          
+    return new Promise((resolve, reject) => {
+
+        let commands = [];
+
+        obj.forEach( function(item, i, arr) {
+            let id = new ObjectId(item["_id"]);
+            let cmd =    { replaceOne :
+                {
+                   filter : {"_id" : id },
+                   replacement : item,
+                   upsert : false   // =true update or the replacement operation performs an insert
+                }
+             }
+             delete item['_id'];            //immutable field _id !!!!!!!!!!!
+             commands.push(cmd);
+        });//foreach
+        
+        const dbclient = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
+        dbclient.connect( (err, client) => {
+            if(err){  reject(err); return;  }
+            let db = client.db(databasename);
+            let coll = db.collection(collection);                      
+            coll.bulkWrite(commands).then(function(r){
+                client.close();
+                resolve(r);
+            });
+        });    
+    });
+};
 
 exports.deleteMany = (collection, obj) => {
-
     return new Promise((resolve, reject) => {
 
-        let retResult = [];        
+        let commands = [];
 
         obj.forEach( function(item, i, arr) {
-
             let id = new ObjectId(item["_id"]);
-
-            deleteOne(collection, {"_id" : id }).then(
-                result=>{
-                    retResult.push(result.result);
-                },
-                err=>{
-                    console.log(err);
+            let cmd =    { deleteOne :
+                {
+                   filter : {"_id" : id }
                 }
-            );
-        });
-        resolve(retResult);   
-    });
-};
+             }
 
-function deleteOne(collection, query) {
-    return new Promise((resolve, reject) => { 
+             commands.push(cmd);
+        });//foreach
+        
         const dbclient = new MongoClient(uri, { useNewUrlParser: true,useUnifiedTopology: true });
         dbclient.connect( (err, client) => {
-
-            if(err){  
-                reject(err);
-                return;  
-            }          
+            if(err){  reject(err); return;  }
             let db = client.db(databasename);
-            let coll = db.collection(collection);            
-            
-           
-            coll.deleteOne( query, function(err, result){
-
+            let coll = db.collection(collection);                      
+            coll.bulkWrite(commands).then(function(r){
                 client.close();
-
-                if(err) {  
-                    console.log(err);
-                    reject(err);
-                    return;  
-                }
-                //All OK
-                console.log(result.result);                
-                
-                //console.log(result);
-                resolve(result);
-            });    
-          });    
+                resolve(r);
+            });
+        });    
     });
 };
-
 
 exports.findOne = (collection, query) => {
 
