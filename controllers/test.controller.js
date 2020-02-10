@@ -19,7 +19,6 @@ exports.create = (req, res) => {
 
     repository.createMany(collection, arr).then(
         result=>{
-            console.log(result);
             let xml = builder.buildObject({insertedCount : result.insertedCount});
             res.set('Content-Type', 'text/xml');
             return res.send(xml);          

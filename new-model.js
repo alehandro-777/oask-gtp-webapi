@@ -82,8 +82,8 @@ class VirtualFlowSensorCfg {
 class VirtualFlowSensorCfgLine {
     constructor(sensorId) {
       this.sensorId = sensorId;// ид сенсора (физический или виртуальный)
-      this.enabled = true;
-      this.operation = "add";  //математическая операция + - с которой участвует линия
+      this.enabled = true;  //нужно ?
+      this.koef = 1;        //коэф пропорц + - с которой участвует линия в расчете
       this.leadP = false;   //ведущая линия для результата расчета Р, иначе расчет среднего
       this.leadT = false;   //ведущая линия для результата расчета Т, иначе расчет среднего
       this.leadStat = false;//ведущая линия для результата расчета стат параметров, иначе расчет среднего
