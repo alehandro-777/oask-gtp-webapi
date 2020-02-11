@@ -50,17 +50,17 @@ class IntegralFlowData {
   class CorrectorCfg {
     constructor(id) {
       this.id = id;
-      this.extid;   //SAP id ??
       this.name;
       this.ip;      //ftp or ASK
       this.ftpDir = "./";
-      this.channels = [];//CorrectorChannelCfg
     }
   } 
 
   class CorrectorChannelCfg {
     constructor(id) {
-      this.id=id;    
+      this.id=id;
+      this.corrid;
+      this.channNo;
       this.lineName;  
       this.fNameTemplate = "S000R";
       this.isAbsP = true;
@@ -70,7 +70,8 @@ class IntegralFlowData {
     }
   } 
 
-class VirtualFlowSensorCfg {
+//виртуальная измерительная линия - содержит список физических каналов
+class VirtualFlowLine {
     constructor(id) {
       this.id = id;// ид сенсора (физический или виртуальный)
       this.eic;
@@ -79,14 +80,14 @@ class VirtualFlowSensorCfg {
     }
 }
 
-class VirtualFlowSensorCfgLine {
+class VirtualFlowLineCfg {
     constructor(sensorId) {
-      this.sensorId = sensorId;// ид сенсора (физический или виртуальный)
-      this.enabled = true;  //нужно ?
-      this.koef = 1;        //коэф пропорц + - с которой участвует линия в расчете
-      this.leadP = false;   //ведущая линия для результата расчета Р, иначе расчет среднего
-      this.leadT = false;   //ведущая линия для результата расчета Т, иначе расчет среднего
-      this.leadStat = false;//ведущая линия для результата расчета стат параметров, иначе расчет среднего
+      this.sensorId = sensorId; //ид (изм. линии) сенсора (физический или виртуальный)
+      this.enabled = true;      //нужно ?
+      this.koef = 1;            //коэф пропорц слагаемого +/- с которой участвует линия в расчете
+      this.leadP = false;       //ведущая линия для результата расчета Р, иначе расчет среднего
+      this.leadT = false;       //ведущая линия для результата расчета Т, иначе расчет среднего
+      this.leadStat = false;    //ведущая линия для результата расчета стат параметров, иначе расчет среднего
     }
 }
 
