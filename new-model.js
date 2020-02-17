@@ -9,6 +9,7 @@ class IntegralFlowData {
       this.quality;
     }
   }
+
   class InstantFlowData {
     constructor() {
       this.p;
@@ -30,38 +31,23 @@ class IntegralFlowData {
       this.quality = 192;
     }
   }
-  
-  class FlowSensor {
-      constructor(id) {
-        this.id = id;
-        this.name;
-        this.lastHour = {};  
-        this.lastDay = {};
-        this.currInst = {};
-        this.currStat = {};
-  
-        this.histHour = [];  
-        this.histDay = [];
-        this.histInst = [];
-        this.histStat = []; 
-      }
-  }
-  
+   
   class CorrectorCfg {
     constructor(id) {
-      this.id = id;
+      this.corrid = id;
       this.name;
-      this.ip;      //ftp or ASK
+      this.ip;      //for ftp or ASK-2
       this.ftpDir = "./";
+      this.channels = []; //CorrectorChannelCfg
     }
   } 
 
+  //конфигурация канала корректора 
   class CorrectorChannelCfg {
     constructor(id) {
-      this.id=id;
-      this.corrid;
-      this.channNo;
-      this.lineName;  
+      this.correctorChannelId=id; //unique id - для привязки к линии 
+      this.channNo;   //1 2 3 
+      this.lineName;  //friendly name  
       this.fNameTemplate = "S000R";
       this.isAbsP = true;
       this.contractHour = 7;
@@ -70,20 +56,30 @@ class IntegralFlowData {
     }
   } 
 
-//виртуальная измерительная линия - содержит список физических каналов
-class VirtualFlowLine {
+//линия изменения или рачета расхода - содержит формулу расчета или физ канал
+class FlowLine {
     constructor(id) {
-      this.id = id;// ид сенсора (физический или виртуальный)
+      this.flid = id;// unique line ид 
       this.eic;
       this.sapId;
-      this.cfgLines = [];//VirtualFlowSensorCfgLine
+      this.cfgLines = [];         //FlowLineCfg array
+      this.correctorChannelId;    //CorrectorChannelCfg
     }
+
+    get lastHour()  {};  //IntegralFlowData
+    get lastDay()   {};  //IntegralFlowData
+    get currInst()  {};  //InstantFlowData
+    get currStat()  {};  //StatFlowData
+
+    get histHour(query)  {};  
+    get histDay(query)   {};
+    get histInst(query)  {};
+    get histStat(query)  {};
 }
 
-class VirtualFlowLineCfg {
+class FlowLineCfg {
     constructor(sensorId) {
-      this.sensorId = sensorId; //ид (изм. линии) сенсора (физический или виртуальный)
-      this.enabled = true;      //нужно ?
+      this.flowLineId;          //operand
       this.koef = 1;            //коэф пропорц слагаемого +/- с которой участвует линия в расчете
       this.leadP = false;       //ведущая линия для результата расчета Р, иначе расчет среднего
       this.leadT = false;       //ведущая линия для результата расчета Т, иначе расчет среднего
@@ -91,7 +87,8 @@ class VirtualFlowLineCfg {
     }
 }
 
-  //--------------------------------------------------
+
+//--------------------------------------------------
   class RealTimeData {
     constructor() {
       this.state;
@@ -103,11 +100,13 @@ class VirtualFlowLineCfg {
   
   class RealTimeSensor {
     constructor(id) {
-      this.id = id;
-      this.name;
-      this.currValue = {};  //RealTimeData
-      this.histValues = []; //RealTimeData     
+      this.sensorid = id;
+      this.name;  
     }
+    get currValue()       {};//RealTimeData
+    get histValue(query)  {};//RealTimeData
+    get hourAvg(query)    {};//RealTimeData
+    get dayAvg(query)     {};//RealTimeData
   }
 
   class RealTimeSensorUpdateCfg {
@@ -120,22 +119,3 @@ class VirtualFlowLineCfg {
     }
   }
 
-  // нужен ли еще 1 уровень виртуализации ???? может для тестов ???
-  class VirtualSensor {
-    constructor(id) {
-      this.id = id;
-      this.name;
-      this.currValue = {};  //SimpleData
-      this.histValues = []; //SimpleData
-    }
-  } 
-
-  class VirtualSensorUpdateCfg {
-    constructor(id) {
-      this.id = id; //Sensor id
-      this.name;
-      this.rtid;    //RealTimeSensor id
-      this.period;  //  update period  sec
-      this.operation;   //proccess function name state decode
-    }
-  }
