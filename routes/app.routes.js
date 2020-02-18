@@ -1,6 +1,5 @@
 const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
-const testcontroller = require('../controllers/test.controller');
 const collcontroller = require('../controllers/collection.controller');
 
 module.exports = (app) => {
@@ -12,16 +11,11 @@ module.exports = (app) => {
 
     app.post('/templates', templatescontroll.create);
     app.get('/templates/:id', templatescontroll.findOne);
+ 
+    app.post('/collection/:id', collcontroller.create);
+    app.get('/collection/:id', collcontroller.select);
+    app.delete('/collection/:id', collcontroller.delete);
+    app.put('/collection/:id', collcontroller.update);
 
-    //app.delete('/mpoints/:id', mpoint.delete);
-    //app.put('/mpoints/:id', mpoint.update);
-    //app.patch('/mpoints/:id', mpoint.partialupdate);
     
-    app.post('/test/:id', testcontroller.create);
-    app.get('/test/:id', testcontroller.select);
-    app.delete('/test/:id', testcontroller.delete);
-    app.put('/test/:id', testcontroller.update);
-
-    app.get('/collection/:id', collcontroller.findOne);
-
 }

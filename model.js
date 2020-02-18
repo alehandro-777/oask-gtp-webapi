@@ -1,4 +1,4 @@
-class IntegralFlowData {
+﻿exports.IntegralFlowData = class IntegralFlowData {
     constructor() {
       this.p;
       this.t;
@@ -10,7 +10,7 @@ class IntegralFlowData {
     }
   }
 
-  class InstantFlowData {
+  exports.InstantFlowData = class InstantFlowData {
     constructor() {
       this.p;
       this.t;
@@ -22,7 +22,7 @@ class IntegralFlowData {
     }
   }
   
-  class StatFlowData {
+  exports.StatFlowData =  class StatFlowData {
     constructor() {
       this.co2 = co2;
       this.n2 = n2;
@@ -32,7 +32,7 @@ class IntegralFlowData {
     }
   }
    
-  class CorrectorCfg {
+  exports.CorrectorCfg =  class CorrectorCfg {
     constructor(id) {
       this.corrid = id;
       this.name;
@@ -43,7 +43,7 @@ class IntegralFlowData {
   } 
 
   //конфигурация канала корректора 
-  class CorrectorChannelCfg {
+  exports.CorrectorChannelCfg =  class CorrectorChannelCfg {
     constructor(id) {
       this.correctorChannelId=id; //unique id - для привязки к линии 
       this.channNo;   //1 2 3 
@@ -57,7 +57,7 @@ class IntegralFlowData {
   } 
 
 //линия изменения или рачета расхода - содержит формулу расчета или физ канал
-class FlowLine {
+exports.FlowLine = class FlowLine {
     constructor(id) {
       this.flid = id;// unique line ид 
       this.eic;
@@ -77,7 +77,7 @@ class FlowLine {
     gethistStat(query)  {};
 }
 
-class FlowLineCfg {
+exports.FlowLineCfg = class FlowLineCfg {
     constructor(sensorId) {
       this.flowLineId;          //operand
       this.koef = 1;            //коэф пропорц слагаемого +/- с которой участвует линия в расчете
@@ -89,7 +89,7 @@ class FlowLineCfg {
 
 
 //--------------------------------------------------
-  class RealTimeData {
+exports.RealTimeData = class RealTimeData {
     constructor() {
       this.state;
       this.stateDescr;
@@ -98,24 +98,33 @@ class FlowLineCfg {
     }
   }
   
-  class RealTimeSensor {
-    constructor(id) {
-      this.sensorid = id;
-      this.name;  
-    }
-    get currValue()       {};//RealTimeData
-    gethistValue(query)  {};//RealTimeData
-    gethourAvg(query)    {};//RealTimeData
-    getdayAvg(query)     {};//RealTimeData
+exports.RealTimeSensor =  class RealTimeSensor {
+  constructor(id) {
+    this.sensorid = id;
+    this.name;  
   }
+  get currValue()       {};//RealTimeData
+  gethistValue(query)  {};//RealTimeData
+  gethourAvg(query)    {};//RealTimeData
+  getdayAvg(query)     {};//RealTimeData
+}
 
-  class RealTimeSensorUpdateCfg {
-    constructor(id) {
-      this.id = id; //RealTimeSensor id
-      this.name;
-      this.path;        //SCADA path
-      this.period;      //RealTimeData   update period  
-      this.operation;   //proccess function name
-    }
+exports.RealTimeSensorUpdateCfg = class RealTimeSensorUpdateCfg {
+  constructor(id) {
+    this.id = id; //RealTimeSensor id
+    this.name;
+    this.path;        //SCADA path
+    this.period;      //RealTimeData   update period  
+    this.operation;   //proccess function name
   }
+}
 
+exports.Paginator = class Paginator {
+  constructor(page, size, array) {
+    this.page = page;
+    this.size = size;
+    this.length = array.length;
+    this.prev = (page > 1) ? page-1 : null;
+    this.next = (array[size*page]) ? page+1 : null;
+  }
+}
