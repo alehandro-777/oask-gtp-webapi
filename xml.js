@@ -29,3 +29,6 @@ var obj = {name: "Super", Surname: "Man", age: 23, fuck:{ $: {id: "my id"}, sss:
 var builder = new xml2js.Builder();
 var xml = builder.buildObject(obj);
 console.dir(xml);
+
+
+
