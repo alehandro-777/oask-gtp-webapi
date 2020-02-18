@@ -71,10 +71,10 @@ class FlowLine {
     get currInst()  {};  //InstantFlowData
     get currStat()  {};  //StatFlowData
 
-    get histHour(query)  {};  
-    get histDay(query)   {};
-    get histInst(query)  {};
-    get histStat(query)  {};
+    gethistHour(query)  {};  
+    gethistDay(query)   {};
+    gethistInst(query)  {};
+    gethistStat(query)  {};
 }
 
 class FlowLineCfg {
@@ -104,9 +104,9 @@ class FlowLineCfg {
       this.name;  
     }
     get currValue()       {};//RealTimeData
-    get histValue(query)  {};//RealTimeData
-    get hourAvg(query)    {};//RealTimeData
-    get dayAvg(query)     {};//RealTimeData
+    gethistValue(query)  {};//RealTimeData
+    gethourAvg(query)    {};//RealTimeData
+    getdayAvg(query)     {};//RealTimeData
   }
 
   class RealTimeSensorUpdateCfg {
