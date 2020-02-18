@@ -65,16 +65,6 @@ exports.FlowLine = class FlowLine {
       this.cfgLines = [];         //FlowLineCfg array
       this.correctorChannelId;    //CorrectorChannelCfg
     }
-
-    get lastHour()  {};  //IntegralFlowData
-    get lastDay()   {};  //IntegralFlowData
-    get currInst()  {};  //InstantFlowData
-    get currStat()  {};  //StatFlowData
-
-    gethistHour(query)  {};  
-    gethistDay(query)   {};
-    gethistInst(query)  {};
-    gethistStat(query)  {};
 }
 
 exports.FlowLineCfg = class FlowLineCfg {
@@ -103,10 +93,6 @@ exports.RealTimeSensor =  class RealTimeSensor {
     this.sensorid = id;
     this.name;  
   }
-  get currValue()       {};//RealTimeData
-  gethistValue(query)  {};//RealTimeData
-  gethourAvg(query)    {};//RealTimeData
-  getdayAvg(query)     {};//RealTimeData
 }
 
 exports.RealTimeSensorUpdateCfg = class RealTimeSensorUpdateCfg {

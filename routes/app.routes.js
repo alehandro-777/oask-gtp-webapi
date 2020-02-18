@@ -2,6 +2,8 @@ const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const collcontroller = require('../controllers/collection.controller');
 
+const fdatacontroller = require('../controllers/fdata.controller');
+
 module.exports = (app) => {
     
     app.post('/docs', docscontroll.create);
@@ -17,5 +19,9 @@ module.exports = (app) => {
     app.delete('/collection/:id', collcontroller.delete);
     app.put('/collection/:id', collcontroller.update);
 
+    app.post('/fdata/:id', fdatacontroller.create);
+    app.get('/fdata/:id', fdatacontroller.select);
+    app.delete('/fdata/:id', fdatacontroller.delete);
+    app.put('/fdata/:id', fdatacontroller.update);
     
 }

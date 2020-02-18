@@ -1,9 +1,10 @@
 const processreq = require('../template.processor');
 const repository = require('../repository');
 const xml2js = require('xml2js');
-const parseString = require('xml2js').parseString;
+
 const builder = new xml2js.Builder();
 
+//GENERIC collection CRUD manipulation
 
 // POST
 exports.create = (req, res) => {
