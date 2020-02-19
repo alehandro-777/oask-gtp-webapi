@@ -1,7 +1,7 @@
 const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const collcontroller = require('../controllers/collection.controller');
-
+const jsontable = require('../controllers/coll-json.controller');
 const fdatacontroller = require('../controllers/fdata.controller');
 
 module.exports = (app) => {
@@ -19,9 +19,14 @@ module.exports = (app) => {
     app.delete('/collection/:id', collcontroller.delete);
     app.put('/collection/:id', collcontroller.update);
 
+    app.post('/tablejs/:id', jsontable.create);
+    app.get('/tablejs/:id', jsontable.select);
+    app.delete('/tablejs/:id', jsontable.delete);
+    app.put('/tablejs/:id', jsontable.update);
+
     app.post('/fdata/:id', fdatacontroller.create);
-    app.get('/fdata/:id', fdatacontroller.select);
-    app.delete('/fdata/:id', fdatacontroller.delete);
-    app.put('/fdata/:id', fdatacontroller.update);
+    //app.get('/fdata/:id', fdatacontroller.select);
+    //app.delete('/fdata/:id', fdatacontroller.delete);
+    //app.put('/fdata/:id', fdatacontroller.update);
     
 }

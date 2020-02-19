@@ -5,173 +5,221 @@ const DAY_COLL_NAME = 'DayHlData';
 const STAT_COLL_NAME = 'StatHlData';
 
 const repository = require('./repository');
+const domain = require('./model');
 
-exports.getlastHour = (flowLine)  => {
-    //привязка к физическому каналу
+
+function getComlexLine(flowLine) {
+    //привязка к физическому каналу - простая линия
     if (flowLine.correctorChannelId) {
-        //получить из базы значение
-        return ;
+        //получить из архива ... значение        
+        return repository.findOne(val_collection, query);
     }
-    //вычисление по формуле
+    //вычисление по формуле - сложная линия
     if (flowLine.cfgLines) {
-
-        return
+        let promiseArr = [];
+        flowLine.cfgLines.forEach(function(cfgLine) {
+            //ищем вложенную линию по ид
+            let vpromise = repository.findOne(flines_collection, query).then(fline => getComlexLine(fline));
+            promiseArr.push(vpromise);
+        });        
+        return Promise.all(promiseArr).then(values => processInstant(flowLine.cfgLines, values));
     };
     //линия не привязана к данным
     return null;
-};  //IntegralFlowData
+};
 
-function processInstant(){
+function processInstant(cfgs, values){
     //instant
     let totalQ = 0;
     let totalcdQ = 0;
     let totalP = 0;
     let totalT = 0;
     let totaldp = 0;
-    let maxTime = new Date();
+    let maxTime = values[0].lastupdate;
     let activeCount = 0;
-    let leadP = null;
-    let leadT = null;
+    let leadP;
+    let leadT;
+    let leaddp;
 
-
-    for (let calcLine of this.calcLines) {
+    for(let i = 0; i < cfgs.length; i++){
    
-        if (calcLine.enabled){
-
-            if(calcLine.leadP) leadP = calcLine.point.currInst.p;
-            if(calcLine.leadT) leadT = calcLine.point.currInst.t;
+            if( cfg[i].leadPt ) {                
+                leadP = values[i].p;
+                leaddP = values[i].dp;
+                leadT = values[i].t;
+            }
     
             //console.log(mp);
 
-            if(calcLine.point.currInst.q > 0 && calcLine.add){
+            if(values[i].q > 0){
                 activeCount++;
-                totalQ += calcLine.point.currInst.q;
-                totalP += calcLine.point.currInst.p;
-                totalT += calcLine.point.currInst.t;
-                totaldp += calcLine.point.currInst.dp;
-                totalcdQ += calcLine.point.currInst.currday;
+                totalQ = totalQ + cfg[i].koef * values[i].q;
+                totalcdQ = totalcdQ + cfg[i].koef * values[i].currday;
 
-                if(calcLine.point.currInst.lastupdate > maxTime){
-                    maxTime =  calcLine.point.currInst.lastupdate;
+                totalP += values[i].p;
+                totalT += values[i].t;
+                totaldp += values[i].dp;               
+
+                if( !maxTime || values[i].lastupdate > maxTime ){
+                    maxTime =  values[i].lastupdate;
                 }
                 //console.log(totalQ);
             }
-            //вычесть значение из общей суммы
-            if(!calcLine.add){
-                totalQ = totalQ - calcLine.point.currInst.q;
-                totalcdQ = totalcdQ - calcLine.point.currInst.currday;  
-            }
-        }
     }
     
     let avgP = totalP / activeCount;
     let avgT = totalT / activeCount;
     let avgdp = totaldp / activeCount;
 
+    let result = new domain.InstantFlowData();
+
     //установлен признак "брать Р или Т по отдельной линии"
-    if(leadP){avgP = leadP}
-    if(leadT){avgT = leadT}
+    if( leadP ) {
+        result.p = leadP;
+        result.t = leadT;
+        result.dp = leaddp;
+    }
+    //брать Р или Т average
+    else {
+        result.p = avgP;
+        result.t = avgT;
+        result.dp = avgdp;
+    }
 
-    this.currInst = new DataTypes.InstantData(avgP, avgdp, avgT, totalQ, totalcdQ, maxTime, 192);
+    result.q = totalQ;
+    result.currday = totalcdQ;
+    result.lastupdate = maxTime;
+    result.quality = 192;
 
-    //console.log(virtPoint);
+    return result;
 }
 
-function processIntegral(prop){
-    //instant
+function processIntegral(cfgs, values){
     let totalQ = 0;
     let totalP = 0;
     let totalT = 0;
     let totaldp = 0;
-    let maxTime = new Date(0);
-    let smaxTime = new Date(0);
+
+    let maxTime = values[0].start;  //формируется срез по 1 элементу
+
     let activeCount = 0;
     let leadP = null;
     let leadT = null;
+    let leaddp = null;
 
-
-    for (let calcLine of this.calcLines) {
+    for(let i = 0; i < cfgs.length; i++){
    
-        if (calcLine.enabled){
-
-            //console.log(mp);
-            if(calcLine.leadP) leadP = calcLine.point[prop].p;
-            if(calcLine.leadT) leadT = calcLine.point[prop].t;
+            if( cfg[i].leadPt ) {                
+                leadP = values[i].p;
+                leaddP = values[i].dp;
+                leadT = values[i].t;
+            }
     
             //console.log(mp);
 
-            if(calcLine.point[prop].q > 0 && calcLine.add){
+            if(values[i].q > 0 && values[i].start === maxTime){
                 activeCount++;
-                totalQ += calcLine.point[prop].q;
-                totalP += calcLine.point[prop].p;
-                totalT += calcLine.point[prop].t;
-                totaldp += calcLine.point[prop].dp;
-                
-                //console.log(mp);
-                
-                if(calcLine.point[prop].end > maxTime){
-                    
-                    maxTime =  calcLine.point[prop].end;
-                    smaxTime = calcLine.point[prop].start;
-                }
-                //console.log(totalQ);
+                totalQ = totalQ + cfg[i].koef * values[i].q;
+
+                totalP += values[i].p;
+                totalT += values[i].t;
+                totaldp += values[i].dp;               
+
             }
-            //вычесть значение из общей суммы
-            if(!calcLine.add){
-                totalQ = totalQ - calcLine.point[prop].q;  
+            else{
+                return null;
             }
-        }
     }
     
     let avgP = totalP / activeCount;
     let avgT = totalT / activeCount;
     let avgdp = totaldp / activeCount;
 
-    //установлен признак "брать Р или Т по отдельной линии"
-    if(leadP){avgP = leadP}
-    if(leadT){avgT = leadT}
+    let result = new domain.IntegralFlowData();
 
-    this[prop] = new DataTypes.IntegralData(avgP, avgdp, avgT, totalQ, smaxTime, maxTime, 192);
+    //установлен признак "брать Р или Т по отдельной линии"
+    if( leadP ) {
+        result.p = leadP;
+        result.t = leadT;
+        result.dp = leaddp;
+    }
+    //брать Р или Т average
+    else {
+        result.p = avgP;
+        result.t = avgT;
+        result.dp = avgdp;
+    }
+
+    result.q = totalQ;
+    result.start = values[0].start;  //формируется срез по 1 элементу
+    result.end = values[0].end;     //формируется срез по 1 элементу
+
+    result.quality = 192;
+
+    return result;
 }
 
-function processStat(){
+function processStat(cfgs, values){
     //instant
     let totalCO2 = 0;
     let totalN2 = 0;
     let totalRo = 0;
-    let maxTime = new Date();
+    let maxTime = values[0].lastupdate;
     let activeCount = 0;
-    let leadStat = null;
-
-    for (let calcLine of this.calcLines) {
+    let leadCO2;
+    let leadN2;
+    let leadRo;
    
-        if (calcLine.enabled){
-            //console.log(mp);
-            if(calcLine.leadStat) leadStat = calcLine.point.currStat;
-    
-                activeCount++;
-                totalCO2 += calcLine.point.currStat.co2;
-                totalN2 += calcLine.point.currStat.n2;
-                totalRo += calcLine.point.currStat.ro;
-
-                if(calcLine.point.currStat.lastupdate > maxTime){
-                    maxTime =  calcLine.point.currStat.lastupdate;
-                }
+    for(let i = 0; i < cfgs.length; i++){
+   
+        if( cfg[i].leadStat ) {                
+            leadCO2 = values[i].co2;
+            leadN2 = values[i].n2;
+            leadRo = values[i].ro;
         }
-    }
-    
+
+        //console.log(mp);
+
+        if(values[i].q > 0){
+            activeCount++;
+
+            totalCO2 += values[i].co2;
+            totalN2 += values[i].n2;
+            totalRo += values[i].ro;
+
+            if( !maxTime || values[i].lastupdate > maxTime ){
+                maxTime =  values[i].lastupdate;
+            }
+            //console.log(totalQ);
+        }
+}
+
     let avgCO2 = totalCO2 / activeCount;
     let avgN2 = totalN2 / activeCount;
     let avgRo = totalRo / activeCount;
 
-    //установлен признак "брать stat params по отдельной линии or average"
-    if(leadStat){
-        this.currStat = leadStat;
+   
+    let result = new domain.StatFlowData();
+
+     //установлен признак "брать stat params по отдельной линии or average"
+    if( leadCO2 ) {
+        result.co2 = leadCO2;
+        result.n2 = leadN2;
+        result.ro = leadRo;
     }
-    else{
-        this.currStat = new DataTypes.StatData(avgCO2, avgN2, avgRo, maxTime, 192);
-    } 
-    //console.log(virtPoint);
+    //брать Р или Т average
+    else {
+        result.co2 = avgCO2;
+        result.n2 = avgN2;
+        result.ro = avgRo;
+    }
+
+    result.q = totalQ;
+    result.currday = totalcdQ;
+    result.lastupdate = maxTime;
+    result.quality = 192;
+
+    return result;
 }
 
 exports.getlastDay = (flowLine)  => {};  //IntegralFlowData

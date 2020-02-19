@@ -33,8 +33,8 @@
   }
    
   exports.CorrectorCfg =  class CorrectorCfg {
-    constructor(id) {
-      this.corrid = id;
+    constructor() {
+      this.corrid;
       this.name;
       this.ip;      //for ftp or ASK-2
       this.ftpDir = "./";
@@ -44,8 +44,8 @@
 
   //конфигурация канала корректора 
   exports.CorrectorChannelCfg =  class CorrectorChannelCfg {
-    constructor(id) {
-      this.correctorChannelId=id; //unique id - для привязки к линии 
+    constructor() {
+      this.correctorChannelId; //unique id - для привязки к линии 
       this.channNo;   //1 2 3 
       this.lineName;  //friendly name  
       this.fNameTemplate = "S000R";
@@ -71,8 +71,7 @@ exports.FlowLineCfg = class FlowLineCfg {
     constructor(sensorId) {
       this.flowLineId;          //operand
       this.koef = 1;            //коэф пропорц слагаемого +/- с которой участвует линия в расчете
-      this.leadP = false;       //ведущая линия для результата расчета Р, иначе расчет среднего
-      this.leadT = false;       //ведущая линия для результата расчета Т, иначе расчет среднего
+      this.leadPt = false;       //ведущая линия для результата расчета Р, иначе расчет среднего
       this.leadStat = false;    //ведущая линия для результата расчета стат параметров, иначе расчет среднего
     }
 }
