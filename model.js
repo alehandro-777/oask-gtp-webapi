@@ -61,7 +61,6 @@ exports.FlowLine = class FlowLine {
     constructor(id) {
       this.flid = id;// unique line ид 
       this.eic;
-      this.sapId;
       this.cfgLines = [];         //FlowLineCfg array
       this.correctorChannelId;    //CorrectorChannelCfg
     }
