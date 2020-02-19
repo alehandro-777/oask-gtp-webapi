@@ -22,7 +22,7 @@ function getComlexLine(flowLine) {
             let vpromise = repository.findOne(flines_collection, query).then(fline => getComlexLine(fline));
             promiseArr.push(vpromise);
         });        
-        return Promise.all(promiseArr).then(values => processInstant(flowLine.cfgLines, values));
+        return Promise.all(promiseArr).then(values => {return processInstant(flowLine.cfgLines, values)});
     };
     //линия не привязана к данным
     return null;

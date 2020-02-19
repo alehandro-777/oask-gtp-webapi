@@ -1,22 +1,13 @@
 [
-    { "p": 50.2, "t" :30.2,"dp": 1234.56, "q":12223.7, "currday":12345.67, "lastupdate":"2020-02-19T12:00:00", "quality":192},
-    { "p": 50.3, "t" :30.3,"dp": 1234.57, "q":12223.8, "currday":12345.68, "lastupdate":"2020-02-19T13:00:00", "quality":192},
-    { "p": 50.4, "t" :30.4,"dp": 1234.58, "q":12223.9, "currday":12345.69, "lastupdate":"2020-02-19T12:00:01", "quality":192},
-    { "p": 50.5, "t" :30.5,"dp": 1234.59, "q":12223.10, "currday":12345.70, "lastupdate":"2020-02-19T13:00:01", "quality":192},
-    { "p": 50.6, "t" :30.6,"dp": 1234.60, "q":12223.11, "currday":12345.71, "lastupdate":"2020-02-19T12:00:02", "quality":192},
-    { "p": 50.7, "t" :30.7,"dp": 1234.61, "q":12223.12, "currday":12345.72, "lastupdate":"2020-02-19T13:00:02", "quality":192},
-    { "p": 50.8, "t" :30.8,"dp": 1234.62, "q":12223.13, "currday":12345.73, "lastupdate":"2020-02-19T12:00:03", "quality":192},
-    { "p": 50.9, "t" :30.9,"dp": 1234.63, "q":12223.14, "currday":12345.74, "lastupdate":"2020-02-19T13:00:03", "quality":192},
-    { "p": 50.10, "t" :30.10,"dp": 1234.64, "q":12223.15, "currday":12345.75, "lastupdate":"2020-02-19T12:00:04", "quality":192},
-    { "p": 50.11, "t" :30.11,"dp": 1234.65, "q":12223.16, "currday":12345.76, "lastupdate":"2020-02-19T13:00:04", "quality":192},
-    { "p": 50.12, "t" :30.12,"dp": 1234.66, "q":12223.17, "currday":12345.77, "lastupdate":"2020-02-19T12:00:05", "quality":192},
-    { "p": 50.13, "t" :30.13,"dp": 1234.67, "q":12223.18, "currday":12345.78, "lastupdate":"2020-02-19T13:00:05", "quality":192},
-    { "p": 50.14, "t" :30.14,"dp": 1234.68, "q":12223.19, "currday":12345.79, "lastupdate":"2020-02-19T12:00:06", "quality":192},
-    { "p": 50.15, "t" :30.15,"dp": 1234.69, "q":12223.20, "currday":12345.80, "lastupdate":"2020-02-19T13:00:06", "quality":192},
-    { "p": 50.16, "t" :30.16,"dp": 1234.70, "q":12223.21, "currday":12345.81, "lastupdate":"2020-02-19T12:00:07", "quality":192},
-    { "p": 50.17, "t" :30.17,"dp": 1234.71, "q":12223.22, "currday":12345.82, "lastupdate":"2020-02-19T13:00:07", "quality":192},
-    { "p": 50.18, "t" :30.18,"dp": 1234.72, "q":12223.23, "currday":12345.83, "lastupdate":"2020-02-19T12:00:08", "quality":192},
-    { "p": 50.19, "t" :30.19,"dp": 1234.73, "q":12223.24, "currday":12345.84, "lastupdate":"2020-02-19T13:00:08", "quality":192},
-    { "p": 50.20, "t" :30.20,"dp": 1234.74, "q":12223.25, "currday":12345.85, "lastupdate":"2020-02-19T12:00:09", "quality":192}
-    ]
-    
+    {"corrid":1,"name":"Корректор № 1","ip":"192.168.0.111","ftpDir":"./","cfgLines":[
+        {"correctorChannelId":1,"channNo":1,"lineName":"Line 1","fNameTemplate":"S001R1","isAbsP":true,"contractHour":true,"hasPeriodic":true,"hasHour":true},
+        {"correctorChannelId":2,"channNo":2,"lineName":"Line 1","fNameTemplate":"S001R1","isAbsP":true,"contractHour":true,"hasPeriodic":true,"hasHour":true},
+        {"correctorChannelId":3,"channNo":3,"lineName":"Line 1","fNameTemplate":"S001R1","isAbsP":true,"contractHour":true,"hasPeriodic":true,"hasHour":true}]},
+        
+        {"corrid":1,"name":"Корректор № 1","ip":"192.168.0.111","ftpDir":"./","cfgLines":[
+            {"correctorChannelId":1,"channNo":1,"lineName":"Line 1","fNameTemplate":"S001R1","isAbsP":true,"contractHour":true,"hasPeriodic":true,"hasHour":true},
+            {"correctorChannelId":2,"channNo":2,"lineName":"Line 1","fNameTemplate":"S001R1","isAbsP":true,"contractHour":true,"hasPeriodic":true,"hasHour":true},
+            {"correctorChannelId":3,"channNo":3,"lineName":"Line 1","fNameTemplate":"S001R1","isAbsP":true,"contractHour":true,"hasPeriodic":true,"hasHour":true}]}
+     
+]
+           
