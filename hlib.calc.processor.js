@@ -3,32 +3,37 @@ const HOUR_COLL_NAME = 'HourHlData';
 const INST_COLL_NAME = 'InstHlData';
 const DAY_COLL_NAME = 'DayHlData';
 const STAT_COLL_NAME = 'StatHlData';
+const CORR_COLL_NAME = 'correctors';
+const FL_COLL_NAME = 'flowlines';
 
 const repository = require('./repository');
 const domain = require('./model');
 
 
-function getComlexLine(flowLine) {
+function getComlexLine(flowLine, coll, func, flolinecoll) {
     //привязка к физическому каналу - простая линия
-    if (flowLine.correctorChannelId) {
+    if (flowLine.chid) {
         //получить из архива ... значение        
-        return repository.findOne(val_collection, query);
+        return repository.findOne(coll, {"flid": flowLine.flid});
     }
     //вычисление по формуле - сложная линия
     if (flowLine.cfgLines) {
         let promiseArr = [];
-        flowLine.cfgLines.forEach(function(cfgLine) {
+        flowLine.cfgLines.forEach(function(cfg) {
             //ищем вложенную линию по ид
-            let vpromise = repository.findOne(flines_collection, query).then(fline => getComlexLine(fline));
+            let vpromise = repository.findOne(flolinecoll, {"flid": cfg.flid}).then(fline => {
+                //console.log(fline);
+                return getComlexLine(fline, coll, func, flolinecoll)});
+
             promiseArr.push(vpromise);
         });        
-        return Promise.all(promiseArr).then(values => {return processInstant(flowLine.cfgLines, values)});
+        return Promise.all(promiseArr).then(values => {return func(flowLine.cfgLines, values)});
     };
     //линия не привязана к данным
     return null;
 };
 
-function processInstant(cfgs, values){
+function processInstant(cfg, values){
     //instant
     let totalQ = 0;
     let totalcdQ = 0;
@@ -41,8 +46,10 @@ function processInstant(cfgs, values){
     let leadT;
     let leaddp;
 
-    for(let i = 0; i < cfgs.length; i++){
+    for(let i = 0; i < cfg.length; i++){
    
+        if (!values[i]) continue;
+
             if( cfg[i].leadPt ) {                
                 leadP = values[i].p;
                 leaddP = values[i].dp;
@@ -94,7 +101,7 @@ function processInstant(cfgs, values){
     return result;
 }
 
-function processIntegral(cfgs, values){
+function processIntegral(cfg, values){
     let totalQ = 0;
     let totalP = 0;
     let totalT = 0;
@@ -107,7 +114,7 @@ function processIntegral(cfgs, values){
     let leadT = null;
     let leaddp = null;
 
-    for(let i = 0; i < cfgs.length; i++){
+    for(let i = 0; i < cfg.length; i++){
    
             if( cfg[i].leadPt ) {                
                 leadP = values[i].p;
@@ -159,7 +166,7 @@ function processIntegral(cfgs, values){
     return result;
 }
 
-function processStat(cfgs, values){
+function processStat(cfg, values){
     //instant
     let totalCO2 = 0;
     let totalN2 = 0;
@@ -170,7 +177,7 @@ function processStat(cfgs, values){
     let leadN2;
     let leadRo;
    
-    for(let i = 0; i < cfgs.length; i++){
+    for(let i = 0; i < cfg.length; i++){
    
         if( cfg[i].leadStat ) {                
             leadCO2 = values[i].co2;
@@ -235,3 +242,20 @@ exports.getcurrValue = (flowLine)      =>   {};//RealTimeData
 exports.gethistValue = (flowLine, query) => {};//RealTimeData
 exports.gethourAvg = (flowLine, query)  =>  {};//RealTimeData
 exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
+
+function test(){
+    repository.findOne(FL_COLL_NAME, {"flid": 8}).then(
+        result => {
+            //console.log(result);
+            getComlexLine(result, INST_COLL_NAME, processInstant, FL_COLL_NAME).then(
+                result => {
+                    console.log(result);
+                },
+                err =>{
+                    console.log("ERROR->", err);
+                }
+            );
+        });
+}
+
+test();
