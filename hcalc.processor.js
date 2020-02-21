@@ -241,16 +241,17 @@ exports.gethourAvg = (flowLine, query)  =>  {};//RealTimeData
 exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
 
 function test(){
-    flowline_repository.find({"flid": 2}).then(
+    
+    flowline_repository.find({"flid": 1}).then(
         result => {
-            console.log(result);
+            //console.log(result);
             getComlexLine(
                 result[0], 
                 instdata_repository, 
                 flowline_repository, 
                 processInstant, 
-                "2023-03-19", 
-                "2023-03-19")
+                "2020-02-19T12:00", 
+                "2020-02-19T13:00")
                 .then(
                 result => {
                     console.log(result);

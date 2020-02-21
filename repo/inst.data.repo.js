@@ -32,7 +32,7 @@ exports.createMany = (objarray) => {
 exports.find = (query) => {
     return new Promise((resolve, reject) => {
         InstdataModel.find(query, function(err, docs) {
-            if(err){  reject(err); return;  }
+            if(err) {  reject(err); return;  }
             resolve(docs);
         });
     });
