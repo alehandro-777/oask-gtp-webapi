@@ -1,29 +1,26 @@
-//MongoDb hlib data  collections names
-const HOUR_COLL_NAME = 'HourHlData';
-const INST_COLL_NAME = 'InstHlData';
-const DAY_COLL_NAME = 'DayHlData';
-const STAT_COLL_NAME = 'StatHlData';
-const CORR_COLL_NAME = 'correctors';
-const FL_COLL_NAME = 'flowlines';
+const flowline_repository = require('./repo/flowline.repo');
+const correct_repository = require('./repo/correct.repo');
+const ddata_repository = require('./repo/day.data.repo');
+const hdata_repository = require('./repo/hour.data.repo');
+const instdata_repository = require('./repo/inst.data.repo');
+const stat_repository = require('./repo/stat.data.repo');
 
-const repository = require('./repository');
 const domain = require('./model');
 
-
-function getComlexLine(flowLine, coll, func, flolinecoll) {
+function getComlexLine(flowLine, datarepo, cfgrepo, pcocessfunc, start, end) {
     //привязка к физическому каналу - простая линия
     if (flowLine.chid) {
         //получить из архива ... значение        
-        return repository.findOne(coll, {"flid": flowLine.flid});
+        return datarepo.find({"flid": flowLine.flid, "lastupdate" : { $gte: start, $lt: end }});
     }
     //вычисление по формуле - сложная линия
     if (flowLine.cfgLines) {
         let promiseArr = [];
         flowLine.cfgLines.forEach(function(cfg) {
             //ищем вложенную линию по ид
-            let vpromise = repository.findOne(flolinecoll, {"flid": cfg.flid}).then(fline => {
+            let vpromise = cfgrepo.find({"flid": cfg.flid}).then(fline => {
                 //console.log(fline);
-                return getComlexLine(fline, coll, func, flolinecoll)});
+                return getComlexLine(fline, datarepo, cfgrepo, pcocessfunc, start, end)});
 
             promiseArr.push(vpromise);
         });        
@@ -244,10 +241,17 @@ exports.gethourAvg = (flowLine, query)  =>  {};//RealTimeData
 exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
 
 function test(){
-    repository.findOne(FL_COLL_NAME, {"flid": 8}).then(
+    flowline_repository.find({"flid": 2}).then(
         result => {
-            //console.log(result);
-            getComlexLine(result, INST_COLL_NAME, processInstant, FL_COLL_NAME).then(
+            console.log(result);
+            getComlexLine(
+                result[0], 
+                instdata_repository, 
+                flowline_repository, 
+                processInstant, 
+                "2023-03-19", 
+                "2023-03-19")
+                .then(
                 result => {
                     console.log(result);
                 },

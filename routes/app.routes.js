@@ -2,7 +2,13 @@ const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const collcontroller = require('../controllers/collection.controller');
 const jsontable = require('../controllers/coll-json.controller');
-const fdatacontroller = require('../controllers/fdata.controller');
+
+const correctorcontroller = require('../controllers/corrector.controller');
+const daydatacontroller = require('../controllers/daydata.controller');
+const flowlinecontroller = require('../controllers/flowline.controller');
+const hourdatacontroller = require('../controllers/hourdata.controller');
+const instdatacontroller = require('../controllers/instdata.controller');
+const statdatacontroller = require('../controllers/statdata.controller');
 
 module.exports = (app) => {
     
@@ -24,9 +30,17 @@ module.exports = (app) => {
     app.delete('/tablejs/:id', jsontable.delete);
     app.put('/tablejs/:id', jsontable.update);
 
-    app.post('/fdata/:id', fdatacontroller.create);
-    //app.get('/fdata/:id', fdatacontroller.select);
-    //app.delete('/fdata/:id', fdatacontroller.delete);
-    //app.put('/fdata/:id', fdatacontroller.update);
     
+    app.post('/corrector', correctorcontroller.create);
+
+    app.post('/daydata', daydatacontroller.create);
+
+    app.post('/flowline', flowlinecontroller.create);
+
+    app.post('/hourdata', hourdatacontroller.create);
+
+    app.post('/instdata', instdatacontroller.create);
+    app.get('/instdata/:id', instdatacontroller.select);
+
+    app.post('/statdata', statdatacontroller.create);
 }

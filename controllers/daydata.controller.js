@@ -1,10 +1,10 @@
-const repository = require('../repository');
+const repository = require('../repo/day.data.repo');
 
 exports.create = (req, res) => {
 
     let collection = req.params.id;
 
-    repository.create(collection, req.body).then(
+    repository.createMany(req.body).then(
         result=>{
             return res.send(result);          
         },
