@@ -7,24 +7,47 @@ const stat_repository = require('./repo/stat.data.repo');
 
 const domain = require('./model');
 
-function getComlexLine(flowLine, datarepo, cfgrepo, pcocessfunc, start, end) {
+function getLastLineData(flowLine, datarepo, cfgrepo, pcocessfunc) {
     //привязка к физическому каналу - простая линия
     if (flowLine.chid) {
         //получить из архива ... значение        
-        return datarepo.find({"flid": flowLine.flid, "lastupdate" : { $gte: start, $lt: end }});
+        return datarepo.findLastUpdated({"flid": flowLine.flid});
     }
     //вычисление по формуле - сложная линия
     if (flowLine.cfgLines) {
         let promiseArr = [];
         flowLine.cfgLines.forEach(function(cfg) {
             //ищем вложенную линию по ид
-            let vpromise = cfgrepo.find({"flid": cfg.flid}).then(fline => {
+            let vpromise = cfgrepo.findOne({"flid": cfg.flid}).then(fline => {
                 //console.log(fline);
-                return getComlexLine(fline, datarepo, cfgrepo, pcocessfunc, start, end)});
+                return getLastLineData(fline, datarepo, cfgrepo, pcocessfunc)});
 
             promiseArr.push(vpromise);
         });        
-        return Promise.all(promiseArr).then(values => {return func(flowLine.cfgLines, values)});
+        return Promise.all(promiseArr).then(values => {return pcocessfunc(flowLine.cfgLines, values)});
+    };
+    //линия не привязана к данным
+    return null;
+};
+
+function getLineData(flowLine, datarepo, cfgrepo, pcocessfunc, datetime) {
+    //привязка к физическому каналу - простая линия
+    if (flowLine.chid) {
+        //получить из архива ... значение        
+        return datarepo.findOne({"flid": flowLine.flid, "lastupdate" : datetime});
+    }
+    //вычисление по формуле - сложная линия
+    if (flowLine.cfgLines) {
+        let promiseArr = [];
+        flowLine.cfgLines.forEach(function(cfg) {
+            //ищем вложенную линию по ид
+            let vpromise = cfgrepo.findOne({"flid": cfg.flid}).then(fline => {
+                //console.log(fline);
+                return getLineData(fline, datarepo, cfgrepo, pcocessfunc, datetime)});
+
+            promiseArr.push(vpromise);
+        });        
+        return Promise.all(promiseArr).then(values => {return pcocessfunc(flowLine.cfgLines, values)});
     };
     //линия не привязана к данным
     return null;
@@ -37,7 +60,7 @@ function processInstant(cfg, values){
     let totalP = 0;
     let totalT = 0;
     let totaldp = 0;
-    let maxTime = values[0].lastupdate;
+    let maxTime;
     let activeCount = 0;
     let leadP;
     let leadT;
@@ -46,6 +69,7 @@ function processInstant(cfg, values){
     for(let i = 0; i < cfg.length; i++){
    
         if (!values[i]) continue;
+        if (!maxTime) maxTime = values[i].lastupdate;
 
             if( cfg[i].leadPt ) {                
                 leadP = values[i].p;
@@ -64,7 +88,7 @@ function processInstant(cfg, values){
                 totalT += values[i].t;
                 totaldp += values[i].dp;               
 
-                if( !maxTime || values[i].lastupdate > maxTime ){
+                if( values[i].lastupdate > maxTime ){
                     maxTime =  values[i].lastupdate;
                 }
                 //console.log(totalQ);
@@ -94,6 +118,7 @@ function processInstant(cfg, values){
     result.currday = totalcdQ;
     result.lastupdate = maxTime;
     result.quality = 192;
+    result.childs = values;
 
     return result;
 }
@@ -104,7 +129,8 @@ function processIntegral(cfg, values){
     let totalT = 0;
     let totaldp = 0;
 
-    let maxTime = values[0].start;  //формируется срез по 1 элементу
+    let start;
+    let end;
 
     let activeCount = 0;
     let leadP = null;
@@ -112,27 +138,28 @@ function processIntegral(cfg, values){
     let leaddp = null;
 
     for(let i = 0; i < cfg.length; i++){
-   
+
+        if (!values[i]) continue;
+        if (!start) start = values[i].start;
+        if (!end) end = values[i].lastupdate;
+
             if( cfg[i].leadPt ) {                
                 leadP = values[i].p;
                 leaddP = values[i].dp;
                 leadT = values[i].t;
             }
-    
-            //console.log(mp);
 
-            if(values[i].q > 0 && values[i].start === maxTime){
+            if(values[i].q > 0){
                 activeCount++;
                 totalQ = totalQ + cfg[i].koef * values[i].q;
-
                 totalP += values[i].p;
                 totalT += values[i].t;
                 totaldp += values[i].dp;               
-
             }
-            else{
-                return null;
-            }
+        if(values[i].lastupdate > end){
+            start = values[i].start;
+            end = values[i].lastupdate;
+        }
     }
     
     let avgP = totalP / activeCount;
@@ -155,11 +182,10 @@ function processIntegral(cfg, values){
     }
 
     result.q = totalQ;
-    result.start = values[0].start;  //формируется срез по 1 элементу
-    result.end = values[0].end;     //формируется срез по 1 элементу
-
+    result.start = start;
+    result.lastupdate = end;
     result.quality = 192;
-
+    result.childs = values;
     return result;
 }
 
@@ -168,14 +194,17 @@ function processStat(cfg, values){
     let totalCO2 = 0;
     let totalN2 = 0;
     let totalRo = 0;
-    let maxTime = values[0].lastupdate;
+    let maxTime;
     let activeCount = 0;
     let leadCO2;
     let leadN2;
     let leadRo;
    
     for(let i = 0; i < cfg.length; i++){
-   
+
+        if (!values[i]) continue;
+        if (!maxTime) maxTime = values[i].lastupdate;
+
         if( cfg[i].leadStat ) {                
             leadCO2 = values[i].co2;
             leadN2 = values[i].n2;
@@ -191,7 +220,7 @@ function processStat(cfg, values){
             totalN2 += values[i].n2;
             totalRo += values[i].ro;
 
-            if( !maxTime || values[i].lastupdate > maxTime ){
+            if( values[i].lastupdate > maxTime ){
                 maxTime =  values[i].lastupdate;
             }
             //console.log(totalQ);
@@ -222,17 +251,146 @@ function processStat(cfg, values){
     result.currday = totalcdQ;
     result.lastupdate = maxTime;
     result.quality = 192;
-
+    result.childs = values;
     return result;
 }
 
-exports.getlastDay = (flowLine)  => {};  //IntegralFlowData
-exports.getcurrInst = (flowLine) => {};  //InstantFlowData
-exports.getcurrStat = (flowLine) => {};  //StatFlowData
+exports.getlastDay = (flowLineId)  => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                getLastLineData(
+                    result, 
+                    ddata_repository, 
+                    flowline_repository, 
+                    processIntegral)
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });        
+    });
+};
 
-exports.gethistHour = (flowLine, query) => {};  
-exports.gethistDay = (flowLine, query)  => {};
-exports.gethistInst = (flowLine, query) => {};
+exports.getlastHour = (flowLineId)  => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                getLastLineData(
+                    result, 
+                    hdata_repository, 
+                    flowline_repository, 
+                    processIntegral)
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });        
+    });
+};
+
+exports.getcurrInst = (flowLineId) => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                getLastLineData(
+                    result, 
+                    instdata_repository, 
+                    flowline_repository, 
+                    processInstant)
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });        
+    });
+
+};
+
+exports.getcurrStat = (flowLineId) => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                getLastLineData(
+                    result, 
+                    stat_repository, 
+                    flowline_repository, 
+                    processStat)
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });        
+    });
+};  //StatFlowData
+
+exports.gethistHour = (flowLineId, datetime) => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                getLineData(
+                    result, 
+                    hdata_repository, 
+                    flowline_repository, 
+                    processIntegral,
+                    datetime)
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });        
+    });
+};  
+
+exports.gethistDay = (flowLineId, datetime)  => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                getLineData(
+                    result, 
+                    ddata_repository, 
+                    flowline_repository, 
+                    processIntegral,
+                    datetime)
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });        
+    });
+};
+
+
 exports.gethistStat = (flowLine, query) => {};
 
 exports.getcurrValue = (flowLine)      =>   {};//RealTimeData
@@ -242,25 +400,14 @@ exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
 
 function test(){
     
-    flowline_repository.find({"flid": 1}).then(
+    exports.gethistDay(8, "2020-02-02T07:00").then(
         result => {
-            //console.log(result);
-            getComlexLine(
-                result[0], 
-                instdata_repository, 
-                flowline_repository, 
-                processInstant, 
-                "2020-02-19T12:00", 
-                "2020-02-19T13:00")
-                .then(
-                result => {
-                    console.log(result);
-                },
-                err =>{
-                    console.log("ERROR->", err);
-                }
-            );
-        });
+            console.log(result);
+        },
+        err =>{
+            console.log("ERROR->", err);
+        }        
+    );
 }
 
 test();

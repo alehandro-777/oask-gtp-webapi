@@ -38,8 +38,17 @@ var corrSchema = new mongoose.Schema({
 
 exports.find = (query) => {
     return new Promise((resolve, reject) => {
-        InstdataModel.find(query, function(err, docs) {
+        CorrectorsModel.find(query, function(err, docs) {
             if(err){  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};
+
+exports.findOne = (query) => {
+    return new Promise((resolve, reject) => {
+        CorrectorsModel.findOne(query , function(err, docs) {
+            if(err) {  reject(err); return;  }
             resolve(docs);
         });
     });

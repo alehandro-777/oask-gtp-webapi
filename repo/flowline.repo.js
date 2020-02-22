@@ -40,3 +40,12 @@ exports.find = (query) => {
         });
     });
 };
+
+exports.findOne = (query) => {
+    return new Promise((resolve, reject) => {
+        FlowLineModel.findOne(query , function(err, docs) {
+            if(err) {  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};

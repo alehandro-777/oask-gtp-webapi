@@ -37,3 +37,21 @@ exports.find = (query) => {
         });
     });
 };
+
+exports.findOne = (query) => {
+    return new Promise((resolve, reject) => {
+        InstdataModel.findOne(query , function(err, docs) {
+            if(err) {  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};
+
+exports.findLastUpdated = (query) => {
+    return new Promise((resolve, reject) => {
+        InstdataModel.findOne(query, {}, { sort: { 'lastupdate' : -1 } } , function(err, docs) {
+            if(err) {  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};

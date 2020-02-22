@@ -7,8 +7,8 @@ var hourdataSchema = new mongoose.Schema({
     t : Number,
     dp : Number,
     q : Number,
-    start : { type: Date },
-    end : { type: Date },
+    start : { type: Date , default: Date.now},
+    lastupdate : { type: Date, default: Date.now },
     quality : Number,
     flid : Number,  //id изм линии 
     chid : Number,  //id канала корректора
@@ -31,8 +31,26 @@ var hourdataSchema = new mongoose.Schema({
 
 exports.find = (query) => {
     return new Promise((resolve, reject) => {
-        InstdataModel.find(query, function(err, docs) {
+        HourdataModel.find(query, function(err, docs) {
             if(err){  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};
+
+exports.findOne = (query) => {
+    return new Promise((resolve, reject) => {
+        HourdataModel.findOne(query , function(err, docs) {
+            if(err) {  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};
+
+exports.findLastUpdated = (query) => {
+    return new Promise((resolve, reject) => {
+        HourdataModel.findOne(query, {}, { sort: { 'lastupdate' : -1 } } , function(err, docs) {
+            if(err) {  reject(err); return;  }
             resolve(docs);
         });
     });

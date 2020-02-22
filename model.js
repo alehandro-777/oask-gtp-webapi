@@ -5,7 +5,7 @@
       this.dp;
       this.q;
       this.start;
-      this.end;
+      this.lastupdate;
       this.quality;
       this.flid;  //id изм линии 
       this.chid;  //id канала корректора
