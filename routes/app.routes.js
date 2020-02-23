@@ -32,10 +32,14 @@ module.exports = (app) => {
 
     
     app.post('/corrector', correctorcontroller.create);
+    app.get('/corrector', correctorcontroller.select);
+    app.get('/corrector/:id', correctorcontroller.findOne);
 
     app.post('/daydata', daydatacontroller.create);
 
     app.post('/flowline', flowlinecontroller.create);
+    app.get('/flowline', flowlinecontroller.select);
+    app.get('/flowline/:id', flowlinecontroller.findOne);
 
     app.post('/hourdata', hourdatacontroller.create);
 

@@ -53,6 +53,85 @@ function getLineData(flowLine, datarepo, cfgrepo, pcocessfunc, datetime) {
     return null;
 };
 
+function sumLineData(flowLine, datarepo, cfgrepo, pcocessfunc, begin , end) {
+    //привязка к физическому каналу - простая линия
+    if (flowLine.chid) {
+        //получить из архива ... значение 
+        return datarepo.find({"flid": flowLine.flid, "lastupdate" : { $gte: begin, $lt: end }})
+            .then(values => {
+                
+                return sumColumn(values)});
+    }
+    //вычисление по формуле - сложная линия
+    if (flowLine.cfgLines) {
+        let promiseArr = [];
+        flowLine.cfgLines.forEach(function(cfg) {
+            //ищем вложенную линию по ид
+            let vpromise = cfgrepo.findOne({"flid": cfg.flid}).then(fline => {
+                //console.log(fline);
+                return sumLineData(fline, datarepo, cfgrepo, pcocessfunc, begin , end)});
+
+            promiseArr.push(vpromise);
+        });        
+        return Promise.all(promiseArr).then(values => {return pcocessfunc(flowLine.cfgLines, values)});
+    };
+    //линия не привязана к данным
+    return null;
+};
+
+function sumColumn(values){
+    let totalQ = 0;
+    let totalP = 0;
+    let totalT = 0;
+    let totaldp = 0;
+
+    let start;
+    let end;
+
+    let activeCount = 0;
+
+    for(let i = 0; i < values.length; i++){
+
+        if (!values[i]) continue;
+        if (!start) start = values[i].start;
+        if (!end) end = values[i].lastupdate;
+
+        if(values[i].q > 0){
+            activeCount++;
+            totalQ = totalQ + values[i].q;
+            totalP += values[i].p;
+            totalT += values[i].t;
+            totaldp += values[i].dp;               
+        }
+
+        if(values[i].start < start){
+            start = values[i].start;
+        }
+
+        if(values[i].lastupdate > end){
+            end = values[i].lastupdate;
+        }    
+    }
+    
+    let avgP = totalP / activeCount;
+    let avgT = totalT / activeCount;
+    let avgdp = totaldp / activeCount;
+
+    let result = new domain.IntegralFlowData();
+
+    result.p = avgP;
+    result.t = avgT;
+    result.dp = avgdp;
+
+
+    result.q = totalQ;
+    result.start = start;
+    result.lastupdate = end;
+    result.quality = 192;
+    result.childs = values;
+    return result;
+}
+
 function processInstant(cfg, values){
     //instant
     let totalQ = 0;
@@ -156,10 +235,13 @@ function processIntegral(cfg, values){
                 totalT += values[i].t;
                 totaldp += values[i].dp;               
             }
-        if(values[i].lastupdate > end){
-            start = values[i].start;
-            end = values[i].lastupdate;
-        }
+            if(values[i].start < start){
+                start = values[i].start;
+            }
+    
+            if(values[i].lastupdate > end){
+                end = values[i].lastupdate;
+            }
     }
     
     let avgP = totalP / activeCount;
@@ -399,15 +481,27 @@ exports.gethourAvg = (flowLine, query)  =>  {};//RealTimeData
 exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
 
 function test(){
-    
-    exports.gethistDay(8, "2020-02-02T07:00").then(
+    flowline_repository.findOne({"flid": 8}).then(
         result => {
-            console.log(result);
-        },
-        err =>{
-            console.log("ERROR->", err);
-        }        
-    );
+            //console.log(result);
+            sumLineData(
+                result, 
+                hdata_repository, 
+                flowline_repository, 
+                processIntegral,
+                "2020-02-19T00:00",
+                "2020-02-20T00:00"
+                )
+                .then(
+                result => {
+                    console.log(result);
+                },
+                err =>{
+                    console.log("ERROR->", err);
+                }
+            );
+        });  
+
 }
 
 test();
