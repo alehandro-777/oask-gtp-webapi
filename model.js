@@ -87,27 +87,34 @@ exports.FlowLineCfg = class FlowLineCfg {
 //--------------------------------------------------
 exports.RealTimeData = class RealTimeData {
     constructor() {
-      this.state;
-      this.stateDescr;
+      this.paramid;     //number - sersorId or null - manual parameter
+      this.sensorid;    //number - sersorId or null - manual parameter
+      this.value; 
+      this.state;       //text
+      this.stateDesc;   //test state descriptor (auto? out of limits)
       this.lastupdate;
-      this.quality;
+      this.quality;     //
     }
-  }
-  
-exports.RealTimeSensor =  class RealTimeSensor {
-  constructor(id) {
-    this.sensorid = id;
-    this.name;  
+}
+
+exports.RTSystemCfg = class RTSensorCfg {
+  constructor() {
+    this.systemid; //RealTimeSensor id
+    this.name;
+    this.path;        //SCADA path
+    this.ip;          //SCADA path
+    this.period;      //RealTimeData   update period
+    this.sensors;      //[] points array RTSensorCfg
   }
 }
 
-exports.RealTimeSensorUpdateCfg = class RealTimeSensorUpdateCfg {
-  constructor(id) {
-    this.id = id; //RealTimeSensor id
-    this.name;
+exports.RTSensorCfg = class RTSensorCfg {
+  constructor() {
+    this.sensorid;    //RealTimeSensor id
+    this.name;        //Friendly sensor name
     this.path;        //SCADA path
-    this.period;      //RealTimeData   update period  
-    this.operation;   //proccess function name
+    this.low;    //validation 
+    this.high;   //validation
   }
 }
 

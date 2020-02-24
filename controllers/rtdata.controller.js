@@ -1,4 +1,4 @@
-const repository = require('../repo/flowline.repo');
+const repository = require('../repo/rtimedata.repo');
 
 exports.create = (req, res) => {
 

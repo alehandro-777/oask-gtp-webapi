@@ -10,6 +10,9 @@ const hourdatacontroller = require('../controllers/hourdata.controller');
 const instdatacontroller = require('../controllers/instdata.controller');
 const statdatacontroller = require('../controllers/statdata.controller');
 
+const rtdatacontroller = require('../controllers/rtdata.controller');
+const rtsystemcontroller = require('../controllers/rtsystem.controller');
+
 module.exports = (app) => {
     
     app.post('/docs', docscontroll.create);
@@ -47,4 +50,9 @@ module.exports = (app) => {
     app.get('/instdata/:id', instdatacontroller.select);
 
     app.post('/statdata', statdatacontroller.create);
+
+    app.post('/rtdata', rtdatacontroller.create);
+    
+    app.post('/rtsystem', rtsystemcontroller.create);
+
 }

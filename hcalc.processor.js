@@ -337,6 +337,7 @@ function processStat(cfg, values){
     return result;
 }
 
+//получить сумму-среднее последних значений из колонок (срез)
 exports.getlastDay = (flowLineId)  => {
     return new Promise((resolve, reject) => {
         flowline_repository.findOne({"flid": flowLineId}).then(
@@ -358,7 +359,7 @@ exports.getlastDay = (flowLineId)  => {
             });        
     });
 };
-
+//получить сумму-среднее последних значений из колонок (срез)
 exports.getlastHour = (flowLineId)  => {
     return new Promise((resolve, reject) => {
         flowline_repository.findOne({"flid": flowLineId}).then(
@@ -380,7 +381,7 @@ exports.getlastHour = (flowLineId)  => {
             });        
     });
 };
-
+//получить сумму-среднее последних значений из колонок (срез)
 exports.getcurrInst = (flowLineId) => {
     return new Promise((resolve, reject) => {
         flowline_repository.findOne({"flid": flowLineId}).then(
@@ -403,7 +404,7 @@ exports.getcurrInst = (flowLineId) => {
     });
 
 };
-
+//получить среднее последних значений из колонок (срез)
 exports.getcurrStat = (flowLineId) => {
     return new Promise((resolve, reject) => {
         flowline_repository.findOne({"flid": flowLineId}).then(
@@ -426,6 +427,7 @@ exports.getcurrStat = (flowLineId) => {
     });
 };  //StatFlowData
 
+//получить среднее среза из колонок на конкретный момент
 exports.gethistHour = (flowLineId, datetime) => {
     return new Promise((resolve, reject) => {
         flowline_repository.findOne({"flid": flowLineId}).then(
@@ -448,7 +450,7 @@ exports.gethistHour = (flowLineId, datetime) => {
             });        
     });
 };  
-
+//получить среднее среза из колонок на конкретный момент
 exports.gethistDay = (flowLineId, datetime)  => {
     return new Promise((resolve, reject) => {
         flowline_repository.findOne({"flid": flowLineId}).then(
@@ -472,35 +474,79 @@ exports.gethistDay = (flowLineId, datetime)  => {
     });
 };
 
+//получить сумму - среднее по колонке
+exports.sumDayColumn = (flowLineId, start, end) => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                sumLineData(
+                    result, 
+                    ddata_repository, 
+                    flowline_repository, 
+                    processIntegral,
+                    start,
+                    end
+                    )
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject("ERROR->", err);
+                    }
+                );
+            });  
+    
+    });
+};
+//получить сумму - среднее по колонке
+exports.sumHourColumn = (flowLineId, start, end) => {
+    return new Promise((resolve, reject) => {
+        flowline_repository.findOne({"flid": flowLineId}).then(
+            result => {
+                //console.log(result);
+                sumLineData(
+                    result, 
+                    hdata_repository, 
+                    flowline_repository, 
+                    processIntegral,
+                    start,
+                    end
+                    )
+                    .then(
+                    result => {
+                        resolve(result);
+                    },
+                    err =>{
+                        reject(err);
+                    }
+                );
+            });  
+    });
+};
 
-exports.gethistStat = (flowLine, query) => {};
-
+//обработка значений из СКАДА
 exports.getcurrValue = (flowLine)      =>   {};//RealTimeData
 exports.gethistValue = (flowLine, query) => {};//RealTimeData
 exports.gethourAvg = (flowLine, query)  =>  {};//RealTimeData
 exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
 
 function test(){
-    flowline_repository.findOne({"flid": 8}).then(
+
+    exports.sumHourColumn(
+        8,
+        "2020-02-01T07:00",
+        "2020-03-01T07:00"
+        )
+        .then(
         result => {
-            //console.log(result);
-            sumLineData(
-                result, 
-                hdata_repository, 
-                flowline_repository, 
-                processIntegral,
-                "2020-02-19T00:00",
-                "2020-02-20T00:00"
-                )
-                .then(
-                result => {
-                    console.log(result);
-                },
-                err =>{
-                    console.log("ERROR->", err);
-                }
-            );
-        });  
+            console.log(result);
+        },
+        err =>{
+            console.log("ERROR->", err);
+        }
+    );
 
 }
 
