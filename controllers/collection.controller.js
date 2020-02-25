@@ -10,9 +10,9 @@ const builder = new xml2js.Builder();
 exports.create = (req, res) => {
 
     let collection = req.params.id;
-
-    //console.log(req.body);
-
+// обработка root - объекта xml шаблона - результат- создает массив объектов "эл-т : значение"
+// внимание ! строки имеют жесткое имя "row" в ХМЛ !!!!!!!!!!!
+// root:{row:[ [Object], [Object], [Object],.... ]}} => [{ col1: '12.23', col2: '6.3' }, ...] 
     let arr = processreq.estractMany(req.body.root)  //[{ col1: '12.23', col2: '6.3' }, ...]
  
     processreq.add_created_version(arr);
@@ -39,7 +39,7 @@ exports.select = (req, res) => {
 
     repository.find(collection, {}).then(
         result=>{
-
+            //[{ col1: '12.23', col2: '6.3' }, ...] => root:{row:[ [Object], [Object], [Object],.... ]}}
             let xmlRead = processreq.formatToXmlFriendly(result);
             let xml = builder.buildObject({root:xmlRead});
             res.set('Content-Type', 'text/xml');

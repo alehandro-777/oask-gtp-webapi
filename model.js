@@ -97,6 +97,14 @@ exports.RealTimeData = class RealTimeData {
     }
 }
 
+exports.RegimParameter = class RegimParameter {
+  constructor() {
+    this.paramid;     //unique regim parameter auto or manual
+    this.sensorid;    //RealTimeSensor id
+    this.name;
+  }
+}
+
 exports.RTSystemCfg = class RTSensorCfg {
   constructor() {
     this.systemid; //RealTimeSensor id

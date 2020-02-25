@@ -1,7 +1,8 @@
+const auth = require('../controllers/auth.controller');
+
 const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const collcontroller = require('../controllers/collection.controller');
-const jsontable = require('../controllers/coll-json.controller');
 
 const correctorcontroller = require('../controllers/corrector.controller');
 const daydatacontroller = require('../controllers/daydata.controller');
@@ -12,8 +13,16 @@ const statdatacontroller = require('../controllers/statdata.controller');
 
 const rtdatacontroller = require('../controllers/rtdata.controller');
 const rtsystemcontroller = require('../controllers/rtsystem.controller');
+const regimparamcontroller = require('../controllers/regimparam.controller');
 
-module.exports = (app) => {
+const genericcontroller = require('../controllers/generic.controller');
+const mgsmodel = require('../mongoose.model');
+
+
+module.exports = (app, mongoose) => {
+    //auth
+    app.post('/auth/login', auth.login);
+    app.post('/auth/register', auth.register);
     
     app.post('/docs', docscontroll.create);
     app.get('/docs', docscontroll.select);
@@ -27,13 +36,7 @@ module.exports = (app) => {
     app.get('/collection/:id', collcontroller.select);
     app.delete('/collection/:id', collcontroller.delete);
     app.put('/collection/:id', collcontroller.update);
-
-    app.post('/tablejs/:id', jsontable.create);
-    app.get('/tablejs/:id', jsontable.select);
-    app.delete('/tablejs/:id', jsontable.delete);
-    app.put('/tablejs/:id', jsontable.update);
-
-    
+  
     app.post('/corrector', correctorcontroller.create);
     app.get('/corrector', correctorcontroller.select);
     app.get('/corrector/:id', correctorcontroller.findOne);
@@ -55,4 +58,17 @@ module.exports = (app) => {
     
     app.post('/rtsystem', rtsystemcontroller.create);
 
+    app.post('/regimparam', regimparamcontroller.create);
+    app.get('/regimparam', regimparamcontroller.select);
+    app.get('/regimparam/:id', regimparamcontroller.findOne);
+  
+    let contr = genericcontroller.create(mgsmodel.createTestModel(mongoose));    
+    app.post('/test', contr.create);
+    app.get('/test', contr.select);
+    app.get('/test/:id', contr.findOne);
+
+    app.put('/test', contr.update);
+    app.delete('/test', contr.delete);
+    app.put('/test/:id', contr.update);
+    app.delete('/test/:id', contr.delete);
 }

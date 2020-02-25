@@ -2,6 +2,8 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
 const xmlparser = require('express-xml-bodyparser');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/test1oaskgtp', {useNewUrlParser: true, useUnifiedTopology : true});
 
 const app = express();
 
@@ -20,7 +22,7 @@ app.get('/', (req, res) => {
 });
 
 // Require app routes
-require('./routes/app.routes')(app);
+require('./routes/app.routes')(app, mongoose);
 
 app.listen( 3000, function () {
     console.log('Web API listening on port 3000!');
