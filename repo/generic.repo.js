@@ -18,9 +18,20 @@ result.createMany = (objarray) => {
     });
 };
 
-result.find = (query) => {
+//(query, fields, { skip: 10, limit: 5 }, function(err, results) { ... });
+
+result.count = () => {
     return new Promise((resolve, reject) => {
-        model.find(query, function(err, docs) {
+        model.countDocuments().exec((err, count) => {
+        if (err) { reject(err); return;}
+        resolve(count);
+    });
+    });
+};
+
+result.find = (query, fields, options) => {
+    return new Promise((resolve, reject) => {
+        model.find(query, fields, options, function(err, docs) {
             if(err) {  reject(err); return;  }
             resolve(docs);
         });

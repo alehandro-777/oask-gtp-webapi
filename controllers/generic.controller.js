@@ -25,7 +25,7 @@ result.create = (req, res) => {
 result.findOne = (req, res) => {
     let id = req.params.id;
 
-    repository.find({"_id": id}).then(
+    repository.findOne({"_id": id}).then(
         result=>{
             return res.send(result);          
         },
@@ -40,9 +40,11 @@ result.findOne = (req, res) => {
 
 result.select = (req, res) => {
     
+    //(query, fields, { skip: 10, limit: 5 }, function(err, results) { ... });    
     let query = req.query;
+    let params = req.params;
 
-    repository.find(query).then(
+    repository.find(params, {}, query).then(
         result=>{
             return res.send(result);          
         },
