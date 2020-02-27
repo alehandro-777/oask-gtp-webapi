@@ -1,10 +1,8 @@
 exports.createTestModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        a : Number,
-        b : Number,
-        c : Number,
-        d : Number,
-        e : Number,
+        param1 : Number,
+        param2 : Number,
+        param3 : Number,
     });    
     let model = mongoose.model('Test', schema);
     return model;

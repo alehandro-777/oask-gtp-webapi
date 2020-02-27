@@ -51,6 +51,9 @@ result.select = (req, res) => {
     let limit = parseInt(req.query.size);
     let skip = (page - 1)*limit;
 
+    delete req.query.page;
+    delete req.query.size;
+
     let opt = {limit:limit, skip:skip};
 
     let cmd = [];
