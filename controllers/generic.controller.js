@@ -1,4 +1,5 @@
-let grepository = require('../repo/generic.repo');
+const grepository = require('../repo/generic.repo');
+const domain = require('../model');
 
 exports.create = (mod) => {
     let result = {};
@@ -24,8 +25,11 @@ result.create = (req, res) => {
 // GET
 result.findOne = (req, res) => {
     let id = req.params.id;
+    
+    Object.keys(req.query).forEach(e => req.query[e] = (parseInt(req.query[e])) ? parseInt(req.query[e]) : req.query[e]);
+    req.query["_id"] = id;
 
-    repository.findOne({"_id": id}).then(
+    repository.findOne(req.query).then(
         result=>{
             return res.send(result);          
         },
@@ -40,13 +44,26 @@ result.findOne = (req, res) => {
 
 result.select = (req, res) => {
     
+    //console.log(req.query);
     //(query, fields, { skip: 10, limit: 5 }, function(err, results) { ... });    
-    let query = req.query;
-    let params = req.params;
+    
+    let page = parseInt(req.query.page);
+    let limit = parseInt(req.query.size);
+    let skip = (page - 1)*limit;
 
-    repository.find(params, {}, query).then(
+    let opt = {limit:limit, skip:skip};
+
+    let cmd = [];
+
+    Object.keys(req.query).forEach(e => req.query[e] = (parseInt(req.query[e])) ? parseInt(req.query[e]) : req.query[e]);
+
+    cmd.push(repository.find(req.query, {}, opt));
+    cmd.push(repository.count());
+
+    Promise.all(cmd).then(
         result=>{
-            return res.send(result);          
+            let pg = new domain.Paginator(page, limit, result[1]);
+            return res.send({data:result[0], pg:pg});          
         },
         error=>{
             return res.status(500).send(error);        

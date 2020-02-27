@@ -128,11 +128,11 @@ exports.RTSensorCfg = class RTSensorCfg {
 
 //структура для отрисовки листания страниц на графическом интерфейсе
 exports.Paginator = class Paginator {
-  constructor(page, size, array) {
+  constructor(page, size, count) {
     this.page = page;
     this.size = size;
-    this.length = array.length;
+    this.length = count;
     this.prev = (page > 1) ? page-1 : null;
-    this.next = (array[size*page]) ? page+1 : null;
+    this.next = (size*(page + 1) < count) ? page + 1 : null;
   }
 }

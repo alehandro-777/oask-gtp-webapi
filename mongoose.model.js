@@ -49,3 +49,39 @@ exports.createFlowLineModel = (mongoose) =>{
     let model = mongoose.model('FlowLine', schema);
     return model;
 }
+
+exports.createGuiTableModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        tableid : Number,      // unique ид 
+        name : String,         //friendly  name 
+        columns : [{           //Cfg array
+          name : String,       //column name
+          display : String     //header name
+        }] 
+    });
+
+    let model = mongoose.model('GuiTable', schema);
+    return model;
+}
+
+exports.createFormModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        formid : Number,              // unique ид
+        name : String,                // friendly  name
+        controls : [
+            {
+                key: String,          // 'brave', - unique param id 
+                label: String,        // friendly field name
+                value: String,        // field value
+                controlType: String,  // 'dropdown', or textbox
+                order: Number,        //rendering order
+                options: [
+                  { key: String,  value: String }     //options for select element
+                ]        
+            }
+        ]
+    });
+
+    let model = mongoose.model('Form', schema);
+    return model;
+}

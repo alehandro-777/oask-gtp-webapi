@@ -61,7 +61,9 @@ module.exports = (app, mongoose) => {
     app.post('/regimparam', regimparamcontroller.create);
     app.get('/regimparam', regimparamcontroller.select);
     app.get('/regimparam/:id', regimparamcontroller.findOne);
-  
+
+
+    //------------------------------------------------------------------------
     let contr = genericcontroller.create(mgsmodel.createTestModel(mongoose));    
     app.post('/test', contr.create);
     app.get('/test', contr.select);
@@ -71,4 +73,28 @@ module.exports = (app, mongoose) => {
     app.delete('/test', contr.delete);
     app.put('/test/:id', contr.update);
     app.delete('/test/:id', contr.delete);
+
+    //------------------------------------------------------------------------
+    let guitable = genericcontroller.create(mgsmodel.createGuiTableModel(mongoose));    
+    app.post('/guitable', guitable.create);
+    app.get('/guitable', guitable.select);
+    app.get('/guitable/:id', guitable.findOne);
+
+    app.put('/guitable', guitable.update);
+    app.delete('/guitable', guitable.delete);
+    app.put('/guitable/:id', guitable.update);
+    app.delete('/guitable/:id', guitable.delete);
+
+    //------------------------------------------------------------------------
+   let form = genericcontroller.create(mgsmodel.createFormModel(mongoose));    
+   app.post('/form', form.create);
+   app.get('/form', form.select);
+   app.get('/form/:id', form.findOne);
+
+   app.put('/form', form.update);
+   app.delete('/form', form.delete);
+   app.put('/form/:id', form.update);
+   app.delete('/form/:id', form.delete);
+
+
 }
