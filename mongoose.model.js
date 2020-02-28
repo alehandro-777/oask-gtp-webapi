@@ -83,3 +83,16 @@ exports.createFormModel = (mongoose) =>{
     let model = mongoose.model('Form', schema);
     return model;
 }
+
+exports.createUserMenu = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        userid : Number,              // unique ид
+        name : String,                // login  name
+        buttons: [
+            { label: String,  link: String }     //menu buttons
+          ]  
+    });
+
+    let model = mongoose.model('UserBundle', schema);
+    return model;
+}

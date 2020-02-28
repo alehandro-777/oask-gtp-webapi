@@ -2,7 +2,7 @@ const auth = require('../controllers/auth.controller');
 
 const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
-const collcontroller = require('../controllers/collection.controller');
+const xmlcontroller = require('../controllers/xml.collection.controller');
 
 const correctorcontroller = require('../controllers/corrector.controller');
 const daydatacontroller = require('../controllers/daydata.controller');
@@ -16,6 +16,8 @@ const rtsystemcontroller = require('../controllers/rtsystem.controller');
 const regimparamcontroller = require('../controllers/regimparam.controller');
 
 const genericcontroller = require('../controllers/generic.controller');
+const viewcontroller = require('../controllers/view.controller');
+
 const mgsmodel = require('../mongoose.model');
 
 
@@ -32,10 +34,10 @@ module.exports = (app, mongoose) => {
     app.post('/templates', templatescontroll.create);
     app.get('/templates/:id', templatescontroll.findOne);
  
-    app.post('/collection/:id', collcontroller.create);
-    app.get('/collection/:id', collcontroller.select);
-    app.delete('/collection/:id', collcontroller.delete);
-    app.put('/collection/:id', collcontroller.update);
+    app.post('/collection/:id', xmlcontroller.create);
+    app.get('/collection/:id', xmlcontroller.select);
+    app.delete('/collection/:id', xmlcontroller.delete);
+    app.put('/collection/:id', xmlcontroller.update);
   
     app.post('/corrector', correctorcontroller.create);
     app.get('/corrector', correctorcontroller.select);
@@ -62,6 +64,7 @@ module.exports = (app, mongoose) => {
     app.get('/regimparam', regimparamcontroller.select);
     app.get('/regimparam/:id', regimparamcontroller.findOne);
 
+    app.get('/view/:id', viewcontroller.findOne);
 
     //------------------------------------------------------------------------
     let contr = genericcontroller.create(mgsmodel.createTestModel(mongoose));    
@@ -96,5 +99,15 @@ module.exports = (app, mongoose) => {
    app.put('/form/:id', form.update);
    app.delete('/form/:id', form.delete);
 
+       //------------------------------------------------------------------------
+       let menu = genericcontroller.create(mgsmodel.createUserMenu(mongoose));    
+       app.post('/menu', menu.create);
+       app.get('/menu', menu.select);
+       app.get('/menu/:id', menu.findOne);
+    
+       app.put('/menu', menu.update);
+       app.delete('/menu', menu.delete);
+       app.put('/menu/:id', menu.update);
+       app.delete('/menu/:id', menu.delete);
 
 }
