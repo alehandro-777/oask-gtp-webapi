@@ -1,10 +1,100 @@
-exports.createTestModel = (mongoose) =>{
+exports.createDayHlibModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        param1 : Number,
-        param2 : Number,
-        param3 : Number,
+        p : Number,
+        t : Number,
+        dp : Number,
+        q : Number,
+        start : { type: Date , default: Date.now},
+        lastupdate : { type: Date , default: Date.now},
+        quality : Number,
+        flid : Number,  //id изм линии 
+        chid : Number,  //id канала корректора
     });    
-    let model = mongoose.model('Test', schema);
+    let model = mongoose.model('DayValue', schema);
+    return model;
+}
+
+exports.createHourHlibModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        p : Number,
+        t : Number,
+        dp : Number,
+        q : Number,
+        start : { type: Date , default: Date.now},
+        lastupdate : { type: Date, default: Date.now },
+        quality : Number,
+        flid : Number,  //id изм линии 
+        chid : Number,  //id канала корректора
+    });    
+    let model = mongoose.model('HourValue', schema);
+    return model;
+}
+
+exports.createInstHlibModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        p : Number,
+        t : Number,
+        dp : Number,
+        q : Number,
+        currday : Number,
+        lastupdate : { type: Date, default: Date.now },
+        quality : Number,
+        flid : Number,  //id изм линии 
+        chid : Number,  //id канала корректора
+    });    
+    let model = mongoose.model('InstValue', schema);
+    return model;
+}
+
+exports.createStatHlibModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        CO2 : Number,
+        N2 : Number,
+        Ro : Number,
+        lastupdate : { type: Date, default: Date.now },
+        quality : Number,
+        flid : Number,  //id изм линии 
+        chid : Number,  //id канала корректора
+    });    
+    let model = mongoose.model('StatValue', schema);
+    return model;
+}
+
+exports.createRtSystemModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        systemid: Number, //RealTimeSensor id
+        name: String,
+        path: String,        //SCADA path
+        ip: String,          //SCADA path
+        period: Number,      //RealTimeData   update period
+        sensors: [
+            {
+                sensorid: Number,    //RealTimeSensor id
+                name: String,
+                path: String,        //SCADA path
+                lowlimit: Number,    //validation 
+                highlimit: Number   //validation
+            }
+        ] 
+    });    
+    let model = mongoose.model('RtSystem', schema);
+    return model;
+}
+
+exports.createRtValueModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        
+        paramid : Number,    //unique parameter id
+        sensorid : Number,    //number - sersorId or null - manual parameter
+        value : Number, 
+        state : String,       //text
+        stateDesc : String,   //test state descriptor (auto? out of limits)
+        lastupdate : { type: Date, default: Date.now },
+        quality : Number,     //
+        user : String,        //who input data
+
+    });    
+    let model = mongoose.model('RtValue', schema);
     return model;
 }
 
@@ -30,21 +120,56 @@ exports.createCorrectorModel = (mongoose) =>{
     return model;
 }
 
+// ??? 
 exports.createFlowLineModel = (mongoose) =>{
+
+    var schema = new mongoose.Schema({
+
+    flid : Number,          // unique line ид 
+    name : String,          //friendly flowline name 
+    eic : String,
+    chid : Number,          //CorrectorChannelCfg - привязка к физ линии
+    cfgLines : [{           //FlowLineCfg array
+      flid : Number,        //operand - ид физ линии линии
+      koef : Number,        //коэф пропорц слагаемого +/- с которой участвует линия в расчете
+      leadPt : Boolean,      //ведущая линия для результата расчета Р, иначе расчет среднего
+      leadStat : Boolean    //ведущая линия для результата расчета стат параметров, иначе расчет среднего
+    }] 
+});
+
+  var model = mongoose.model('Flowline', schema);
+  return model;
+}
+
+
+exports.DBObject = (mongoose) =>{
     let schema = new mongoose.Schema({
-        flid : Number,          // unique line ид 
-        name : String,          //friendly flowline name 
-        eic : String,
-        chid : Number,          //CorrectorChannelCfg - привязка к физ линии
-        cfgLines : [{           //FlowLineCfg array
-          flid : Number,        //operand - ид физ линии линии
-          koef : Number,        //коэф пропорц слагаемого +/- с которой участвует линия в расчете
-          leadPt : Boolean,      //ведущая линия для результата расчета Р, иначе расчет среднего
-          leadStat : Boolean    //ведущая линия для результата расчета стат параметров, иначе расчет среднего
-        }] 
+        object_id : Number,    // unique line ид 
+        name : String,         //key object name 
+        type : String,         //key type name 
+        params : [{            //params array
+            param_id : Number, //param id
+            name : String,     //column name
+            formula : String   //example  Sum([{id:1},...{id:10}], "q")
+          }] 
     });
 
-    let model = mongoose.model('FlowLine', schema);
+    let model = mongoose.model('DBObject', schema);
+    return model;
+}
+
+exports.DBObjectValue = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        object_id : Number,     // unique line ид 
+        object_name : String,   //key name - for debug
+        param_id : Number,      //param id
+        param_name : String,    //column name
+        real : Number,          //value as num
+        str : String,           //value as string
+        lastupdate : { type: Date , default: Date.now} 
+    });
+
+    let model = mongoose.model('DBObjectValue', schema);
     return model;
 }
 

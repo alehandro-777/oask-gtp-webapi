@@ -93,3 +93,12 @@ result.deleteOne = (query) => {};
 
     return result;
 };
+
+exports.findLastUpdated = (query) => {
+    return new Promise((resolve, reject) => {
+        HourdataModel.findOne(query, {}, { sort: { 'lastupdate' : -1 } } , function(err, docs) {
+            if(err) {  reject(err); return;  }
+            resolve(docs);
+        });
+    });
+};

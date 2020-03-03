@@ -1,6 +1,33 @@
 const repo = require('./repo/hour.data.repo');
 const proc = require('./hcalc.processor');
 
+//REPORT MODEL
+/* 
+{rows:[{row}]}
+
+//header row {cells:[]}
+//simple row {cells:[]}
+//total  row {cells:[]} sum, avg
+
+//array cell
+//one cell
+//avg cell
+//sum cell
+
+*/
+
+class RepCell {
+    constructor() {
+      this.repo;
+      this.query;
+      this.attr;
+      this.colname;
+    }
+}
+
+
+
+
 exports.findOne = (query) => {
     return createView1(query);
 };

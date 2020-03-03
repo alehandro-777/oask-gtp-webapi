@@ -63,25 +63,31 @@
     }
   } 
 
-//линия изменения или рачета расхода - содержит формулу расчета или физ канал, по лини ведутся архивы - мгн, интеграл, стат
+//линия изменения физическая, имеет привязку канала корректора по лини ведутся архивы - мгн, интеграл, стат
 exports.FlowLine = class FlowLine {
     constructor() {
       this.flid;          // unique line ид 
       this.name;          //friendly flowline name 
-      this.eic;
-      this.cfgLines = []; //FlowLineCfg array
-      this.chid;          //CorrectorChannelCfg - привязка к физ линии
+      this.chid;          //CorrectorChannelCfg - привязка к физ линии корректора
     }
 }
 
-exports.FlowLineCfg = class FlowLineCfg {
-    constructor() {
-      this.flid;                //operand - ид физ линии линии
-      this.koef = 1;            //коэф пропорц слагаемого +/- с которой участвует линия в расчете
-      this.leadPt = false;      //ведущая линия для результата расчета Р, иначе расчет среднего
-      this.leadStat = false;    //ведущая линия для результата расчета стат параметров, иначе расчет среднего
-    }
+//объект базы данных
+exports.DBObject = class DBObject {
+  constructor() {
+    this.object_id;     // unique line ид 
+    this.name;          //key name 
+    this.params;        //array of parameters
+  }
 }
+//объект базы данных
+exports.DBObjectPar = class DBObjectPar {
+  constructor() {
+    this.name;          //key name 
+    this.value;        //value
+  }
+}
+
 
 
 //--------------------------------------------------
@@ -134,5 +140,38 @@ exports.Paginator = class Paginator {
     this.length = count;
     this.prev = (page > 1) ? page-1 : null;
     this.next = (size*(page + 1) < count) ? page + 1 : null;
+  }
+}
+
+
+//структура для расчетного параметра - сумматора
+exports.Summ = class Summ {
+  constructor(values, parname) {
+    this.total;      
+    values.forEach(element => {
+      this.total += element[parname];
+    });
+  }
+}
+
+//структура для расчетного параметра - среднее арифм
+exports.Avg = class Avg {
+  constructor(values, parname) {
+    this.total = 0;
+    this.avg;
+    values.forEach(element => {
+      this.total += element[parname];
+    });
+    this.avg = this.total / values.leangth;
+  }
+}
+
+//структура для расчетного параметра - max
+exports.Max = class Max {
+  constructor(values, parname) {
+    this.max;
+    values.forEach(element => {
+      if(element[parname] > this.max) this.max = element[parname];
+    });
   }
 }

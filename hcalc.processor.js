@@ -34,7 +34,7 @@ function getLineData(flowLine, datarepo, cfgrepo, pcocessfunc, datetime) {
     //привязка к физическому каналу - простая линия
     if (flowLine.chid) {
         //получить из архива ... значение        
-        return datarepo.findOne({"flid": flowLine.flid, "lastupdate" : datetime});
+        return datarepo.find({"flid": flowLine.flid, "lastupdate" : datetime});
     }
     //вычисление по формуле - сложная линия
     if (flowLine.cfgLines) {
@@ -47,7 +47,14 @@ function getLineData(flowLine, datarepo, cfgrepo, pcocessfunc, datetime) {
 
             promiseArr.push(vpromise);
         });        
-        return Promise.all(promiseArr).then(values => {return pcocessfunc(flowLine.cfgLines, values)});
+        return Promise.all(promiseArr).then(values => {
+            let result = [];
+            values.forEach(value => {
+                let v = pcocessfunc(flowLine.cfgLines, value);    
+                result.push(v);
+            });            
+            return result;
+        });
     };
     //линия не привязана к данным
     return null;
@@ -270,6 +277,7 @@ function processIntegral(cfg, values){
     result.childs = values;
     return result;
 }
+
 
 function processStat(cfg, values){
     //instant
@@ -534,10 +542,10 @@ exports.getdayAvg = (flowLine, query)   =>  {};//RealTimeData
 
 function test(){
 
-    exports.sumHourColumn(
-        8,
-        "2020-02-01T07:00",
-        "2020-03-01T07:00"
+    exports.gethistHour(
+        1,
+        "2020-02-19T13:00"
+        
         )
         .then(
         result => {
