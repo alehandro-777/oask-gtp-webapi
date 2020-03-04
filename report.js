@@ -1,5 +1,12 @@
-const repo = require('./repo/hour.data.repo');
-const proc = require('./hcalc.processor');
+const proc = require('./calc.processor.js');
+
+
+const mgsmodel = require('./mongoose.model');
+const grepository = require('./repo/generic.repo');
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/test1oaskgtp', {useNewUrlParser: true, useUnifiedTopology : true});
+let dbodata_model = mgsmodel.createDBObjectValueModel(mongoose);
+let dbodata_repository = grepository.create(dbodata_model);   
 
 //REPORT MODEL
 /* 
@@ -94,6 +101,7 @@ function buildRow(columns){
     return newRow;   
 }
 
+/*
 createView1(repo, 
     [
         {flid:1, attr:"q", col:"col1"},
@@ -104,3 +112,15 @@ createView1(repo,
 ], 
     
     "2020-02-19T12:00", "2020-02-20T00:00");
+*/    
+
+function test(){
+    dbodata_repository.find({"object_id": 1}).then(res=>{
+        res.forEach(value=>{
+            console.log(value.lastupdate.getHours());
+        })
+        
+    });
+}
+
+test();

@@ -7,6 +7,8 @@ mongoose.connect('mongodb://localhost:27017/test1oaskgtp', {useNewUrlParser: tru
 
 const app = express();
 
+exports.app = app;
+
 app.use(cors());
 
 // parse requests of content-type - application/x-www-form-urlencoded

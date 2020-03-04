@@ -10,6 +10,8 @@ const viewcontroller = require('../controllers/view.controller');
 
 const mgsmodel = require('../mongoose.model');
 
+const grepository = require('../repo/generic.repo');
+
 
 module.exports = (app, mongoose) => {
     //auth
@@ -29,20 +31,37 @@ module.exports = (app, mongoose) => {
     app.delete('/collection/:id', xmlcontroller.delete);
     app.put('/collection/:id', xmlcontroller.update);
   
+    let corrector_model = mgsmodel.createCorrectorModel(mongoose);
+    let corrector_repository = grepository.create(corrector_model);
+    let corrector_controller = genericcontroller.create(corrector_model, corrector_repository);    
 
-    let correctorcontroller = genericcontroller.create(mgsmodel.createCorrectorModel(mongoose));    
+    app.post('/corrector', corrector_controller.create);
+    app.get('/corrector', corrector_controller.select);
+    app.get('/corrector/:id', corrector_controller.findOne);
 
-    app.post('/corrector', correctorcontroller.create);
-    app.get('/corrector', correctorcontroller.select);
-    app.get('/corrector/:id', correctorcontroller.findOne);
 
     let daydatacontroller = genericcontroller.create(mgsmodel.createDayHlibModel(mongoose)); 
     app.post('/daydata', daydatacontroller.create);
 
-    let flowlinecontroller = genericcontroller.create(mgsmodel.createFlowLineModel(mongoose)); 
-    app.post('/flowline', flowlinecontroller.create);
-    app.get('/flowline', flowlinecontroller.select);
-    app.get('/flowline/:id', flowlinecontroller.findOne);
+
+    let dbo_model = mgsmodel.createDBObjectModel(mongoose);
+    let dbo_repository = grepository.create(dbo_model);   
+    let dbo_controller = genericcontroller.create(dbo_model, dbo_repository); 
+
+    app.dbo_repo = dbo_repository;
+
+    app.post('/dbo', dbo_controller.create);
+    app.get('/dbo', dbo_controller.select);
+    app.get('/dbo/:id', dbo_controller.findOne);
+
+
+    let dbodata_model = mgsmodel.createDBObjectValueModel(mongoose);
+    let dbodata_repository = grepository.create(dbodata_model);   
+    let dbodata_controller = genericcontroller.create(dbodata_model, dbodata_repository); 
+    app.post('/dbodata', dbodata_controller.create);
+
+    app.dbodata_repo = dbodata_repository;
+
 
     let hourdatacontroller = genericcontroller.create(mgsmodel.createHourHlibModel(mongoose)); 
     app.post('/hourdata', hourdatacontroller.create);

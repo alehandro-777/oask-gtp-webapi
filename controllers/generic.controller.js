@@ -1,10 +1,8 @@
-const grepository = require('../repo/generic.repo');
 const domain = require('../model');
 
-exports.create = (mod) => {
+exports.create = (mod, repository) => {
     let result = {};
     let model = mod;
-    let repository = grepository.create(model);
     
 // POST
 result.create = (req, res) => {

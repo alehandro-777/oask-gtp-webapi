@@ -80,11 +80,16 @@ exports.DBObject = class DBObject {
     this.params;        //array of parameters
   }
 }
-//объект базы данных
-exports.DBObjectPar = class DBObjectPar {
+
+//state объект базы данных
+exports.DBObjectValue = class DBObjectValue {
   constructor() {
-    this.name;          //key name 
-    this.value;        //value
+    this.object_id;     // unique line ид 
+    this.name;          //key name - for debug
+    this.value;         //value as num
+    this.state;         //value as string
+    this.source;        //value source
+    this.lastupdate; 
   }
 }
 
@@ -144,34 +149,3 @@ exports.Paginator = class Paginator {
 }
 
 
-//структура для расчетного параметра - сумматора
-exports.Summ = class Summ {
-  constructor(values, parname) {
-    this.total;      
-    values.forEach(element => {
-      this.total += element[parname];
-    });
-  }
-}
-
-//структура для расчетного параметра - среднее арифм
-exports.Avg = class Avg {
-  constructor(values, parname) {
-    this.total = 0;
-    this.avg;
-    values.forEach(element => {
-      this.total += element[parname];
-    });
-    this.avg = this.total / values.leangth;
-  }
-}
-
-//структура для расчетного параметра - max
-exports.Max = class Max {
-  constructor(values, parname) {
-    this.max;
-    values.forEach(element => {
-      if(element[parname] > this.max) this.max = element[parname];
-    });
-  }
-}

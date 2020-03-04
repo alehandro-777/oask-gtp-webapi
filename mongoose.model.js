@@ -118,33 +118,12 @@ exports.createCorrectorModel = (mongoose) =>{
     return model;
 }
 
-// ??? 
-exports.createFlowLineModel = (mongoose) =>{
-
-    var schema = new mongoose.Schema({
-
-    flid : Number,          // unique line ид 
-    name : String,          //friendly flowline name 
-    eic : String,
-    chid : Number,          //CorrectorChannelCfg - привязка к физ линии
-    cfgLines : [{           //FlowLineCfg array
-      flid : Number,        //operand - ид физ линии линии
-      koef : Number,        //коэф пропорц слагаемого +/- с которой участвует линия в расчете
-      leadPt : Boolean,      //ведущая линия для результата расчета Р, иначе расчет среднего
-      leadStat : Boolean    //ведущая линия для результата расчета стат параметров, иначе расчет среднего
-    }] 
-});
-
-  var model = mongoose.model('Flowline', schema);
-  return model;
-}
-
-exports.DBObject = (mongoose) =>{
+exports.createDBObjectModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         object_id : Number,    // unique DBObject ид 
         name : String,         //key object name
         fullname : String,     //object name
-        type : String,         //key type name
+        sname : String,        //short name
         func : String,         //function name - get state(s) of DBObject
         params : [{}]          //function params array                    
     });
@@ -154,12 +133,13 @@ exports.DBObject = (mongoose) =>{
 }
 
 //states of DBObject
-exports.DBObjectValue = (mongoose) =>{
+exports.createDBObjectValueModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         object_id : Number,     // unique line ид 
-        object_name : String,   //key name - for debug
-        real : Number,          //value as num
+        name : String,          //key name - for debug
+        value : Number,         //value as num
         state : String,         //value as string
+        source : String,        //value source
         lastupdate : { type: Date , default: Date.now} 
     });
 
