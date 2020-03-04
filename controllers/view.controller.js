@@ -1,4 +1,4 @@
-const repository = require('../repo/generic.view.repo');
+let repository;
 
 
 // GET VIEW

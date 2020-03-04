@@ -4,16 +4,6 @@ const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const xmlcontroller = require('../controllers/xml.collection.controller');
 
-const correctorcontroller = require('../controllers/corrector.controller');
-const daydatacontroller = require('../controllers/daydata.controller');
-const flowlinecontroller = require('../controllers/flowline.controller');
-const hourdatacontroller = require('../controllers/hourdata.controller');
-const instdatacontroller = require('../controllers/instdata.controller');
-const statdatacontroller = require('../controllers/statdata.controller');
-
-const rtdatacontroller = require('../controllers/rtdata.controller');
-const rtsystemcontroller = require('../controllers/rtsystem.controller');
-const regimparamcontroller = require('../controllers/regimparam.controller');
 
 const genericcontroller = require('../controllers/generic.controller');
 const viewcontroller = require('../controllers/view.controller');
@@ -39,43 +29,39 @@ module.exports = (app, mongoose) => {
     app.delete('/collection/:id', xmlcontroller.delete);
     app.put('/collection/:id', xmlcontroller.update);
   
+
+    let correctorcontroller = genericcontroller.create(mgsmodel.createCorrectorModel(mongoose));    
+
     app.post('/corrector', correctorcontroller.create);
     app.get('/corrector', correctorcontroller.select);
     app.get('/corrector/:id', correctorcontroller.findOne);
 
+    let daydatacontroller = genericcontroller.create(mgsmodel.createDayHlibModel(mongoose)); 
     app.post('/daydata', daydatacontroller.create);
 
+    let flowlinecontroller = genericcontroller.create(mgsmodel.createFlowLineModel(mongoose)); 
     app.post('/flowline', flowlinecontroller.create);
     app.get('/flowline', flowlinecontroller.select);
     app.get('/flowline/:id', flowlinecontroller.findOne);
 
+    let hourdatacontroller = genericcontroller.create(mgsmodel.createHourHlibModel(mongoose)); 
     app.post('/hourdata', hourdatacontroller.create);
 
+    let instdatacontroller = genericcontroller.create(mgsmodel.createInstHlibModel(mongoose));
     app.post('/instdata', instdatacontroller.create);
     app.get('/instdata/:id', instdatacontroller.select);
 
+    let statdatacontroller = genericcontroller.create(mgsmodel.createStatHlibModel(mongoose));
     app.post('/statdata', statdatacontroller.create);
 
+    let rtdatacontroller = genericcontroller.create(mgsmodel.createRtValueModel(mongoose));
     app.post('/rtdata', rtdatacontroller.create);
     
+    let rtsystemcontroller = genericcontroller.create(mgsmodel.createRtSystemModel(mongoose));
     app.post('/rtsystem', rtsystemcontroller.create);
-
-    app.post('/regimparam', regimparamcontroller.create);
-    app.get('/regimparam', regimparamcontroller.select);
-    app.get('/regimparam/:id', regimparamcontroller.findOne);
 
     app.get('/view/:id', viewcontroller.findOne);
 
-    //------------------------------------------------------------------------
-    let contr = genericcontroller.create(mgsmodel.createTestModel(mongoose));    
-    app.post('/test', contr.create);
-    app.get('/test', contr.select);
-    app.get('/test/:id', contr.findOne);
-
-    app.put('/test', contr.update);
-    app.delete('/test', contr.delete);
-    app.put('/test/:id', contr.update);
-    app.delete('/test/:id', contr.delete);
 
     //------------------------------------------------------------------------
     let guitable = genericcontroller.create(mgsmodel.createGuiTableModel(mongoose));    
