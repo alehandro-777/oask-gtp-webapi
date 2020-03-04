@@ -39,6 +39,32 @@ exports.findOne = (query) => {
     return createView1(query);
 };
 
+
+function createView2(repo, params, begin, end) {
+    let result = [];
+
+    let start = new Date(begin);
+    let stop = new Date(end);
+    let cmd = [];
+/*
+    params.forEach((element) => {
+        //create hour snapshot
+        let p1 = repo.find({"object_id": element, "lastupdate" : {$gte:begin, $lt:end}  });
+        cmd.push(p1);
+    });
+
+    Promise.all(cmd).then(values=>{
+        result = buildRows(values);
+    });
+    */
+
+repo.find({ $or:[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}], "lastupdate" : {$gte:begin, $lt:end}  }).then(values=>{
+    console.log(values);
+});
+
+}
+
+
 function createView1(repo, params, begin, end) {
     let result = [];
 
@@ -79,26 +105,19 @@ function createView1(repo, params, begin, end) {
 };
 
 //input array of arraies - hour snapshot
-function buildRow(columns){
-    
+function buildRows(columns){
+    let result = [];
+
     if (columns.length===0) return null;    
     //console.log(result);
     let newRow = {};
-    let hasKeys = false;
     columns.forEach(column => {
-        if (column.length > 0) {
-            hasKeys = true;
-            //console.log(column);
-            //console.log(value);
-            let start = new Date(column[0].start);
-            let stop = new Date(column[0].lastupdate);            
-            newRow['time'] = `${start.getHours()}-${stop.getHours()}`;        
-            newRow[column.cfg.col] = column[0][column.cfg.attr];
-            column.shift();            
-        }
+        column.forEach(value => {
+            console.log(value);
+        });
     });
-    if (!hasKeys) return null;
-    return newRow;   
+
+    return result;   
 }
 
 /*
@@ -123,4 +142,5 @@ function test(){
     });
 }
 
-test();
+//test();
+createView2(dbodata_repository,  [1,2,3,4], "2020-02-19T00:00:00Z", "2020-02-20T00:00:00Z");
