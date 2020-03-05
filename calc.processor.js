@@ -1,10 +1,10 @@
 
 //сумматор
 exports.SumChan = (values, parname) => {
-    let total;      
+    let total=0;      
     values.forEach(element => {
       total += element[parname];
-    });
+    });   
     return total;
 };
 //average
