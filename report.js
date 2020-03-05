@@ -9,8 +9,69 @@ let dbodata_model = mgsmodel.createDBObjectValueModel(mongoose);
 let dbodata_repository = grepository.create(dbodata_model);   
 
 
+
+//сумматор
+class SumColumn{
+    constructor(id){
+      this.object_id = id;  
+    }
+    ProcessArray(values, parname){
+        let total=0;      
+        values.forEach(element => {
+          total += element[parname];
+        });   
+        return total;
+    };
+}
+
+//average
+class AvgColumn{
+    constructor(id){
+      this.object_id = id;  
+    }
+    ProcessArray(values, parname){
+        let total=0;      
+        values.forEach(element => {
+          total += element[parname];
+        });
+      return total / values.length;
+    };
+}
+
+//max
+class MaxColumn{
+    constructor(id){
+      this.object_id = id;  
+    }
+    ProcessArray(values, parname){
+        let max;
+        values.forEach(element => {
+          if(element[parname] > max) max = element[parname];
+        });
+        return max;
+    };
+}
+
+
+
+
+
+
 exports.findOne = (query) => {
-    return createView1(query);
+
+    let c1 = new SumColumn(1);
+    let c2 = new SumColumn(2);
+    let c3 = new SumColumn(3);
+    let c4 = new SumColumn(4);
+
+return createStepedReport(
+    dbodata_repository,  
+    [c1,c2,c3,c4],      //[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}]
+    query.from, 
+    query.to,
+    query.step
+);
+
 };
 
 function addZero(i) {
@@ -61,18 +122,20 @@ function buildRow(row_template, data_array, start, step){
             );
 
         //console.log(values);
-        let value = proc.SumChan(values, "value");
-        row["col" + column.object_id] = value;   
+        let value = column.ProcessArray(values, "value");
+        row["param" + column.object_id] = value;   
     });
     return row;
 }
 
-
-
+let c1 = new SumColumn(1);
+let c2 = new SumColumn(2);
+let c3 = new SumColumn(3);
+let c4 = new SumColumn(4);
 
 createStepedReport(
     dbodata_repository,  
-    [{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}],
+    [c1,c2,c3,c4],//[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}]
     "2020-02-18T22:00:00Z", 
     "2020-02-20T00:00:00Z",
     2
