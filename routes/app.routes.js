@@ -94,15 +94,19 @@ module.exports = (app, mongoose) => {
     app.delete('/guitable/:id', guitable.delete);
 
     //------------------------------------------------------------------------
-   let form = genericcontroller.create(mgsmodel.createFormModel(mongoose));    
-   app.post('/form', form.create);
-   app.get('/form', form.select);
-   app.get('/form/:id', form.findOne);
+   
+   let form_model = mgsmodel.createFormModel(mongoose);
+   let form_repository = grepository.create(form_model);   
+   let form_controller = genericcontroller.create(form_model, form_repository);
+   
+   app.post('/form', form_controller.create);
+   app.get('/form', form_controller.select);
+   app.get('/form/:id', form_controller.findOne);
 
-   app.put('/form', form.update);
-   app.delete('/form', form.delete);
-   app.put('/form/:id', form.update);
-   app.delete('/form/:id', form.delete);
+   app.put('/form', form_controller.update);
+   app.delete('/form', form_controller.delete);
+   app.put('/form/:id', form_controller.update);
+   app.delete('/form/:id', form_controller.delete);
 
        //------------------------------------------------------------------------
        let menu = genericcontroller.create(mgsmodel.createUserMenu(mongoose));    
