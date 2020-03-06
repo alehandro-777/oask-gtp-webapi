@@ -115,4 +115,13 @@ module.exports = (app, mongoose) => {
        app.put('/menu/:id', menu.update);
        app.delete('/menu/:id', menu.delete);
 
+//----------------------------------------------------------------------------------
+    let formdata_model = mgsmodel.createFormDataModel(mongoose);
+    let formdata_repository = grepository.create(formdata_model);   
+    let formdata_controller = genericcontroller.create(formdata_model, formdata_repository);
+    
+    app.post('/formdata', formdata_controller.create);
+    app.get('/formdata', formdata_controller.select);
+    app.get('/formdata/:id', formdata_controller.findOne);
+
 }

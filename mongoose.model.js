@@ -167,7 +167,7 @@ exports.createFormModel = (mongoose) =>{
         name : String,                // friendly  name
         controls : [
             {
-                key: String,          // 'brave', - unique param id 
+                key: String,          // field- param id 
                 label: String,        // friendly field name
                 value: String,        // field value
                 controlType: String,  // 'dropdown', or textbox
@@ -182,6 +182,18 @@ exports.createFormModel = (mongoose) =>{
     let model = mongoose.model('Form', schema);
     return model;
 }
+
+exports.createFormDataModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        form_id : Number,                        // unique ид
+        data : [{key: String, value: String}],  //   key:data array 
+        created_at : { type: Date , default: Date.now} 
+    });
+
+    let model = mongoose.model('FormDataValue', schema);
+    return model;
+}
+
 
 exports.createUserMenu = (mongoose) =>{
     let schema = new mongoose.Schema({
