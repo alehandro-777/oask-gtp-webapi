@@ -16,11 +16,7 @@ class SumColumn{
       this.object_id = id;  
     }
     ProcessArray(values, parname){
-        let total=0;      
-        values.forEach(element => {
-          total += element[parname];
-        });   
-        return total;
+        return values.reduce(function(sum, current) { return sum + current[parname]; }, 0);
     };
 }
 
@@ -30,11 +26,7 @@ class AvgColumn{
       this.object_id = id;  
     }
     ProcessArray(values, parname){
-        let total=0;      
-        values.forEach(element => {
-          total += element[parname];
-        });
-      return total / values.length;
+      return values.reduce(function(sum, current) { return sum + current[parname]; }, 0) / values.length;
     };
 }
 
