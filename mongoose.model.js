@@ -124,8 +124,17 @@ exports.createDBObjectModel = (mongoose) =>{
         name : String,         //key object name
         fullname : String,     //object name
         sname : String,        //short name
-        func : String,         //function name - get state(s) of DBObject
-        params : [{}]          //function params array                    
+        func : { type: String, default: 'Sum' },   //function name - get state(s) of DBObject
+        params : [
+            {
+                key:String,
+                id:Number, 
+                k:{ type: Number, default: 1 }, 
+                model:{ type: String, default: 'DBObjectValue' },
+                attr:{ type: String, default: 'value' },
+                func:{ type: String, default: 'SumAttr' }
+            }
+        ]          //function params array                    
     });
 
     let model = mongoose.model('DBObject', schema);
