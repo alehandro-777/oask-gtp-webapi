@@ -47,14 +47,16 @@ function calcDBO(id, begin, end) {
       
       dbo.params.forEach(element => {
         let model = mongoose.model(element.model);
-        let prms = getOneParamValue(model, element.query, begin, end);
+        let prms = getOneParamValue(model, element, begin, end);
         cmd.push(prms);
       });
   
       Promise.all(cmd).then(values=>{ 
         let res = eval(dbo.func+"(values)"); 
         resolve(res);
-      });
+
+      }).catch(err => 
+        reject(err));
     });
   
   });
@@ -62,32 +64,14 @@ function calcDBO(id, begin, end) {
   
 }
 
-function getOneParamValue(model, query, begin, end) {
-  return model.find(
-    { query, "lastupdate" : {$gte:begin, $lt:end}  }).then(values=>{
-    eval(query.func+"(values,"+query.attr+");");  
+function getOneParamValue(model, element, begin, end) {
+  return model.find({ $or:[element.query], "lastupdate" : {$gte:begin, $lt:end}  }).then(values=>{
+    return eval(element.func+"(values,'"+element.attr+"');");  
 });
+
 }
 
 
-class DBObject {
-    constructor(id) {
-      this.object_id = id;     // unique line ид 
-      this.name;          //key name 
-      this.params = [];        //array of parameters
-      this.formula = (values) => values.reduce(function(sum, current) { return sum + current; }, 0);
-    }
-}
-
-class DBoParameter {
-  constructor(query) {
-    this.query = query;                     //query name {object_id:1...}
-    this.k =1;                      //koef
-    this.model_name ='DBObject';    //mongoose model name
-  }
-}
-
-
-calcDBO(8, "2020-02-18T22:00:00Z", "2020-02-18T23:00:00Z").then(res => {
+calcDBO(7, "2020-02-19T14:00:00Z", "2020-02-19T15:00:00Z").then(res => {
   console.log(res);
 });

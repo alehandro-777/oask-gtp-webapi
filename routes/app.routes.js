@@ -62,9 +62,10 @@ module.exports = (app, mongoose) => {
 
     app.dbodata_repo = dbodata_repository;
 
-
-    let hourdatacontroller = genericcontroller.create(mgsmodel.createHourHlibModel(mongoose)); 
-    app.post('/hourdata', hourdatacontroller.create);
+    let hourdata_model = mgsmodel.createHourHlibModel(mongoose);
+    let hourdata_repository = grepository.create(hourdata_model);   
+    let hourdata_controller = genericcontroller.create(hourdata_model, hourdata_repository); 
+    app.post('/hourdata', hourdata_controller.create);
 
     let instdatacontroller = genericcontroller.create(mgsmodel.createInstHlibModel(mongoose));
     app.post('/instdata', instdatacontroller.create);

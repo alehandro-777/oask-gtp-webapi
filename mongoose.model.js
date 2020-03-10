@@ -127,8 +127,7 @@ exports.createDBObjectModel = (mongoose) =>{
         func : { type: String, default: 'Sum' },   //function name - get state(s) of DBObject
         params : [
             {
-                key:String,
-                id:Number, 
+                query:{},
                 k:{ type: Number, default: 1 }, 
                 model:{ type: String, default: 'DBObjectValue' },
                 attr:{ type: String, default: 'value' },
