@@ -44,7 +44,10 @@ function calcDBO(id, begin, end) {
     let model = mongoose.model('DBObject');
   
     model.findOne({"object_id" : id}).then(dbo=>{
-      
+      if (!dbo) {
+        reject(null);
+        return;
+      }
       dbo.params.forEach(element => {
         let model = mongoose.model(element.model);
         let prms = getOneParamValue(model, element, begin, end);
@@ -74,4 +77,5 @@ function getOneParamValue(model, element, begin, end) {
 
 calcDBO(7, "2020-02-19T14:00:00Z", "2020-02-19T15:00:00Z").then(res => {
   console.log(res);
-});
+}).catch(err => 
+  console.log(err));
