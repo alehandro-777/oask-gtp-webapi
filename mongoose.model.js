@@ -157,11 +157,11 @@ exports.createDBObjectValueModel = (mongoose) =>{
 
 exports.createGuiTableModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        tableid : Number,      // unique ид 
+        table_id : Number,      // unique ид 
         name : String,         //friendly  name 
         columns : [{           //Cfg array
-          name : String,       //column name
-          display : String     //header name
+          key : String,       //column name
+          label : String     //header name
         }] 
     });
 

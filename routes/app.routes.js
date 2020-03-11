@@ -4,14 +4,13 @@ const docscontroll = require('../controllers/docs.controller');
 const templatescontroll = require('../controllers/templates.controller');
 const xmlcontroller = require('../controllers/xml.collection.controller');
 
-
 const genericcontroller = require('../controllers/generic.controller');
-const viewcontroller = require('../controllers/view.controller');
 
 const mgsmodel = require('../mongoose.model');
 
 const grepository = require('../repo/generic.repo');
 
+const report = require('../controllers/view.controller');
 
 module.exports = (app, mongoose) => {
     //auth
@@ -40,8 +39,13 @@ module.exports = (app, mongoose) => {
     app.get('/corrector/:id', corrector_controller.findOne);
 
 
-    let daydatacontroller = genericcontroller.create(mgsmodel.createDayHlibModel(mongoose)); 
-    app.post('/daydata', daydatacontroller.create);
+    let daydata_model = mgsmodel.createDayHlibModel(mongoose);
+    let daydata_repository = grepository.create(daydata_model);   
+    let daydata_controller = genericcontroller.create(daydata_model, daydata_repository); 
+
+    app.post('/daydata', daydata_controller.create);
+    app.get('/daydata/:id', daydata_controller.findOne);
+    app.get('/daydata', daydata_controller.select);
 
 
     let dbo_model = mgsmodel.createDBObjectModel(mongoose);
@@ -67,32 +71,55 @@ module.exports = (app, mongoose) => {
     let hourdata_controller = genericcontroller.create(hourdata_model, hourdata_repository); 
     app.post('/hourdata', hourdata_controller.create);
 
-    let instdatacontroller = genericcontroller.create(mgsmodel.createInstHlibModel(mongoose));
-    app.post('/instdata', instdatacontroller.create);
-    app.get('/instdata/:id', instdatacontroller.select);
 
-    let statdatacontroller = genericcontroller.create(mgsmodel.createStatHlibModel(mongoose));
-    app.post('/statdata', statdatacontroller.create);
+    let instdata_model = mgsmodel.createInstHlibModel(mongoose);
+    let instdata_repository = grepository.create(instdata_model);   
+    let instdata_controller = genericcontroller.create(instdata_model, instdata_repository); 
 
-    let rtdatacontroller = genericcontroller.create(mgsmodel.createRtValueModel(mongoose));
-    app.post('/rtdata', rtdatacontroller.create);
+    app.post('/instdata', instdata_controller.create);
+    app.get('/instdata/:id', instdata_controller.findOne);
+    app.get('/instdata', instdata_controller.select);
+
+    let statdata_model = mgsmodel.createStatHlibModel(mongoose);
+    let statdata_repository = grepository.create(statdata_model);   
+    let statdata_controller = genericcontroller.create(statdata_model, statdata_repository); 
+
+    app.post('/statdata', statdata_controller.create);
+    app.get('/statdata/:id', statdata_controller.findOne);
+    app.get('/statdata', statdata_controller.select);
+
+
+    let rtdata_model = mgsmodel.createRtValueModel(mongoose);
+    let rtdata_repository = grepository.create(rtdata_model);   
+    let rtdata_controller = genericcontroller.create(rtdata_model, rtdata_repository); 
+
+    app.post('/rtdata', rtdata_controller.create);
+    app.get('/rtdata/:id', rtdata_controller.findOne);
+    app.get('/rtdata', rtdata_controller.select);
     
-    let rtsystemcontroller = genericcontroller.create(mgsmodel.createRtSystemModel(mongoose));
-    app.post('/rtsystem', rtsystemcontroller.create);
 
-    app.get('/view/:id', viewcontroller.findOne);
+    let rtsys_model = mgsmodel.createRtSystemModel(mongoose);
+    let rtsys_repository = grepository.create(rtsys_model);   
+    let rtsys_controller = genericcontroller.create(rtsys_model, rtsys_repository); 
+
+    app.post('/rtsystem', rtsys_controller.create);
+    app.post('/rtsystem/:id', rtsys_controller.findOne);
+    app.post('/rtsystem', rtsys_controller.select);
 
 
     //------------------------------------------------------------------------
-    let guitable = genericcontroller.create(mgsmodel.createGuiTableModel(mongoose));    
-    app.post('/guitable', guitable.create);
-    app.get('/guitable', guitable.select);
-    app.get('/guitable/:id', guitable.findOne);
+    let guitable_model = mgsmodel.createGuiTableModel(mongoose);
+    let guitables_repository = grepository.create(guitable_model);   
+    let guitable_controller = genericcontroller.create(guitable_model, guitables_repository); 
+ 
+    app.post('/guitable', guitable_controller.create);
+    app.get('/guitable', guitable_controller.select);
+    app.get('/guitable/:id', guitable_controller.findOne);
 
-    app.put('/guitable', guitable.update);
-    app.delete('/guitable', guitable.delete);
-    app.put('/guitable/:id', guitable.update);
-    app.delete('/guitable/:id', guitable.delete);
+    app.put('/guitable', guitable_controller.update);
+    app.delete('/guitable', guitable_controller.delete);
+    app.put('/guitable/:id', guitable_controller.update);
+    app.delete('/guitable/:id', guitable_controller.delete);
 
     //------------------------------------------------------------------------
    
@@ -128,5 +155,8 @@ module.exports = (app, mongoose) => {
     app.post('/formdata', formdata_controller.create);
     app.get('/formdata', formdata_controller.select);
     app.get('/formdata/:id', formdata_controller.findOne);
+
+    app.get('/report/:id', report.findOne);
+
 
 }

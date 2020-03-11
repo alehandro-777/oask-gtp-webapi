@@ -1,14 +1,4 @@
-const proc = require('./calc.processor.js');
-
-
-const mgsmodel = require('./mongoose.model');
-const grepository = require('./repo/generic.repo');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test1oaskgtp', {useNewUrlParser: true, useUnifiedTopology : true});
-let dbodata_model = mgsmodel.createDBObjectValueModel(mongoose);
-let dbodata_repository = grepository.create(dbodata_model);   
-
-
+const express = require('./index');
 
 //сумматор
 class SumColumn{
@@ -47,8 +37,6 @@ class MaxColumn{
 
 
 
-
-
 exports.findOne = (query) => {
 
     let c1 = new SumColumn(1);
@@ -57,7 +45,7 @@ exports.findOne = (query) => {
     let c4 = new SumColumn(4);
 
 return createStepedReport(
-    dbodata_repository,  
+  express.app.dbodata_repo,  
     [c1,c2,c3,c4],      //[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}]
     query.from, 
     query.to,
@@ -73,10 +61,11 @@ function addZero(i) {
     return i;
 }
 
-function createStepedReport(repo, params, begin, end, step) {
+function createStepedReport(repo, params, begin, end, st) {
     let result = [];
     let start = new Date(begin);
     let stop = new Date(end);
+    let step = parseInt(st);
 
   return new Promise((resolve, reject) => { 
     
@@ -84,6 +73,7 @@ function createStepedReport(repo, params, begin, end, step) {
         { $or:params, "lastupdate" : {$gte:begin, $lt:end}  }).then(values=>{
 
         while (start < stop) {          
+
             let row = buildRow(params, values, start, step);
             result.push(row);
             start.setHours(start.getHours() + step);   
@@ -119,19 +109,4 @@ function buildRow(row_template, data_array, start, step){
     });
     return row;
 }
-
-let c1 = new SumColumn(1);
-let c2 = new SumColumn(2);
-let c3 = new SumColumn(3);
-let c4 = new SumColumn(4);
-
-createStepedReport(
-    dbodata_repository,  
-    [c1,c2,c3,c4],//[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}]
-    "2020-02-18T22:00:00Z", 
-    "2020-02-20T00:00:00Z",
-    2
-).then(res=>{
-    console.log(res);
-});
 
