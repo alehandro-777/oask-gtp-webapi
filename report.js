@@ -44,12 +44,17 @@ exports.findOne = (query) => {
     let c3 = new SumColumn(3);
     let c4 = new SumColumn(4);
 
+    let start = new Date(query.dt);
+    let stop = new Date(query.dt);
+
+    start.setDate(start.getDate() - 1); 
+
 return createStepedReport(
   express.app.dbodata_repo,  
     [c1,c2,c3,c4],      //[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}]
-    query.from, 
-    query.to,
-    query.step
+    start.toISOString(), 
+    stop.toISOString(),
+    "1"
 );
 
 };
