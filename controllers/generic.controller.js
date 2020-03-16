@@ -59,7 +59,7 @@ result.select = (req, res) => {
     Object.keys(req.query).forEach(e => req.query[e] = (parseInt(req.query[e])) ? parseInt(req.query[e]) : req.query[e]);
 
     cmd.push(repository.find(req.query, {}, opt));
-    cmd.push(repository.count());
+    cmd.push(repository.count(req.query));
 
     Promise.all(cmd).then(
         result=>{

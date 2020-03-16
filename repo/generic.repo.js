@@ -20,9 +20,9 @@ result.createMany = (objarray) => {
 
 //(query, fields, { skip: 10, limit: 5 }, function(err, results) { ... });
 
-result.count = () => {
+result.count = (query) => {
     return new Promise((resolve, reject) => {
-        model.countDocuments().exec((err, count) => {
+        model.countDocuments(query).exec((err, count) => {
         if (err) { reject(err); return;}
         resolve(count);
     });

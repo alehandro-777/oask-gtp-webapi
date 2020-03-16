@@ -98,13 +98,13 @@ exports.createRtValueModel = (mongoose) =>{
 
 exports.createCorrectorModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        corrid : Number,
+        _id : Number,           //key
         addr : Number,
         name : String,
         ip : String,            //for ftp or ASK-2
         ftpDir : String,
         channels : [{           //CorrectorChannelCfg
-            chid : Number,      //unique id - для привязки к линии как к источнику данных 
+            _id : Number,      //unique id - для привязки к линии как к источнику данных 
             chno : Number,      //1 2 3 internal corrector channel number
             name : String,      //friendly line name  
             template : String,  //шаблон имени файла хослиб
@@ -118,29 +118,34 @@ exports.createCorrectorModel = (mongoose) =>{
     return model;
 }
 
+exports.createPVVGModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        _id : Number,                                       // unique DBObject ид 
+        name : { type: String, default: 'Name' },           //key object name
+        form_id : Number,                                   //create / edit form  gui model
+        channels : { type: String, default: '[]' }          //JSON array
+    });
+
+    let model = mongoose.model('PVVGObject', schema);
+    return model;
+}
+
+
 exports.createDBObjectModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        object_id : Number,    // unique DBObject ид 
-        name : String,         //key object name
-        fullname : String,     //object name
-        sname : String,        //short name
-        func : { type: String, default: 'Sum' },   //function name - get state(s) of DBObject
-        params : [
-            {
-                query:{},
-                k:{ type: Number, default: 1 }, 
-                model:{ type: String, default: 'DBObjectValue' },
-                attr:{ type: String, default: 'value' },
-                func:{ type: String, default: 'SumAttr' }
-            }
-        ]          //function params array                    
+        _id : Number,                                       // unique DBObject ид 
+        name : { type: String, default: 'Name' },           //key object name
+        sname : { type: String, default: 'Short Name' },    //key object short name
+        fullname : { type: String, default: 'Full name' },  //object full name
+        form_id : Number,                                   //create / edit form  gui model
+        model : String,                                     //mongoose model name for values object
     });
 
     let model = mongoose.model('DBObject', schema);
     return model;
 }
 
-//states of DBObject
+//example model for values object
 exports.createDBObjectValueModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         object_id : Number,     // unique line ид 
@@ -171,7 +176,7 @@ exports.createGuiTableModel = (mongoose) =>{
 
 exports.createFormModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        formid : Number,              // unique ид
+        _id : Number,              // unique ид
         name : String,                // friendly  name
         controls : [
             {
@@ -180,6 +185,7 @@ exports.createFormModel = (mongoose) =>{
                 value: String,        // field value
                 controlType: String,  // 'dropdown', or textbox
                 order: Number,        //rendering order
+                type:{ type: String,  default: "text" },    // <input type="..."
                 options: [
                   { key: String,  value: String }     //options for select element
                 ]        
@@ -194,6 +200,7 @@ exports.createFormModel = (mongoose) =>{
 exports.createFormDataModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         form_id : Number,                        // unique ид
+        object_id : Number,                        // unique object ид
         data : [{key: String, value: String}],  //   key:data array 
         created_at : { type: Date , default: Date.now} 
     });
@@ -215,3 +222,5 @@ exports.createUserMenu = (mongoose) =>{
     let model = mongoose.model('UserBundle', schema);
     return model;
 }
+
+
