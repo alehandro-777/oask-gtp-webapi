@@ -9,7 +9,10 @@ exports.createDayHlibModel = (mongoose) =>{
         quality : Number,
         ch_id : Number,  //id канала корректора
         rec_offset : Number,  //rec offset in h lib file
-    });    
+    });
+    
+    schema.index({ "ch_id": 1, "rec_offset": 1, "start": 1}, { unique: true });
+
     let model = mongoose.model('DayValue', schema);
     return model;
 }
@@ -25,7 +28,10 @@ exports.createHourHlibModel = (mongoose) =>{
         quality : Number,
         ch_id : Number,  //id канала корректора
         rec_offset : Number,  //rec offset in h lib file
-    });    
+    });
+    
+    schema.index({ "ch_id": 1, "rec_offset": 1, "start": 1}, { unique: true });    
+
     let model = mongoose.model('HourValue', schema);
     return model;
 }

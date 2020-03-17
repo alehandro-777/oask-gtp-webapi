@@ -1,6 +1,8 @@
 const auth = require('../controllers/auth.controller');
 const genericcontroller = require('../controllers/generic.controller');
 const mgsmodel = require('../mongoose.model');
+const aggrmgsmodel = require('../aggregate.mongoose.model');
+
 const grepository = require('../repo/generic.repo');
 const report = require('../controllers/view.controller');
 
@@ -56,9 +58,24 @@ module.exports = (app, mongoose) => {
     let formdata_model = mgsmodel.createFormDataModel(mongoose);
     CreateEndPoints(app, formdata_model, "formdata");
 
+    let aggrmgs_model = aggrmgsmodel.createRegimPSGModel(mongoose);
+    CreateEndPoints(app, aggrmgs_model, "regim-mrin");
+
+
     app.get('/report/:id', report.findOne);
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 function CreateEndPoints(app, model, route_name)
 {

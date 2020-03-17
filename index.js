@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const xmlparser = require('express-xml-bodyparser');
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test1oaskgtp', {useNewUrlParser: true, useUnifiedTopology : true});
+mongoose.connect('mongodb://localhost:27017/test1oaskgtp', {useNewUrlParser: true, useUnifiedTopology : true, useCreateIndex: true});
 
 const app = express();
 exports.mongoose = mongoose;
