@@ -22,12 +22,9 @@ result.create = (req, res) => {
 
 // GET
 result.findOne = (req, res) => {
-    let id = req.params.id;
+    let id = parseInt(req.params.id);
     
-    Object.keys(req.query).forEach(e => req.query[e] = (parseInt(req.query[e])) ? parseInt(req.query[e]) : req.query[e]);
-    req.query["_id"] = id;
-
-    repository.findOne(req.query).then(
+    repository.findOne({"_id": id}).then(
         result=>{
             return res.send(result);          
         },

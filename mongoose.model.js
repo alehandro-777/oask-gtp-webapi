@@ -218,14 +218,14 @@ exports.createFormDataModel = (mongoose) =>{
 
 exports.createUserMenu = (mongoose) =>{
     let schema = new mongoose.Schema({
-        userid : Number,              // unique ид
-        name : String,                // login  name
+        _id : Number,              // unique ид
+        name : String,             // login  name
         buttons: [
             { label: String,  link: String }     //menu buttons
           ]  
     });
 
-    let model = mongoose.model('UserBundle', schema);
+    let model = mongoose.model('Menu', schema);
     return model;
 }
 

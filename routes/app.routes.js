@@ -1,7 +1,7 @@
 const auth = require('../controllers/auth.controller');
 const genericcontroller = require('../controllers/generic.controller');
-const mgsmodel = require('../mongoose.model');
-const aggrmgsmodel = require('../aggregate.mongoose.model');
+const mongoose_model = require('../mongoose.model');
+const aggregate_model = require('../aggregate.mongoose.model');
 
 const grepository = require('../repo/generic.repo');
 const report = require('../controllers/view.controller');
@@ -14,51 +14,51 @@ module.exports = (app, mongoose) => {
     app.post('/auth/register', auth.register);
     
   
-    let corrector_model = mgsmodel.createCorrectorModel(mongoose);
+    let corrector_model = mongoose_model.createCorrectorModel(mongoose);
     CreateEndPoints(app, corrector_model, "corrector");
 
-    let daydata_model = mgsmodel.createDayHlibModel(mongoose);
+    let daydata_model = mongoose_model.createDayHlibModel(mongoose);
     CreateEndPoints(app, daydata_model, "daydata");
 
 
-    let dbo_model = mgsmodel.createDBObjectModel(mongoose);   
+    let dbo_model = mongoose_model.createDBObjectModel(mongoose);   
     CreateEndPoints(app, dbo_model, "dbo");
 
-    let dbodata_model = mgsmodel.createDBObjectValueModel(mongoose);
+    let dbodata_model = mongoose_model.createDBObjectValueModel(mongoose);
     CreateEndPoints(app, dbodata_model, "dbodata");
 
-    let hourdata_model = mgsmodel.createHourHlibModel(mongoose);
+    let hourdata_model = mongoose_model.createHourHlibModel(mongoose);
     CreateEndPoints(app, hourdata_model, "hourdata");
 
-    let instdata_model = mgsmodel.createInstHlibModel(mongoose);
+    let instdata_model = mongoose_model.createInstHlibModel(mongoose);
     CreateEndPoints(app, instdata_model, "instdata");
 
-    let statdata_model = mgsmodel.createStatHlibModel(mongoose);
+    let statdata_model = mongoose_model.createStatHlibModel(mongoose);
     CreateEndPoints(app, statdata_model, "statdata");
 
-    let rtdata_model = mgsmodel.createRtValueModel(mongoose);
+    let rtdata_model = mongoose_model.createRtValueModel(mongoose);
     CreateEndPoints(app, rtdata_model, "rtdata");
     
-    let rtsys_model = mgsmodel.createRtSystemModel(mongoose);
+    let rtsys_model = mongoose_model.createRtSystemModel(mongoose);
     CreateEndPoints(app, rtsys_model, "rtsystem");
 
     //------------------------------------------------------------------------
-    let guitable_model = mgsmodel.createGuiTableModel(mongoose);
+    let guitable_model = mongoose_model.createGuiTableModel(mongoose);
     CreateEndPoints(app, guitable_model, "guitable");
     //------------------------------------------------------------------------
    
-   let form_model = mgsmodel.createFormModel(mongoose);
+   let form_model = mongoose_model.createFormModel(mongoose);
    CreateEndPoints(app, form_model, "form");
 
    //------------------------------------------------------------------------
-   let menu_model = genericcontroller.create(mgsmodel.createUserMenu(mongoose));    
+   let menu_model = mongoose_model.createUserMenu(mongoose);    
    CreateEndPoints(app, menu_model, "menu");
 
 //----------------------------------------------------------------------------------
-    let formdata_model = mgsmodel.createFormDataModel(mongoose);
+    let formdata_model = mongoose_model.createFormDataModel(mongoose);
     CreateEndPoints(app, formdata_model, "formdata");
 
-    let aggrmgs_model = aggrmgsmodel.createRegimPSGModel(mongoose);
+    let aggrmgs_model = aggregate_model.createRegimPSGModel(mongoose);
     CreateEndPoints(app, aggrmgs_model, "regim-mrin");
 
 
