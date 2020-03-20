@@ -45,6 +45,7 @@ exports.createMrinVtvModel = (mongoose) =>{
 }
 
 exports.createRegimPSGModel = (mongoose) =>{
+    
     let PSGRegim = new mongoose.Schema({
         q_in: Number,
         q_out: Number,
@@ -61,8 +62,8 @@ exports.createRegimPSGModel = (mongoose) =>{
 
     let schema = new mongoose.Schema({
         lastupdate : { type: Date , default: Date.now},
+        created_at : { type: Date , default: Date.now},
         rows:[{
-            time : { type: Date , default: Date.now},
             hour : Number,
             q_in_total_ogsu: Number,
             q_out_total_ogsu: Number,
@@ -77,8 +78,6 @@ exports.createRegimPSGModel = (mongoose) =>{
             psg_olishevka : PSGRegim
         }],
         total_row:{
-            time : { type: Date , default: Date.now},
-            hour : Number,
             q_in_total_ogsu: Number,
             q_out_total_ogsu: Number,
             q_in_total_vupzg: Number,
@@ -93,6 +92,8 @@ exports.createRegimPSGModel = (mongoose) =>{
         }
     });
     
+    let model_rg_psg = mongoose.model('RegimPsg', PSGRegim);
+    let model_rg_dks = mongoose.model('RegimDks', DksRegim);
     let model = mongoose.model('RegimMrinPSGDay', schema);
     return model;
 }
@@ -100,7 +101,7 @@ exports.createRegimPSGModel = (mongoose) =>{
 exports.createDayBallanceMrinModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         lastupdate : { type: Date , default: Date.now},
-        
+        created_at : { type: Date , default: Date.now},
         cols:[{
             begin : { type: Date , default: Date.now},
             end : { type: Date , default: Date.now},

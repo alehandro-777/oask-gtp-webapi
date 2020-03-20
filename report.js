@@ -1,41 +1,7 @@
 const express = require('./index');
 
-//сумматор
-class SumColumn{
-    constructor(id){
-      this.object_id = id;  
-    }
-    ProcessArray(values, parname){
-        return values.reduce(function(sum, current) { return sum + current[parname]; }, 0);
-    };
-}
-
-//average
-class AvgColumn{
-    constructor(id){
-      this.object_id = id;  
-    }
-    ProcessArray(values, parname){
-      return values.reduce(function(sum, current) { return sum + current[parname]; }, 0) / values.length;
-    };
-}
-
-//max
-class MaxColumn{
-    constructor(id){
-      this.object_id = id;  
-    }
-    ProcessArray(values, parname){
-        let max;
-        values.forEach(element => {
-          if(element[parname] > max) max = element[parname];
-        });
-        return max;
-    };
-}
-
-
-
+const mong_model = require('./mongoose.model');
+const mong_aggr_model = require('./aggregate.mongoose.model');
 
 exports.findOne = (query) => {
 
@@ -115,3 +81,34 @@ function buildRow(row_template, data_array, start, step){
     return row;
 }
 
+function kvpToObjact(kvp_array) {
+  kvp_array.map((e) => {
+    return {[e.key]: e.value};
+ });
+}
+
+function updateRegimDksForms(objects, from) {
+  let Model = express.mongoose.model('DksRegim');
+
+  model.find( { $or:params, "created_at" : {$gte:from}  }).then(values=>{
+      values.forEach(form_value => {
+      let value_object = kvpToObjact(form_value.data);
+      let mongoose_value_object = new Model(value_object);
+      updateRegimDksAggregate(mongoose_value_object);
+    });
+  });
+}
+
+function updateRegimDksAggregate(mongoose_value_object) {
+  let Model = express.mongoose.model('RegimMrinPSGDay');//DksRegim
+  Model.find( { "lastupdate" :  mongoose_value_object.date }).then(regim_aggregates=>{
+    let regim_aggregate;
+    if (regim_aggregates.length === 0) {
+      regim_aggregate = new Model({"lastupdate" :  mongoose_value_object.date});
+    }
+    else{
+      regim_aggregate = regim_aggregates[0];
+    }
+    
+  });
+}
