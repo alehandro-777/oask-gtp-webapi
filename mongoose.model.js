@@ -141,7 +141,7 @@ exports.createDBObjectModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         _id : Number,                                       // unique DBObject ид 
         name : { type: String, default: 'Name' },           //key object name
-        sname : { type: String, default: 'Short Name' },    //key object short name
+        key : { type: String, default: 'short_name' },      //key object short name for aggregation
         fullname : { type: String, default: 'Full name' },  //object full name
         form_id : Number,                                   //create / edit form  gui model
         model : String,                                     //mongoose model name for values object
@@ -168,7 +168,7 @@ exports.createDBObjectValueModel = (mongoose) =>{
 
 exports.createGuiTableModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        table_id : Number,      // unique ид 
+        _id : Number,      // unique ид 
         name : String,         //friendly  name 
         columns : [{           //Cfg array
           key : String,       //column name

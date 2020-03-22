@@ -47,54 +47,80 @@ exports.createMrinVtvModel = (mongoose) =>{
 exports.createRegimPSGModel = (mongoose) =>{
     
     let PSGRegim = new mongoose.Schema({
+        date : { type: Date , default: Date.now},
+        key : String,
+        model : String,
+        hour : Number,
         q_in: Number,
         q_out: Number,
         num_lines: Number
     });
     
     let DksRegim = new mongoose.Schema({
+        date : { type: Date , default: Date.now},
+        key : String,
+        model : String,
+        hour : Number,
         p_in: Number,
         p_out: Number,
-        e: Number,
+        e: { type: Number , default: 1.0},
         num_gpa: Number
     });  
 
+    let DksRegimRow = new mongoose.Schema({
+            time: String,
+            q_in_total_ogsu: { type: Number , default: 10.0},
+            q_out_total_ogsu: { type: Number , default: 20.0},
+            q_in_total_vupzg: { type: Number , default: 0.0},
+            q_out_total_vupzg: { type: Number , default: 0.0},
+            kc_bobrovnitska_05 : DksRegim,
+            kc_mrin : DksRegim,
+            psg_red_partizanen : PSGRegim,
+            kc_solokha : DksRegim,
+            psg_solokha : PSGRegim,
+            kc_olishevka : DksRegim,
+            psg_olishevka : PSGRegim
+    });
 
     let schema = new mongoose.Schema({
         lastupdate : { type: Date , default: Date.now},
         created_at : { type: Date , default: Date.now},
-        rows:[{
-            hour : Number,
-            q_in_total_ogsu: Number,
-            q_out_total_ogsu: Number,
-            q_in_total_vupzg: Number,
-            q_out_total_vupzg: Number,
-            kc_bobrovnitska_05 : DksRegim,
-            kc_mrin : DksRegim,
-            psg_red_partizanen : PSGRegim,
-            kc_solokha : DksRegim,
-            psg_solokha : PSGRegim,
-            kc_olishevka : DksRegim,
-            psg_olishevka : PSGRegim
-        }],
-        total_row:{
-            q_in_total_ogsu: Number,
-            q_out_total_ogsu: Number,
-            q_in_total_vupzg: Number,
-            q_out_total_vupzg: Number,
-            kc_bobrovnitska_05 : DksRegim,
-            kc_mrin : DksRegim,
-            psg_red_partizanen : PSGRegim,
-            kc_solokha : DksRegim,
-            psg_solokha : PSGRegim,
-            kc_olishevka : DksRegim,
-            psg_olishevka : PSGRegim
-        }
+        rows:[DksRegimRow],                                 //index - contract hour
+        total_row : DksRegimRow
     });
     
-    let model_rg_psg = mongoose.model('RegimPsg', PSGRegim);
-    let model_rg_dks = mongoose.model('RegimDks', DksRegim);
-    let model = mongoose.model('RegimMrinPSGDay', schema);
+
+    schema.methods.calc_total_row = function () {
+        if (!this.total_row) {
+            this.total_row  = new model_rg_dks_row();
+        }
+        sum_column.call(this, "q_in_total_ogsu");
+        sum_column.call(this, "q_out_total_ogsu");
+        sum_column.call(this, "q_in_total_vupzg");
+        sum_column.call(this, "q_out_total_vupzg");
+
+        function sum_column(column_name) {
+            this.total_row[column_name] = this.rows.reduce((sum, current)=> {
+                if (!current) return sum;
+                return sum + current[column_name]; 
+            }, 0);
+        }
+    }
+    schema.methods.set_regim_cell = function (mongoose_value_object) {
+
+        if (!this.rows[mongoose_value_object.hour]) {
+            this.rows[mongoose_value_object.hour] = new model_rg_dks_row({"time": `${mongoose_value_object.hour}-00`});
+        } 
+
+        this.rows[mongoose_value_object.hour][mongoose_value_object.key] = mongoose_value_object;    
+    }
+
+
+    let model_rg_psg = mongoose.model('PsgRegim', PSGRegim);
+    let model_rg_dks = mongoose.model('DksRegim', DksRegim);
+    let model_rg_dks_row = mongoose.model('DksRegimRow', DksRegimRow);
+    let model = mongoose.model('RegimMrinPSGDay', schema);  
+
     return model;
 }
 

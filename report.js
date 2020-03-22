@@ -1,29 +1,15 @@
 const express = require('./index');
-
 const mong_model = require('./mongoose.model');
 const mong_aggr_model = require('./aggregate.mongoose.model');
 
 exports.findOne = (query) => {
+  let Model = express.mongoose.model('RegimMrinPSGDay');
+  return Model.findOne( {  });
 
-    let c1 = new SumColumn(1);
-    let c2 = new SumColumn(2);
-    let c3 = new SumColumn(3);
-    let c4 = new SumColumn(4);
-
-    let start = new Date(query.dt);
-    let stop = new Date(query.dt);
-
-    start.setDate(start.getDate() - 1); 
-
-return createStepedReport(
-  express.app.dbodata_repo,  
-    [c1,c2,c3,c4],      //[{"object_id":1},{"object_id":2},{"object_id":3},{"object_id":4}]
-    start.toISOString(), 
-    stop.toISOString(),
-    "1"
-);
-
+  //return updateRegimDksForms([1, 2, 3, 4, 5 ,6, 7], "2018-02-19T00:00:00Z");
 };
+
+setInterval(() => updateRegimDksForms([1, 2, 3, 4, 5 ,6, 7], "2018-02-19T00:00:00Z"), 10000);
 
 function addZero(i) {
     if (i < 10) {
@@ -82,33 +68,61 @@ function buildRow(row_template, data_array, start, step){
 }
 
 function kvpToObjact(kvp_array) {
-  kvp_array.map((e) => {
-    return {[e.key]: e.value};
- });
+  return kvp_array.reduce((res, current) => { 
+    res[current.key] = current.value;
+    return res;
+  }, {});
 }
 
 function updateRegimDksForms(objects, from) {
-  let Model = express.mongoose.model('DksRegim');
+return new Promise((resolve, reject) => {
+  let Model = express.mongoose.model('FormDataValue');
 
-  model.find( { $or:params, "created_at" : {$gte:from}  }).then(values=>{
-      values.forEach(form_value => {
-      let value_object = kvpToObjact(form_value.data);
-      let mongoose_value_object = new Model(value_object);
-      updateRegimDksAggregate(mongoose_value_object);
+
+  let params = objects.map( e => {return {["object_id"]: e}});
+
+  Model.find( { $or:params, "created_at" : {$gte:from}  }).then(values=>{
+    let cmds = [];
+    values.forEach(form_value => {
+        let value_object = kvpToObjact(form_value.data);
+        let Value_Model = express.mongoose.model(value_object.model);
+        let mongoose_value_object = new Value_Model(value_object);
+        let prms = updateRegimDksAggregate(mongoose_value_object);
+        cmds.push(prms);
     });
+
+    let all = cmds.reduce((promiseChain, currentTask) => {
+      return promiseChain.then(currentTask);
+  }, cmds[0]);
+
+  all.then(res=>{
+    console.log("OK");
+    resolve("OK");
   });
+
+  });
+
+});
 }
 
 function updateRegimDksAggregate(mongoose_value_object) {
-  let Model = express.mongoose.model('RegimMrinPSGDay');//DksRegim
-  Model.find( { "lastupdate" :  mongoose_value_object.date }).then(regim_aggregates=>{
-    let regim_aggregate;
-    if (regim_aggregates.length === 0) {
-      regim_aggregate = new Model({"lastupdate" :  mongoose_value_object.date});
-    }
-    else{
-      regim_aggregate = regim_aggregates[0];
-    }
+  return new Promise((resolve, reject) => {
+    let Model = express.mongoose.model('RegimMrinPSGDay'); 
+    let Model_row = express.mongoose.model('DksRegimRow');
     
+    //console.log(mongoose_value_object);
+    Model.findOneAndUpdate({ "lastupdate" :  mongoose_value_object.date }, {"lastupdate" :  mongoose_value_object.date}, {
+      new: true,
+      upsert: true // Make this update into an upsert
+    }).then(regim_aggregate =>{
+  
+      regim_aggregate.set_regim_cell(mongoose_value_object);
+      regim_aggregate.calc_total_row();
+
+      regim_aggregate.save(function (err, aggr) {
+        if (err) return reject(err); 
+        resolve(regim_aggregate);
+      });
+    });
   });
 }
