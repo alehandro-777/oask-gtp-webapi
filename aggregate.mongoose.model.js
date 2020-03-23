@@ -209,3 +209,52 @@ exports.createEventHistoryModel = (mongoose) =>{
     let model = mongoose.model('ObjectEvent', schema);
     return model;
 }
+
+exports.createPvvgDayModel = (mongoose) =>{
+    let Data_schema = new mongoose.Schema({
+        hour: Number,           //hour number
+        hour_offset: Number,    //offset, coz hour is not unique
+        p: Number,
+        t: Number,
+        dp: Number,
+        q: Number,
+        lastupdate : { type: Date , default: Date.now} 
+    });
+
+    let schema = new mongoose.Schema({
+        lastupdate : { type: Date , default: Date.now},
+        created_at : { type: Date , default: Date.now},
+        hours : [{Data_schema}],    //index - hour + offset
+        total_row : Data_schema
+    });
+
+    function calc_total() {
+        sum_column("q");
+        avg_column("p");
+        avg_column("t");
+        max_column("dp");
+        max_column("lastupdate");
+    }
+
+    function sum_column(column_name) {
+        this.total_row[column_name] = this.hours.filter(el=> el !== null).reduce((sum, current)=> {
+            return sum + current[column_name]; 
+        }, 0);
+    }
+    function avg_column(column_name) {
+        let temp_arr = this.hours.filter(el=> el !== null);
+        this.total_row[column_name] = temp_arr.reduce((sum, current)=> {
+            return sum + current[column_name]; 
+        }, 0) / temp_arr.length;
+    }
+    function max_column(column_name) {
+        this.total_row[column_name] = this.hours.filter(el=> el !== null).reduce((sum, current)=> {
+            return (sum < current[column_name]) ? current[column_name] : sum; 
+        }, 0);
+    }
+
+    let data_model = mongoose.model('FloTecHourRec', Data_schema);
+    let model = mongoose.model('PvvgDayReport', schema);
+
+    return model;
+}

@@ -9,7 +9,7 @@ exports.findOne = (query) => {
   //return updateRegimDksForms([1, 2, 3, 4, 5 ,6, 7], "2018-02-19T00:00:00Z");
 };
 
-setInterval(() => updateRegimDksForms([1, 2, 3, 4, 5 ,6, 7], "2018-02-19T00:00:00Z"), 10000);
+//setInterval(() => updateRegimDksForms([1, 2, 3, 4, 5 ,6, 7], "2018-02-19T00:00:00Z"), 10000);
 
 function addZero(i) {
     if (i < 10) {

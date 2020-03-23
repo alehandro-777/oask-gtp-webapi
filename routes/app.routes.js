@@ -6,7 +6,7 @@ const aggregate_model = require('../aggregate.mongoose.model');
 const grepository = require('../repo/generic.repo');
 const report = require('../controllers/view.controller');
 
-
+const test = require('../pvvg');
 
 module.exports = (app, mongoose) => {
     //auth
@@ -61,6 +61,8 @@ module.exports = (app, mongoose) => {
     let aggrmgs_model = aggregate_model.createRegimPSGModel(mongoose);
     CreateEndPoints(app, aggrmgs_model, "regim-mrin");
 
+    aggrmgs_model = aggregate_model.createPvvgDayModel(mongoose);
+    CreateEndPoints(app, aggrmgs_model, "pvvg");
 
     app.get('/report/:id', report.findOne);
 
