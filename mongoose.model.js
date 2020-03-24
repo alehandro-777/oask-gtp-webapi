@@ -207,7 +207,7 @@ exports.createFormDataModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         form_id : Number,                        // unique ид
         object_id : Number,                        // unique object ид
-        data : [{key: String, value: String}],  //   key:data array 
+        data : [{}],                                //   key:data array 
         created_at : { type: Date , default: Date.now} 
     });
 

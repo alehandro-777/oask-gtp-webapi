@@ -224,7 +224,7 @@ exports.createPvvgDayModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         lastupdate : { type: Date , default: Date.now},
         created_at : { type: Date , default: Date.now},
-        hours : [{Data_schema}],    //index - hour + offset
+        hours : [{}],    //index - hour + offset
         total_row : Data_schema
     });
 
