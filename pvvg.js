@@ -10,6 +10,10 @@ setInterval(() => buildPvvgDaysAggregate([1, 2, 3, 4], new Date("2018-02-19T00:0
     console.log(res);
 }), 5000);
 
+setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2018-02-19T00:00:00Z")).then(res=>{
+  console.log(res);
+}), 5000);
+
 
 
 function buildPvvgHoursAggregate(objects, from) {
@@ -91,4 +95,28 @@ function buildRegimAggregate(objects, from) {
             resolve(values);
       });    
     });
+}
+
+function runningTotalAggregate(objects, from) {
+  return new Promise((resolve, reject) => {
+    let collection = express.mongoose.connection.db.collection('PvvgDayValue');
+
+    let mapFunction1 = function() {
+      let dt = new Date(this._id);
+      emit(this._id, this.q);
+    };
+    var reduceFunction1 = function(keyCustId, values) {
+      return Array.sum(values);
+    };
+
+    collection.mapReduce( 
+      mapFunction1, 
+      reduceFunction1,
+      { out: "map_reduce_example" })
+    .then(err, res=>{
+      console.log(res);
+      resolve(res);
+    }); 
+
+  });
 }
