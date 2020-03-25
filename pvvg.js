@@ -1,16 +1,16 @@
 const express = require('./index');
 const mong_model = require('./mongoose.model');
 const mong_aggr_model = require('./aggregate.mongoose.model');
-
+/*
 setInterval(() => buildRegimAggregate([1, 2, 3, 4], new Date("2018-02-19T00:00:00Z")).then(res=>{
-    console.log(res);
+    //console.log(res);
 }), 5000);
 
 setInterval(() => buildPvvgDaysAggregate([1, 2, 3, 4], new Date("2018-02-19T00:00:00Z")).then(res=>{
-    console.log(res);
+    //console.log(res);
 }), 5000);
-
-setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2018-02-19T00:00:00Z")).then(res=>{
+*/
+setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2020-02-02T00:00:00Z")).then(res=>{
   console.log(res);
 }), 5000);
 
@@ -97,26 +97,34 @@ function buildRegimAggregate(objects, from) {
     });
 }
 
-function runningTotalAggregate(objects, from) {
+function runningTotalAggregate(objects, to) {
   return new Promise((resolve, reject) => {
-    let collection = express.mongoose.connection.db.collection('PvvgDayValue');
+    let collection = express.mongoose.connection.db.collection('PvvgDayValue');       
+    let params = objects.map( e => {return {["ch_id"]: e}});  //channel Ids 
+    let start = new Date();
+    start.setTime(to.getTime());
+    start.setDate(1);
 
-    let mapFunction1 = function() {
-      let dt = new Date(this._id);
-      emit(this._id, this.q);
-    };
-    var reduceFunction1 = function(keyCustId, values) {
-      return Array.sum(values);
-    };
-
-    collection.mapReduce( 
-      mapFunction1, 
-      reduceFunction1,
-      { out: "map_reduce_example" })
-    .then(err, res=>{
-      console.log(res);
-      resolve(res);
-    }); 
-
+    collection.aggregate([ 
+        {$match:{ "object_id": 111, "lastupdate" : {$gte:start, $lte:to }} },          
+        {$sort:{_id:1}},
+        {$group: { _id: { $dateToString: { format: "%Y-%m", date: "$lastupdate" } }, 
+        q: {$sum: "$q"}, 
+        p: {$max: "$p"}, 
+        dp: {$max: "$dp"}, 
+        t: {$max: "$t"},
+        begin: {$first: "$lastupdate"}, 
+        lastupdate: {$last: "$lastupdate"}  
+    }},
+        {$merge: { into: "PvvgRunDayValue", whenMatched: "replace" } }
+      ], function(err, cursor) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          cursor.toArray().then(values => {
+          resolve(values);
+          });
+    });    
   });
 }
