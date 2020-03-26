@@ -4,7 +4,7 @@ exports.createDayHlibModel = (mongoose) =>{
         t : Number,
         dp : Number,
         q : Number,
-        start : { type: Date , default: Date.now},
+        start : { type: Date , default: Date.now},          // !!! lastupdate - 7 start of contract day
         lastupdate : { type: Date , default: Date.now},
         quality : Number,
         ch_id : Number,  //id канала корректора
@@ -23,7 +23,7 @@ exports.createHourHlibModel = (mongoose) =>{
         t : Number,
         dp : Number,
         q : Number,
-        start : { type: Date , default: Date.now},
+        start : { type: Date , default: Date.now},           // !!! lastupdate - 7 start of contract day
         lastupdate : { type: Date, default: Date.now },
         quality : Number,
         ch_id : Number,  //id канала корректора
@@ -230,3 +230,93 @@ exports.createUserMenu = (mongoose) =>{
 }
 
 
+exports.createVtvModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        date : { type: Date },
+        dks: Number,
+        fuel: Number,
+        psg: Number,
+        object_id: Number,
+        created_at : { type: Date , default: Date.now}
+    });  
+    let model = mongoose.model('VtvDay', schema);
+    return model;
+}
+
+exports.createRegimDksModel = (mongoose) =>{       
+    let schema = new mongoose.Schema({
+        date : { type: Date },
+        key : String,
+        model : String,
+        hour : Number,
+        p_in: Number,
+        p_out: Number,
+        e: { type: Number , default: 1.0},
+        num_gpa: Number,
+        object_id: Number,
+        created_at : { type: Date , default: Date.now}
+    });  
+
+    let model = mongoose.model('RegimDksHourValue', schema);  
+
+    return model;
+}
+
+exports.createRegimPSGModel = (mongoose) =>{    
+    let schema = new mongoose.Schema({
+        date : { type: Date },
+        key : String,
+        model : String,
+        hour : Number,
+        q_in: Number,
+        q_out: Number,
+        num_lines: Number,
+        object_id: Number,
+        created_at : { type: Date , default: Date.now}
+    });
+    let model = mongoose.model('RegimPSGHourValue', schema);  
+    return model;
+}
+
+exports.createEventHistoryModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        _id: Number,        //valve object id
+        history :[{
+            state: String,
+            value: Number,   
+            lastupdate : { type: Date , default: Date.now}, 
+        }],
+    });
+    
+    let model = mongoose.model('ObjectEvent', schema);
+    return model;
+}
+
+exports.createPvvgDValueModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        _id : { type: Date },
+        p: Number,
+        t: Number,
+        dp: Number,
+        q: Number,
+        object_id: Number,
+        lastupdate : { type: Date , default: Date.now},
+        childs:[{}]
+    }, {collection:'PvvgDayValues'});
+    let model = mongoose.model('PvvgDayValue', schema);
+    return model;
+}
+
+exports.createPvvgHValueModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        _id : { type: Date },
+        p: Number,
+        t: Number,
+        dp: Number,
+        q: Number,
+        object_id: Number,
+        lastupdate : { type: Date , default: Date.now} 
+    }, {collection:'PvvgHourValues'});
+    let model = mongoose.model('PvvgHourValue', schema);
+    return model;
+}

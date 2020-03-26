@@ -1,7 +1,6 @@
 const auth = require('../controllers/auth.controller');
 const genericcontroller = require('../controllers/generic.controller');
 const mongoose_model = require('../mongoose.model');
-const aggregate_model = require('../aggregate.mongoose.model');
 
 const grepository = require('../repo/generic.repo');
 const report = require('../controllers/view.controller');
@@ -58,14 +57,18 @@ module.exports = (app, mongoose) => {
     let formdata_model = mongoose_model.createFormDataModel(mongoose);
     CreateEndPoints(app, formdata_model, "formdata");
 
-    let aggrmgs_model = aggregate_model.createRegimPSGModel(mongoose);
-    CreateEndPoints(app, aggrmgs_model, "regim-mrin");
-
-    aggrmgs_model = aggregate_model.createPvvgDayModel(mongoose);
-    CreateEndPoints(app, aggrmgs_model, "pvvg");
 
     app.get('/report/:id', report.findOne);
 
+    
+    
+    
+    let models = mongoose_model.createVtvModel(mongoose);
+    models = mongoose_model.createRegimDksModel(mongoose);
+    models = mongoose_model.createRegimPSGModel(mongoose);
+    models = mongoose_model.createEventHistoryModel(mongoose);
+    models = mongoose_model.createPvvgDValueModel(mongoose);
+    models = mongoose_model.createPvvgHValueModel(mongoose);
 }
 
 
