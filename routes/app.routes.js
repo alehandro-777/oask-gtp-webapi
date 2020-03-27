@@ -63,7 +63,8 @@ module.exports = (app, mongoose) => {
     
     
     
-    let models = mongoose_model.createVtvModel(mongoose);
+    let models = mongoose_model.createVtvPsgModel(mongoose);
+    models = mongoose_model.createVtvGrsModel(mongoose);
     models = mongoose_model.createRegimDksModel(mongoose);
     models = mongoose_model.createRegimPSGModel(mongoose);
     models = mongoose_model.createEventHistoryModel(mongoose);

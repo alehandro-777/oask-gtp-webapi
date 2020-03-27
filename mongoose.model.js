@@ -145,6 +145,7 @@ exports.createDBObjectModel = (mongoose) =>{
         fullname : { type: String, default: 'Full name' },  //object full name
         form_id : Number,                                   //create / edit form  gui model
         model : String,                                     //mongoose model name for values object
+        childs : []
     });
 
     let model = mongoose.model('DBObject', schema);
@@ -229,19 +230,53 @@ exports.createUserMenu = (mongoose) =>{
     return model;
 }
 
-
-exports.createVtvModel = (mongoose) =>{
+exports.createFxpModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         date : { type: Date },
+        key : String,
+        model : String,
+        t_water: Number,
+        t_ch: Number,
+        ro: Number,
+        t_burn1: Number,
+        t_burn2: Number,
+        object_id: Number,
+        created_at : { type: Date , default: Date.now}
+    });  
+    let model = mongoose.model('FxpDayValue', schema);
+    return model;
+}
+
+exports.createVtvPsgModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        date : { type: Date },
+        key : String,
+        model : String,
         dks: Number,
         fuel: Number,
         psg: Number,
         object_id: Number,
         created_at : { type: Date , default: Date.now}
     });  
-    let model = mongoose.model('VtvDay', schema);
+    let model = mongoose.model('VtvPsgDayValue', schema);
     return model;
 }
+
+exports.createVtvGrsModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        date : { type: Date },
+        key : String,
+        model : String,
+        v1: Number,
+        v2: Number,
+        v3: Number,
+        object_id: Number,
+        created_at : { type: Date , default: Date.now}
+    });  
+    let model = mongoose.model('VtvGrsDayValue', schema);
+    return model;
+}
+
 
 exports.createRegimDksModel = (mongoose) =>{       
     let schema = new mongoose.Schema({
@@ -280,7 +315,7 @@ exports.createRegimPSGModel = (mongoose) =>{
 
 exports.createEventHistoryModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        _id: Number,        //valve object id
+        object_id: Number,        //valve object id
         history :[{
             state: String,
             value: Number,   
