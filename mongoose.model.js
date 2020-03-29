@@ -315,13 +315,13 @@ exports.createRegimPSGModel = (mongoose) =>{
 
 exports.createEventHistoryModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        object_id: Number,        //valve object id
+        _id: Number,        //valve object id
         history :[{
             state: String,
             value: Number,   
             lastupdate : { type: Date , default: Date.now}, 
         }],
-    });
+    }, {collection:'ObjectEvents'});
     
     let model = mongoose.model('ObjectEvent', schema);
     return model;

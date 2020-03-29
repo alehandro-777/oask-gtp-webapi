@@ -1,5 +1,5 @@
 const express = require('./index');
-
+/*
 setInterval(() => buildPvvgHoursAggregate(111, [1, 2, 3, 4], new Date("2018-02-19T00:00:00Z")).then(res=>{
   //console.log(res);
 }), 5000);
@@ -11,11 +11,15 @@ setInterval(() => buildRegimAggregate([1, 2, 3, 4,5,6,7,8, 9, 10, 11, 12, 13], n
 setInterval(() => buildPvvgDaysAggregate([111], new Date("2018-02-19T00:00:00Z")).then(res=>{
     //console.log(res);
 }), 5000);
-
+//buildObjEventsAggregate
 setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2020-02-20")).then(res=>{
   console.log(res);
 }), 5000);
-
+*/
+setInterval(() => buildObjEventsAggregate([8], new Date("2018-02-20")).then(res=>{
+  console.log(res);
+  test();
+}), 5000);
 
 function buildPvvgHoursAggregate(object_id, channels, from) {
     return new Promise((resolve, reject) => {
@@ -99,6 +103,41 @@ function buildRegimAggregate(objects, from) {
     });
 }
 
+
+function buildObjEventsAggregate(objects, from) {
+  return new Promise((resolve, reject) => {
+    let Model = express.mongoose.model('FormDataValue');       
+
+    let params = objects.map( e => {return {["object_id"]: e}});  //channel Ids
+
+    Model.aggregate([ 
+      {$match:{ $or:params, "created_at" : {$gte:from}} },          
+      {$project: {
+          object_id: 1,
+          data: { $arrayToObject: "$data" },
+      }},
+      {$group: { _id: "$object_id", 
+          history: {$push: { value: "$data.state", date : "$data.date", hour : "$data.hour", 
+            lastupdate: { $concat: [ "$data.date", "T", "$data.hour" ] } }}, 
+      }},     
+      {$merge: { into: "ObjectEvents", whenMatched: "replace" } }
+      ], function(err, values) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(values);
+    });    
+  });
+}
+
+function test() {
+  let Model = express.mongoose.model('ObjectEvent'); 
+
+  Model.find({}, function (err, docs) {
+    console.log(docs[0].history);
+  });
+}
 
 function runningTotalAggregate(objects, on_date) {
   return new Promise((resolve, reject) => {
