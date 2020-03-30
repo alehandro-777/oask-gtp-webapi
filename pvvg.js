@@ -16,11 +16,18 @@ setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2020-02-20")).th
   console.log(res);
 }), 5000);
 */
+
 setInterval(() => buildObjEventsAggregate([8], new Date("2018-02-20")).then(res=>{
   console.log(res);
   test();
 }), 5000);
 
+
+setInterval(() => test(), 5000);
+
+
+
+//формирование почасовой группировки по ПВВГ
 function buildPvvgHoursAggregate(object_id, channels, from) {
     return new Promise((resolve, reject) => {
       let Model = express.mongoose.model('HourValue');       
@@ -47,7 +54,7 @@ function buildPvvgHoursAggregate(object_id, channels, from) {
       });    
     });
 }
-
+//формирование суточной группировки по ПВВГ
 function buildPvvgDaysAggregate(objects, from) {
     return new Promise((resolve, reject) => {
       let Model = express.mongoose.model('PvvgHourValue');         
@@ -77,6 +84,7 @@ function buildPvvgDaysAggregate(objects, from) {
     });
 }
 
+//формирование разреза данных ручного ввода по часам
 function buildRegimAggregate(objects, from) {
     return new Promise((resolve, reject) => {
       let Model = express.mongoose.model('FormDataValue');       
@@ -103,7 +111,7 @@ function buildRegimAggregate(objects, from) {
     });
 }
 
-
+//группировка событий по объектам 
 function buildObjEventsAggregate(objects, from) {
   return new Promise((resolve, reject) => {
     let Model = express.mongoose.model('FormDataValue');       
@@ -131,14 +139,73 @@ function buildObjEventsAggregate(objects, from) {
   });
 }
 
+//группировка по часам результирующий объект режим ПСГ с учетом отбор/закачка и количества скважин 
+function buildPsgHoursAggregate(pvvg_hour_objects, stan_events, lines_events) {
+  return new Promise((resolve, reject) => {
+    let Model = express.mongoose.model('PvvgHourValue');
+
+      stan_events.sort((a, b) => a.lastupdate - b.lastupdate);  //asc sorting
+
+      //lines_events.sort((a, b) => a.lastupdate - b.lastupdate);  //asc sorting
+
+      let boundaries = stan_events.map(e=> {
+        e.lastupdate.value = e.value;
+        return e.lastupdate;
+      });
+
+      //console.log(boundaries);
+
+      Model.aggregate([ 
+        //{$match:{ "lastupdate" : {$gte:from}} },                    
+        {
+        $bucket: {
+          groupBy: "$lastupdate",                        // Field to group by
+          boundaries: boundaries,                       // Boundaries for the buckets
+          default: "Other",                             // Bucket id for documents which do not fall into a bucket
+          output: {                                     // Output for each bucket
+            "childs" :
+              { $push: { "q": "$q", "lastupdate" : "$lastupdate"} }
+          }
+        }
+      },
+      { $unwind : "$childs" },
+      //{ $addFields: { "Qin": { $cond: { if: { $eq: [ "$_id.value", 1 ] }, then: "$childs.q", else: 0 } } } },
+      //{ $addFields: { "Qout": { $cond: { if: { $eq: [ "$_id.value", 2 ] }, then: "$childs.q", else: 0 } } } },
+
+      //{$merge: { into: "TestOut", whenMatched: "replace" } }
+
+      ], function(err, values) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(values);
+    });
+  })
+}
+
+
+
+
+
+//TEMPLATE !!!
+function buildAggregate(objects, from) {
+  return new Promise((resolve, reject) => {})
+}
+
 function test() {
   let Model = express.mongoose.model('ObjectEvent'); 
-
-  Model.find({}, function (err, docs) {
-    console.log(docs[0].history);
+  Model.find({}, function (err, docs) {    
+    buildPsgHoursAggregate([], docs[0].history, null).then(res=>{
+      
+      console.log(res); 
+      
+    });
   });
 }
 
+
+//сумма по суткам с начала месяца на определенную дату
 function runningTotalAggregate(objects, on_date) {
   return new Promise((resolve, reject) => {
 

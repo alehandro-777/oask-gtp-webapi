@@ -308,7 +308,7 @@ exports.createRegimPSGModel = (mongoose) =>{
         num_lines: Number,
         object_id: Number,
         created_at : { type: Date , default: Date.now}
-    });
+    }, {collection:'RegimPSGHourValues'});
     let model = mongoose.model('RegimPSGHourValue', schema);  
     return model;
 }
