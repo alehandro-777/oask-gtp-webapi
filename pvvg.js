@@ -17,8 +17,8 @@ setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2020-02-20")).th
 }), 5000);
 */
 
-setInterval(() => buildObjEventsAggregate([8], new Date("2018-02-20")).then(res=>{
-  console.log(res);
+setInterval(() => buildObjEventsAggregate([18], new Date("2018-02-20")).then(res=>{
+  //console.log(res);
   test();
 }), 5000);
 
@@ -148,10 +148,7 @@ function buildPsgHoursAggregate(pvvg_hour_objects, stan_events, lines_events) {
 
       //lines_events.sort((a, b) => a.lastupdate - b.lastupdate);  //asc sorting
 
-      let boundaries = stan_events.map(e=> {
-        e.lastupdate.value = e.value;
-        return e.lastupdate;
-      });
+      let boundaries = stan_events.map(e => e.lastupdate );
 
       //console.log(boundaries);
 
@@ -169,16 +166,36 @@ function buildPsgHoursAggregate(pvvg_hour_objects, stan_events, lines_events) {
         }
       },
       { $unwind : "$childs" },
-      //{ $addFields: { "Qin": { $cond: { if: { $eq: [ "$_id.value", 1 ] }, then: "$childs.q", else: 0 } } } },
-      //{ $addFields: { "Qout": { $cond: { if: { $eq: [ "$_id.value", 2 ] }, then: "$childs.q", else: 0 } } } },
-
-      //{$merge: { into: "TestOut", whenMatched: "replace" } }
 
       ], function(err, values) {
           if (err) {
               reject(err);
               return;
           }
+            values.forEach(element => {
+
+              let match = stan_events.find( e=>e.lastupdate.getTime() == element._id.getTime() );
+              if (match !== undefined)
+              {
+                
+                if (match.value===1) {
+                  element.q_in = element.childs.q;
+                  element.q_out = 0;
+
+                }
+                if (match.value===2) {
+                  element.q_in = 0;
+                  element.q_out = element.childs.q;
+
+                }
+                if (match.value===0) {
+                  element.q_in = 0;
+                  element.q_out = 0;
+
+                }
+              }
+            });
+
           resolve(values);
     });
   })
@@ -198,7 +215,7 @@ function test() {
   Model.find({}, function (err, docs) {    
     buildPsgHoursAggregate([], docs[0].history, null).then(res=>{
       
-      console.log(res); 
+     console.log(res); 
       
     });
   });
