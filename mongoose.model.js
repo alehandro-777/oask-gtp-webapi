@@ -152,20 +152,30 @@ exports.createDBObjectModel = (mongoose) =>{
     return model;
 }
 
-//example model for values object
+
+//model for save state of dbo object
 exports.createDBObjectValueModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        object_id : Number,     // unique line ид 
-        name : String,          //key name - for debug
+        _id: {lastupdate : { type: Date}, object_id : Number},
         value : Number,         //value as num
-        state : String,         //value as string
-        source : String,        //value source
-        lastupdate : { type: Date , default: Date.now} 
+        state : String,         //quality ??? limits 
+        source : String,        //value source         
     });
-
     let model = mongoose.model('DBObjectValue', schema);
     return model;
 }
+
+//model for summator object
+exports.createSummatorModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        _id: Number,                                    //object_id : key
+        operands : [{k: Number, _id : Number}]          //sum operands     k = +/-1   object_id : key
+    });
+    let model = mongoose.model('Summator', schema);
+    return model;
+}
+
+
 
 exports.createGuiTableModel = (mongoose) =>{
     let schema = new mongoose.Schema({
@@ -353,5 +363,15 @@ exports.createPvvgHValueModel = (mongoose) =>{
         lastupdate : { type: Date , default: Date.now} 
     }, {collection:'PvvgHourValues'});
     let model = mongoose.model('PvvgHourValue', schema);
+    return model;
+}
+
+exports.createPvvgCfgModel = (mongoose) =>{
+    let schema = new mongoose.Schema({
+        _id: Number,            //key
+        created_at : { type: Date , default: Date.now},
+        channels:[Number]
+    }, {collection:'PvvgCfgDocs'});
+    let model = mongoose.model('PvvgCfg', schema);
     return model;
 }
