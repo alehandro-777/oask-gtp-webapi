@@ -17,13 +17,14 @@ setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2020-02-20")).th
 }), 5000);
 */
 
-setInterval(() => buildObjEventsAggregate([18], new Date("2018-02-20")).then(res=>{
+setInterval(() => inputFormsData( new Date("2017-02-20")).then(res=>{
   //console.log(res);
   test();
+  inputSummData();
 }), 5000);
 
 
-setInterval(() => test(), 5000);
+//setInterval(() => test(), 5000);
 
 
 
@@ -211,14 +212,10 @@ function buildAggregate(objects, from) {
 }
 
 function test() {
-  let Model = express.mongoose.model('ObjectEvent'); 
+  let Model = express.mongoose.model('DBObjectValue'); 
   Model.find({}, function (err, docs) {    
-    buildPsgHoursAggregate([], docs[0].history, null).then(res=>{
-      
-     console.log(res); 
-      
+     console.log(docs);      
     });
-  });
 }
 
 
@@ -247,6 +244,68 @@ function runningTotalAggregate(objects, on_date) {
         //{ $addFields: { "_id": { $dateToString: { format: "%Y-%m-%d", date: to } }} },
         { $addFields: { "_id": on_date }},
         {$merge: { into: "PvvgDayRunValue", whenMatched: "replace" } }
+      ], function(err, values) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(values);
+    });    
+  });
+}
+
+//формирование  ручного ввода
+function inputFormsData(from) {
+  return new Promise((resolve, reject) => {
+
+    let Model = express.mongoose.model('FormDataValue');       
+
+    Model.aggregate([ 
+      {$match:{ "created_at" : {$gte:from}} },          
+      {$project: {
+          object_id: 1,
+          data: { $arrayToObject: "$data" }
+      }},
+      { $addFields: { "_id.time": {$toDate: { $concat: [ "$data.date", "T", "$data.hour" ] }}, "_id.object_id": "$object_id" } },
+      { $addFields: { "value": "$data.value" }},
+      { $addFields: { "state": "Ok" }},
+      { $addFields: { "source": "manual" }},
+      { $unset: "data" },
+      { $unset: "object_id" },
+      {$merge: { into: "DBObjectValues", whenMatched: "replace" } }
+      ], function(err, values) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(values);
+    });    
+  });
+}
+
+//расчет сумматоров
+function inputSummData() {
+  return new Promise((resolve, reject) => {
+
+    let Model = express.mongoose.model('Summator'); 
+
+    Model.aggregate([ 
+      
+      { $unwind: "$operands" },
+
+      {
+        $lookup:
+           {
+              from: "DBObjectValues",
+              localField: "operands._id",
+              foreignField: "_id.object_id",
+              as: "values"
+          }
+     },
+     {$group: { _id: "$_id", 
+          history: {$push: { value: "$operands", date : "$values" }}, 
+      }},
+      {$merge: { into: "test1", whenMatched: "replace" } }
       ], function(err, values) {
           if (err) {
               reject(err);

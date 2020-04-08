@@ -57,6 +57,10 @@ module.exports = (app, mongoose) => {
     let formdata_model = mongoose_model.createFormDataModel(mongoose);
     CreateEndPoints(app, formdata_model, "formdata");
 
+//----------------------------------------------------------------------------------
+    let summator_model = mongoose_model.createSummatorModel(mongoose);
+    CreateEndPoints(app, summator_model, "summator");
+
 
     app.get('/report/:id', report.findOne);
 

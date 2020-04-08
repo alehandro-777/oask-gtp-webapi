@@ -160,7 +160,7 @@ exports.createDBObjectValueModel = (mongoose) =>{
         value : Number,         //value as num
         state : String,         //quality ??? limits 
         source : String,        //value source         
-    });
+    }, {collection:'DBObjectValues'});
     let model = mongoose.model('DBObjectValue', schema);
     return model;
 }
@@ -168,7 +168,8 @@ exports.createDBObjectValueModel = (mongoose) =>{
 //model for summator object
 exports.createSummatorModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        _id: Number,                                    //object_id : key
+        _id: Number,
+        object_id : Number, //key
         operands : [{k: Number, _id : Number}]          //sum operands     k = +/-1   object_id : key
     });
     let model = mongoose.model('Summator', schema);
