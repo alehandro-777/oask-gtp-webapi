@@ -302,10 +302,20 @@ function inputSummData() {
               as: "values"
           }
      },
-     {$group: { _id: "$_id", 
-          history: {$push: { value: "$operands", date : "$values" }}, 
+     { $unwind: "$values" },
+
+      { $addFields: { "value" : { $multiply: [ { $toDecimal: "$values.value" }, "$operands.k" ] }}},
+      { $addFields: { "_id" : { f_id:"$_id", p_id:"$values._id" } } },
+
+      {$group: { _id: { f_id:"$_id.f_id", time:"$_id.p_id.time" },  
+        object_id: {$last: "$object_id"}, 
+        value : {$sum: "$value"}
       }},
-      {$merge: { into: "test1", whenMatched: "replace" } }
+      { $addFields: { "_id": {object_id:"$object_id", time:"$_id.time"} }},
+      { $addFields: { "state": "Ok" }},
+      { $addFields: { "source": "summator" }},
+      { $unset: "_id.f_id" },
+      {$merge: { into: "DBObjectValues1", whenMatched: "replace" } }
       ], function(err, values) {
           if (err) {
               reject(err);

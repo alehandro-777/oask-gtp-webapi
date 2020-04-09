@@ -370,6 +370,7 @@ exports.createPvvgHValueModel = (mongoose) =>{
 exports.createPvvgCfgModel = (mongoose) =>{
     let schema = new mongoose.Schema({
         _id: Number,            //key
+        fullname : String, 
         created_at : { type: Date , default: Date.now},
         channels:[Number]
     }, {collection:'PvvgCfgDocs'});

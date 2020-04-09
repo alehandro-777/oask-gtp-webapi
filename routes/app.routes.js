@@ -53,13 +53,19 @@ module.exports = (app, mongoose) => {
    let menu_model = mongoose_model.createUserMenu(mongoose);    
    CreateEndPoints(app, menu_model, "menu");
 
-//----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
     let formdata_model = mongoose_model.createFormDataModel(mongoose);
     CreateEndPoints(app, formdata_model, "formdata");
 
-//----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
     let summator_model = mongoose_model.createSummatorModel(mongoose);
     CreateEndPoints(app, summator_model, "summator");
+
+    //----------------------------------------------------------------------------------
+    let pvvg_cfg_model = mongoose_model.createPvvgCfgModel(mongoose);
+    CreateEndPoints(app, pvvg_cfg_model, "pvvg");
+
+    
 
 
     app.get('/report/:id', report.findOne);
