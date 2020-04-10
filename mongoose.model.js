@@ -340,7 +340,7 @@ exports.createEventHistoryModel = (mongoose) =>{
 
 exports.createPvvgDValueModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        _id : { type: Date },
+        _id : { pvvg_id : {type:Number}, time : { type:Date }},
         p: Number,
         t: Number,
         dp: Number,
@@ -355,7 +355,7 @@ exports.createPvvgDValueModel = (mongoose) =>{
 
 exports.createPvvgHValueModel = (mongoose) =>{
     let schema = new mongoose.Schema({
-        _id : { type: Date },
+        _id : { pvvg_id : {type:Number}, time : { type:Date }},
         p: Number,
         t: Number,
         dp: Number,

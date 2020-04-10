@@ -1,89 +1,19 @@
 const express = require('./index');
-/*
-setInterval(() => buildPvvgHoursAggregate(111, [1, 2, 3, 4], new Date("2018-02-19T00:00:00Z")).then(res=>{
-  //console.log(res);
-}), 5000);
 
-setInterval(() => buildRegimAggregate([1, 2, 3, 4,5,6,7,8, 9, 10, 11, 12, 13], new Date("2018-02-19T00:00:00Z")).then(res=>{
-    //console.log(res);
-}), 5000);
-
-setInterval(() => buildPvvgDaysAggregate([111], new Date("2018-02-19T00:00:00Z")).then(res=>{
-    //console.log(res);
-}), 5000);
-//buildObjEventsAggregate
-setInterval(() => runningTotalAggregate([1, 2, 3, 4], new Date("2020-02-20")).then(res=>{
-  console.log(res);
-}), 5000);
-*/
 
 setInterval(() => inputFormsData( new Date("2017-02-20")).then(res=>{
   //console.log(res);
   test();
-  inputSummData();
+  CalcSummators();
+  CalcPvvgHourData();
+  CalcPvvgDayData(new Date("2017-02-20"));
+  runningTotalMonthStart(new Date("2020-02-20"));
+  runningTotalDayStart(new Date("2020-02-19T16:00:00"));
 }), 5000);
 
 
 //setInterval(() => test(), 5000);
 
-
-
-//формирование почасовой группировки по ПВВГ
-function buildPvvgHoursAggregate(object_id, channels, from) {
-    return new Promise((resolve, reject) => {
-      let Model = express.mongoose.model('HourValue');       
-      let params = channels.map( e => {return {["ch_id"]: e}});  //channel Ids      
-      Model.aggregate([ 
-          {$match:{ $or:params, "lastupdate" : {$gte:from}} },                    
-          {$group: { _id: '$start', // group by start of contract day 
-            q: {$sum: "$q"}, 
-            p: {$max: "$p"}, 
-            dp: {$max: "$dp"}, 
-            t: {$max: "$t"},
-            lastupdate: {$last: "$lastupdate"}  
-        }},
-          {$sort:{_id:1}},
-          //{ $addFields: { "object_id": object_id} },    //set object_id  - composite key !
-          { $addFields: { "_id": { "time": "$_id", "object_id" : object_id} }  },    //set object_id  - composite key !
-          {$merge: { into: "PvvgHourValues", whenMatched: "replace" } }
-        ], function(err, values) {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(values);
-      });    
-    });
-}
-//формирование суточной группировки по ПВВГ
-function buildPvvgDaysAggregate(objects, from) {
-    return new Promise((resolve, reject) => {
-      let Model = express.mongoose.model('PvvgHourValue');         
-
-      let params = objects.map( e => {return {["object_id"]: e}});  //channel Ids   
-
-      Model.aggregate([ 
-          {$match:{ "_id.time" : {$gte:from}} },
-          {$group: { _id: { time : {$dateToString: { format: "%Y-%m-%d", date: "$_id.time" }}, object_id : "$_id.object_id" }, 
-            q: {$sum: "$q"}, 
-            p: {$max: "$p"}, 
-            dp: {$max: "$dp"}, 
-            t: {$max: "$t"},
-            lastupdate: {$last: "$lastupdate"},
-            childs:  {$push: { "_id": "$_id", "q": "$q", lastupdate :  "$lastupdate"}}
-        }},
-          {$sort:{_id:1}},
-          { $addFields: { "_id.time": {$toDate: "$_id.time"} } },                            // _id is start of contract day  !!! + id PVVG 
-          {$merge: { into: "PvvgDayValues", whenMatched: "replace" } }
-        ], function(err, values) {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(values);
-      });    
-    });
-}
 
 //формирование разреза данных ручного ввода по часам
 function buildRegimAggregate(objects, from) {
@@ -214,44 +144,123 @@ function buildAggregate(objects, from) {
 function test() {
   let Model = express.mongoose.model('DBObjectValue'); 
   Model.find({}, function (err, docs) {    
-     console.log(docs);      
+     //console.log(docs);      
     });
 }
 
 
 //сумма по суткам с начала месяца на определенную дату
-function runningTotalAggregate(objects, on_date) {
+function runningTotalMonthStart(on_date) {
   return new Promise((resolve, reject) => {
 
     let Model = express.mongoose.model('PvvgDayValue');
-      
-    let params = objects.map( e => {return {["ch_id"]: e}});  //channel Ids
-    
+         
     let start_month = new Date();
     start_month.setTime(on_date.getTime());
     start_month.setDate(1);
-    
+
     Model.aggregate([ 
-        {$match:{ "_id" : {$gte:start_month, $lte:on_date }} },          
-        {$group: { _id: null, 
-          q: {$sum: "$q"}, 
-          p: {$max: "$p"}, 
-          dp: {$max: "$dp"}, 
-          t: {$max: "$t"},
-          lastupdate: {$last: "$lastupdate"}  
-      }},        
-        { $addFields: { "object_id": 111} },
-        //{ $addFields: { "_id": { $dateToString: { format: "%Y-%m-%d", date: to } }} },
-        { $addFields: { "_id": on_date }},
-        {$merge: { into: "PvvgDayRunValue", whenMatched: "replace" } }
-      ], function(err, values) {
+      {$match:{ "_id.time" : {$gte:start_month, $lte:on_date }} },          
+      {$out: "PvvgDayRunValue1" }
+
+    ], function(err, values) {
+        if (err) {
+            reject(err);
+            return;
+        }
+
+        express.mongoose.connection.db.collection("PvvgDayRunValue1", function (err, collection) {
           if (err) {
-              reject(err);
-              return;
-          }
-          resolve(values);
-    });    
-  });
+            reject(err);
+            return;
+        }
+          collection.aggregate([ 
+            {$group: { _id: "$_id.pvvg_id", 
+              q: {$sum: "$q"}, 
+              p: {$max: "$p"}, 
+              dp: {$max: "$dp"}, 
+              t: {$max: "$t"},
+              start: {$max: "$start"},
+              lastupdate: {$last: "$lastupdate"}  
+          }},
+            { $set: { "_id.pvvg_id": "$_id" }},      
+            { $set: { "_id.time": on_date }},
+            {$merge: { into: "PvvgDayRunValue", whenMatched: "replace" } }
+          ], function(err, values) {            
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              values.toArray((err, data)=> console.log(data));              
+              
+              resolve(values);
+        }); 
+
+      }); //find collection       
+
+  });    //});//aggregation
+
+   
+  });//promise
+
+
+}
+
+//сумма по часам с начала суток на определенный час
+function runningTotalDayStart(on_hour) {
+  return new Promise((resolve, reject) => {
+
+    let Model = express.mongoose.model('PvvgHourValue');
+         
+    let start_hour = new Date();
+    start_hour.setTime(on_hour.getTime());
+    start_hour.setHours(0);
+
+    Model.aggregate([ 
+      {$match:{ "_id.time" : {$gte:start_hour, $lte:on_hour }} },          
+      {$out: "PvvgHourRunValue1" }
+
+    ], function(err, values) {
+        if (err) {
+            reject(err);
+            return;
+        }
+
+        express.mongoose.connection.db.collection("PvvgHourRunValue1", function (err, collection) {
+          if (err) {
+            reject(err);
+            return;
+        }
+          collection.aggregate([ 
+            {$group: { _id: "$_id.pvvg_id", 
+              q: {$sum: "$q"}, 
+              p: {$max: "$p"}, 
+              dp: {$max: "$dp"}, 
+              t: {$max: "$t"},
+              start: {$max: "$start"},
+              lastupdate: {$last: "$lastupdate"}  
+          }},
+            { $set: { "_id.pvvg_id": "$_id" }},      
+            { $set: { "_id.time": on_hour }},
+            {$merge: { into: "PvvgHourRunValue", whenMatched: "replace" } }
+          ], function(err, values) {            
+              if (err) {
+                  reject(err);
+                  return;
+              }
+              values.toArray((err, data)=> console.log(data));              
+              
+              resolve(values);
+        }); 
+
+      }); //find collection       
+
+  });    //});//aggregation
+
+   
+  });//promise
+
+
 }
 
 //формирование  ручного ввода
@@ -283,8 +292,8 @@ function inputFormsData(from) {
   });
 }
 
-//расчет сумматоров
-function inputSummData() {
+//расчет сумматоров (TODO фильтрацию с чего начинать !!!)
+function CalcSummators() {
   return new Promise((resolve, reject) => {
 
     let Model = express.mongoose.model('Summator'); 
@@ -316,6 +325,82 @@ function inputSummData() {
       { $addFields: { "source": "summator" }},
       { $unset: "_id.f_id" },
       {$merge: { into: "DBObjectValues1", whenMatched: "replace" } }
+      ], function(err, values) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(values);
+    });    
+  });
+}
+
+//расчет часовых сумм PVVG (TODO фильтрацию с чего начинать !!!)
+function CalcPvvgHourData() {
+  return new Promise((resolve, reject) => {
+
+    let Model = express.mongoose.model('PvvgCfg'); 
+
+    Model.aggregate([      
+      {
+        $lookup:
+           {
+              from: "hourvalues",
+              localField: "channels",
+              foreignField: "ch_id",
+              as: "values"
+          }
+     },
+     { $unwind: "$values" },
+
+      { $addFields: { "q" : "$values.q" }},
+      { $addFields: { "p" : "$values.p" }},
+      { $addFields: { "t" : "$values.t" }},
+      { $addFields: { "dp" : "$values.dp" }},
+      { $addFields: { "start" : "$values.start" }},
+      { $addFields: { "lastupdate" : "$values.lastupdate" }},
+
+      { $addFields: { "_id" : { pvvg_id:"$_id", p_id:"$values._id" } } },
+
+      {$group: { _id: { pvvg_id:"$_id.pvvg_id", time:"$values.start" },  
+        q : {$sum: "$q"},
+        p : {$max: "$p"},
+        t : {$max: "$t"},
+        dp : {$max: "$dp"},
+        start :{$max: "$start"},
+        lastupdate : {$max: "$lastupdate"},
+      }},    
+
+      {$merge: { into: "PvvgHourValues", whenMatched: "replace" } }
+      ], function(err, values) {
+          if (err) {
+              reject(err);
+              return;
+          }
+          resolve(values);
+    });    
+  });
+}
+
+//формирование суточной группировки по ПВВГ
+function CalcPvvgDayData(from) {
+  return new Promise((resolve, reject) => {
+    let Model = express.mongoose.model('PvvgHourValue');         
+
+    Model.aggregate([ 
+        {$match:{ "_id.time" : {$gte:from}} },
+        {$group: { _id: { time : {$dateToString: { format: "%Y-%m-%d", date: "$_id.time" }}, pvvg_id : "$_id.pvvg_id" }, 
+          q: {$sum: "$q"}, 
+          p: {$max: "$p"}, 
+          dp: {$max: "$dp"}, 
+          t: {$max: "$t"},
+          start : {$max: "$start"},
+          lastupdate: {$last: "$lastupdate"},
+          childs:  {$push: { "_id": "$_id", "q": "$q", lastupdate :  "$lastupdate"}}
+      }},
+        {$sort:{_id:1}},
+        { $addFields: { "_id.time": {$toDate: "$_id.time"} } },                            // _id is start of contract day  !!! + id PVVG 
+        {$merge: { into: "PvvgDayValues", whenMatched: "replace" } }
       ], function(err, values) {
           if (err) {
               reject(err);
