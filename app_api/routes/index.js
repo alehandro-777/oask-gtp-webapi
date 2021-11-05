@@ -16,7 +16,7 @@ function authorize(roles = []) {
     }
     return [
         // authenticate JWT token and attach user to request object (req.user) RSA_PUBLIC_KEY
-        jwt({ secret : process.env.RSA_PUBLIC_KEY, algorithms: ['HS256'] }),
+        jwt({ secret : process.env.RSA_PUBLIC_KEY, algorithms: ['RS256'] }),
         
         // authorize based on user role
         (req, res, next) => {
