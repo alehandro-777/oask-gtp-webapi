@@ -1,83 +1,49 @@
 const Entity = require('../models/value')
+const BaseController = require('../controllers/base-controller')
+const valuesService = require('../services/valuesService')
 
-module.exports.create = function (req, res) {
+class ValuesController extends BaseController {
+    constructor(pnt) {
+        super(pnt);
+    }
+
+        async selectTable(req, res){
+
+            if (!req.query.begin) return res.status(400).json({ message: "Miss date ISO fmt: ..&begin==2021-12-01T07:00"});
+            if (!req.query.end) return res.status(400).json({ message: "Miss date ISO fmt: ..&end==2021-12-01T07:00"});
+            if (!req.query.points) return res.status(400).json({ message: "Miss params : ..&points=[1,2...n]"});
     
-    if(!req.body) return res.status(400).json({ message: "Empty body"});
+            try {
+                const begin = new Date(req.query.begin);
+                const end = new Date(req.query.end);
     
-    Entity.create(req.body, (err, data)=>{
-        if(err) res.status(500).json({ message: err});
-        
-        res.status(201).json({ data: data});
-    } );          
- };
-
-module.exports.update = function (req, res) {
-
-    if (!req.params.id) return res.status(400).json({ message: "Wrong query params"});
-    if(!req.body) return res.status(400).json({ message: "Empty body"});
-
-    Entity.findById(req.params.id).exec( (err, entity)=>{
-
-        if(err) return res.status(500).json({ message: err});
-
-        if(!entity) return res.status(404).json({ message: "Not found"});
-  
-        Object.assign(entity, req.body);
-
-        entity.save( (err, data)=>{
-            if(err) return res.status(500).json({ message: err});
-            return res.status(200).json({ data: data});
-        });
-    } );          
- };
-
-module.exports.delete = function (req, res) {
-
-    if (!req.params.id) return res.status(400).json({ message: "Wrong query params"});
-
-    Entity.findByIdAndRemove(req.params.id).exec( (err) => {
-
-                if (err) return res.status(500).json({ message: err});
-              
-                return res.status(204).json({ data: null});
+                const points = JSON.parse(req.query.points);
+                const data = await valuesService.selectTable(points, begin, end);           
+                return res.status(200).json({ data });
             } 
-        )
-};
+            catch (error) {
+                return res.status(500).json({ message: error});
+            }  
+        }
+        async selectTableStats(req, res){
 
-module.exports.findOne = function (req, res) { 
+            if (!req.query.begin) return res.status(400).json({ message: "Miss date ISO fmt: ..&begin==2021-12-01T07:00"});
+            if (!req.query.end) return res.status(400).json({ message: "Miss date ISO fmt: ..&end==2021-12-01T07:00"});
+            if (!req.query.points) return res.status(400).json({ message: "Miss params : ..&points=[1,2...n]"});
     
-    if (!req.params.id) return res.status(400).json({ message: "Wrong query params"});
-
-        Entity.findById(req.params.id).exec( (err, data) => {                
-
-                if (err)  return res.status(500).json({ message: err});
-
-                if (!data) return res.status(404).json({ message: "Not found"});
-
-                return res.status(200).json({ data: data });
-            }
-        )
-};
-
-module.exports.select = function (req, res) {  
-    //console.log(req.query);
+            try {
+                const begin = new Date(req.query.begin);
+                const end = new Date(req.query.end);
     
-    let {skip=0, limit=100, fields, sort, ...filter} = req.query;
-
-    if(fields)  fields = fields.replace(/,/g, " ");
-
-    Entity.find(filter).countDocuments( (err, total)=> {
-        
-        if (err) return res.status(500).json({ message: err});
-
-        Entity.find(filter).select(fields).skip(+skip).limit(+limit).sort(sort).exec( (err, data) => {
-                
-            if (err) return res.status(500).json({ message: err});
-
-                return res.status(200).json({ limit, total, data });
+                const points = JSON.parse(req.query.points);
+                const data = await valuesService.tableStats(points, begin, end);           
+                return res.status(200).json({ data });
             } 
-        )  
+            catch (error) {
+                return res.status(500).json({ message: error});
+            }  
+        }
+}
 
-    } );
 
-};
+module.exports = new ValuesController(Entity);

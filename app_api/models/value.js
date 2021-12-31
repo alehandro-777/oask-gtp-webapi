@@ -7,10 +7,10 @@ const model = new Schema({
   state: { type: String, default: "Normal" }, 
   time_stamp: { type: Date, required: true, default: Date.now  },   
   deleted: { type: Boolean, default: false },
-  transaction: { type: Number, ref: 'transactions' },  
+  user: { type: Number, ref: 'users' },  
 },
 {
-  timestamps: { createdAt: 'created_at'}
+  timestamps: { createdAt: 'created_at', updatedAt: false}
 });
 
 model.index({ "point": 1, "time_stamp": 1});    

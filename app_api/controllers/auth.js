@@ -8,17 +8,22 @@ module.exports.login = function (req, res) {
             if (err) return res.status(500).json({ message: err });
 
             if (user) {
+                const issued = new Date();
                 const expiry = new Date();
-                expiry.setDate(expiry.getDate() + 7);   //expires in + ... days from now 
+                expiry.setDate(expiry.getDate() + process.env.JWT_EXP_DAYS);   //expires in + ... days from now 
                                 
                 const payload = {
-                    id: user._id,                  
+                    iat : issued.getTime() / 1000,
+                    iss: "rest api",
+                    sub: user._id,                  
                     exp: parseInt(expiry.getTime() / 1000), //alow exp in seconds !!!!!
+                    roles: user.roles
                   };
 
-                  const jwtBearerToken = jwt.sign(payload, process.env.RSA_PRIVATE_KEY, { algorithm: 'RS256'});
+                    // RS256 === RS256 code =decode !!!
+                  const jwtBearerToken = jwt.sign(payload, process.env.RSA_PRIVATE_KEY, { algorithm: 'RS256'}); 
     
-                return res.status(201).json({ user: user.name, jwt: jwtBearerToken });
+                return res.status(201).json({ _id:user._id, name: user.name, profile: user.profile, jwt: jwtBearerToken });
             }
             else {
                 //user not found Unauthorized Requesting a restricted URL with incorrect credentials

@@ -1,6 +1,5 @@
-const Entity = require('../models/user')
+const Entity = require('../models/states-set')
 const BaseController = require('../controllers/base-controller')
 
 //class NewController extends BaseController {
-
 module.exports = new BaseController(Entity);

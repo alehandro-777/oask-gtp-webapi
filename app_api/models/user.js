@@ -7,7 +7,7 @@ const model = new Schema({
   login: { type: String, required: true },
   password: String,                           //may be password hash ???
   is_domain: { type: Boolean, required: false },   //local, domain
-  roles: [{ type: String, ref: "roles" }],     //ref roles collection 'user','admin'
+  roles: [{ type: Number, ref: "roles" }],     //ref roles collection 'user','admin'
   profile: { type: Number, ref: "user_profiles" }, //ref to gui profiles
 },
 {

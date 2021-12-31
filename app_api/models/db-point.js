@@ -1,4 +1,3 @@
-const { ObjectId } = require('mongoose');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -11,25 +10,24 @@ const model = new Schema({
 
   type: { type: String, default: "text"}, //HTML5 any input type
 
-  eu: { type: String, default: "kgs"},
+  eu: { type: String, default: "kgs"},   //eng units
   min: { type: String, default: "0"},
   max: { type: String, default: "100"},
   step: { type: String, default: "0.1"},
   deadband: { type: Number, default: 0.1},
+  min_rate: { type: Number, default: 1},  //new values min creation rate in sec
   readonly: { type: Boolean, default: false},
 
-  options: { type: Number, ref: "select_options" },  //ref
-  // add only !!! f = point1_value*k + point2_value*k ...
-  formula: [ {
-      point: { type: Number, ref: "db_points" }, 
-      k: { type: Number, default: 1}, // 
-      interval: { type: Number, default: 0} //confidence interval in sec
-    } ], 
+  options: { type: Number, ref: "digital_states" },  //ref
+  
+  params: [ { type: Number, ref: "db_points" } ], 
 
-  createRole:{ type: String, ref: "roles" },  //ref to roles collection
-  readRole:  { type: String, ref: "roles" },  //ref to roles collection
-  updateRole:{ type: String, ref: "roles" },  //ref to roles collection
-  deleteRole:{ type: String, ref: "roles" },  //ref to roles collection
+  func: String,   //function name
+
+  createRole:{ type: Number, ref: "roles" },  //ref to roles collection
+  readRole:  { type: Number, ref: "roles" },  //ref to roles collection
+  updateRole:{ type: Number, ref: "roles" },  //ref to roles collection
+  deleteRole:{ type: Number, ref: "roles" },  //ref to roles collection
 
   deleted: { type: Boolean, default: false},  
 },

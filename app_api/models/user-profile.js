@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 const model = new Schema({
   _id: Number,
-  profile: {} //XML 
+  name: String,   //friendly name 
+  profile: {}     //XML 
 },
 {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
