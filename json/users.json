@@ -1,0 +1,56 @@
+﻿[
+  {
+    "_id": 1,
+    "name": "Меню для суперюзер",
+    "login": "admin",
+    "password": "admin",
+    "is_domain": "false",
+    "profile": 1,
+    "roles": [1,2,3,4,5,6,7,8,9,10,11,12]
+  },
+  {
+    "_id": 2,
+    "name": "Central ASK interface",
+    "login": "inter1",
+    "password": "inter1",
+    "is_domain": "false",
+    "profile": 2,
+    "roles": [1,2,3,4,5,6,7,8,9,10,11,12]
+  },
+  {
+    "_id": 3,
+    "name": "Scada interface",
+    "login": "inter2",
+    "password": "inter2",
+    "is_domain": "false",
+    "profile": 3,
+    "roles": [1,2,3,4,5,6,7,8,9,10,11,12]
+  },
+  {
+    "_id": 4,
+    "name": "I-platf SAP interface",
+    "login": "inter3",
+    "password": "inter3",
+    "is_domain": "false",
+    "profile": 4,
+    "roles": [1,2,3,4,5,6,7,8,9,10,11,12]
+  },
+  {
+    "_id": 5,
+    "name": "TOV interface",
+    "login": "inter4",
+    "password": "inter4",
+    "is_domain": "false",
+    "profile": 5,
+    "roles": [1,2,3,4,5,6,7,8,9,10,11,12]
+  },
+  {
+    "_id": 6,
+    "name": "Sololov Taras (Mryn)",
+    "login": "disp",
+    "password": "disp",
+    "is_domain": "false",
+    "profile": 6,
+    "roles": [6]
+  }
+]
