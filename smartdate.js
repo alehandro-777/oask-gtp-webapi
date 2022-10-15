@@ -53,14 +53,21 @@ addDay(days) {
    this.dt.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
  return this;
 }
+
 currGasDay() {
     this.dt.setHours(this.dt.getHours() -7);
     this.dt.setHours(7);
     this.dt.setMinutes(0, 0, 0); // Resets also seconds and milliseconds
   return this;
  }
+
  nextGasDay() {
     this.currGasDay().addDay(1);
+  return this;
+ }
+
+ lastGasDay() {
+    this.currGasDay().addDay(-1);
   return this;
  }
 

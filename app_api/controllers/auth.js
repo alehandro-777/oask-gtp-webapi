@@ -17,13 +17,13 @@ module.exports.login = function (req, res) {
                     iss: "rest api",
                     sub: user._id,                  
                     exp: parseInt(expiry.getTime() / 1000), //alow exp in seconds !!!!!
-                    roles: user.roles
+                    role: user.role
                   };
 
                     // RS256 === RS256 code =decode !!!
                   const jwtBearerToken = jwt.sign(payload, process.env.RSA_PRIVATE_KEY, { algorithm: 'RS256'}); 
     
-                return res.status(201).json({ _id:user._id, name: user.name, profile: user.profile, jwt: jwtBearerToken });
+                return res.status(201).json({ _id:user._id, role: user.role, name: user.name, profile: user.profile, jwt: jwtBearerToken });
             }
             else {
                 //user not found Unauthorized Requesting a restricted URL with incorrect credentials

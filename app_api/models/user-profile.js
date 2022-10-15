@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const model = new Schema({
   _id: Number,
   name: String,   //friendly name 
-  profile: {}     //XML 
+  side_menu: []   //side menu 
 },
 {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

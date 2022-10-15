@@ -1,4 +1,5 @@
 const Value = require('../models/value')
+const ValueLast = require('../models/value-last')
 
 class ValuesService {
     constructor (model) {
@@ -25,6 +26,24 @@ class ValuesService {
         return data;
     }
     
+    async packTable(point, ts) {
+        const data = await this.Value.aggregate([
+            { $match: { point:point, time_stamp: ts  }},
+            { $sort : { created_at : -1 } },
+            { $group: { _id: { time_stamp:"$time_stamp", point:"$point"}, 
+                        state: {$first: "$state"}, 
+                        value: {$first: "$value"}, 
+                        point: {$first: "$point"},
+                        time_stamp: {$first: "$time_stamp"},
+                        user: {$first: "$user"}
+                      }  
+            },
+            { $addFields: { updated_at: new Date() } },
+            { $merge: { into: "db_point_last_values", whenMatched: "replace" } }            
+        ]);            
+        return data;
+    }   
+
     async selectDtTable(points, begin, end) {
         
         let result =[];
@@ -79,7 +98,52 @@ class ValuesService {
             
         ]);            
         return data;
+    }
+
+    //row of recent events
+    async selectStatesRow(points, dt) {
+        const points_ids_arr = this.createPointsFilter(points);
+
+        const data = await this.Value.aggregate([
+            { $match: { $or: points_ids_arr, time_stamp: { $lte: dt} }},
+            { $sort : { time_stamp : -1, created_at : -1 } },
+
+            { $group: { _id: { point:"$point"},
+                        time_stamp: {$first:"$time_stamp"}, 
+                        state: {$first: "$state"}, 
+                        value: {$first: "$value"}, 
+                        deleted: {$first: "$deleted"},
+                        created_at: {$first: "$created_at"}  
+                      }  
+            },
+            { $sort : { _id : 1 } }
+            
+        ]);            
+        return data;
     }  
+
+    //row of recent events that has value ==
+    async selectStatesRowByValue(points, dt, val) {
+        const points_ids_arr = this.createPointsFilter(points);
+
+        const data = await this.Value.aggregate([
+            { $match: { $or: points_ids_arr, time_stamp: { $lte: dt}, value: val }},
+            { $sort : { time_stamp : -1, created_at : -1 } },
+
+            { $group: { _id: { point:"$point"},
+                        time_stamp: {$first:"$time_stamp"}, 
+                        state: {$first: "$state"}, 
+                        value: {$first: "$value"}, 
+                        deleted: {$first: "$deleted"},
+                        created_at: {$first: "$created_at"}  
+                      }  
+            },
+            { $sort : { _id : 1 } }
+            
+        ]);            
+        return data;
+    }  
+
     async tableStats(points, begin, end) {
         const points_ids_arr = this.createPointsFilter(points);
 
@@ -118,6 +182,11 @@ class ValuesService {
         const data = await this.Value.find({ point: point_id, time_stamp: { $lte: time_stamp} }).sort("-time_stamp").limit(1);
         return data;
     }
+
+    async findCurrentAndPrevious(point_id, time_stamp) {
+        const data = await ValueLast.find({ point: point_id, time_stamp: { $lte: time_stamp} }).sort("-time_stamp").limit(2);
+        return data;
+    }
     
     async findValueChanges(point_id, time_stamp) {
         const data = await this.Value.find({ point: point_id, time_stamp: time_stamp }).sort("-created_at");
@@ -127,6 +196,7 @@ class ValuesService {
     createPointsFilter(points)  {
         return points.map( id => {return {"point": id} } );
     }
+
 }
 
 module.exports = new ValuesService(Value);

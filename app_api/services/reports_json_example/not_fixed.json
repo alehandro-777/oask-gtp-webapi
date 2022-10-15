@@ -1,0 +1,469 @@
+{
+    "_id" : 2,
+    "dataset" : [{
+        "key" : "1",
+        "query" : 1
+      }],
+    "rows" : [{
+        "row_offset" : 4,
+        "group_field" : "local_dd_mm_yyyy",
+        "group_column" : "A",
+        "dataset" : "1"
+      }],
+    "columns" : [{
+        "key" : "B",
+        "filter" : {
+          "point" : 15
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "C",
+        "filter" : {
+          "point" : 65
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "D",
+        "filter" : {
+          "point" : 115
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "E",
+        "filter" : {
+          "point" : 16
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "F",
+        "filter" : {
+          "point" : 66
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "G",
+        "filter" : {
+          "point" : 116
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "H",
+        "filter" : {
+          "point" : 17
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "I",
+        "filter" : {
+          "point" : 67
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "J",
+        "filter" : {
+          "point" : 117
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "K",
+        "filter" : {
+          "point" : 19
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "L",
+        "filter" : {
+          "point" : 69
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "M",
+        "filter" : {
+          "point" : 119
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "N",
+        "filter" : {
+          "point" : 20
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "O",
+        "filter" : {
+          "point" : 70
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "P",
+        "filter" : {
+          "point" : 120
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "Q",
+        "filter" : {
+          "point" : 21
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "R",
+        "filter" : {
+          "point" : 71
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "S",
+        "filter" : {
+          "point" : 121
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "T",
+        "filter" : {
+          "point" : 22
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "U",
+        "filter" : {
+          "point" : 72
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "V",
+        "filter" : {
+          "point" : 122
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "W",
+        "filter" : {
+          "point" : 23
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "X",
+        "filter" : {
+          "point" : 73
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "Y",
+        "filter" : {
+          "point" : 123
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "Z",
+        "filter" : {
+          "point" : 24
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AA",
+        "filter" : {
+          "point" : 74
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AB",
+        "filter" : {
+          "point" : 124
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AC",
+        "filter" : {
+          "point" : 37
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AD",
+        "filter" : {
+          "point" : 87
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AE",
+        "filter" : {
+          "point" : 137
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AF",
+        "filter" : {
+          "point" : 38
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AG",
+        "filter" : {
+          "point" : 88
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AH",
+        "filter" : {
+          "point" : 138
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AI",
+        "filter" : {
+          "point" : 39
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AJ",
+        "filter" : {
+          "point" : 89
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AK",
+        "filter" : {
+          "point" : 139
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AL",
+        "filter" : {
+          "point" : 40
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AM",
+        "filter" : {
+          "point" : 90
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AN",
+        "filter" : {
+          "point" : 140
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AO",
+        "filter" : {
+          "point" : 26
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AP",
+        "filter" : {
+          "point" : 76
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AQ",
+        "filter" : {
+          "point" : 126
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AR",
+        "filter" : {
+          "point" : 27
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AS",
+        "filter" : {
+          "point" : 77
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AT",
+        "filter" : {
+          "point" : 127
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AU",
+        "filter" : {
+          "point" : 28
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AV",
+        "filter" : {
+          "point" : 78
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AW",
+        "filter" : {
+          "point" : 128
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AX",
+        "filter" : {
+          "point" : 41
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AY",
+        "filter" : {
+          "point" : 91
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "AZ",
+        "filter" : {
+          "point" : 141
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BA",
+        "filter" : {
+          "point" : 42
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BB",
+        "filter" : {
+          "point" : 92
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BC",
+        "filter" : {
+          "point" : 142
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BD",
+        "filter" : {
+          "point" : 43
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BE",
+        "filter" : {
+          "point" : 93
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BF",
+        "filter" : {
+          "point" : 143
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BG",
+        "filter" : {
+          "point" : 30
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BH",
+        "filter" : {
+          "point" : 80
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BI",
+        "filter" : {
+          "point" : 130
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BJ",
+        "filter" : {
+          "point" : 31
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BK",
+        "filter" : {
+          "point" : 81
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BL",
+        "filter" : {
+          "point" : 131
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BM",
+        "filter" : {
+          "point" : 32
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BN",
+        "filter" : {
+          "point" : 82
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BO",
+        "filter" : {
+          "point" : 132
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BP",
+        "filter" : {
+          "point" : 33
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BQ",
+        "filter" : {
+          "point" : 83
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BR",
+        "filter" : {
+          "point" : 133
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BS",
+        "filter" : {
+          "point" : 34
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BT",
+        "filter" : {
+          "point" : 84
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BU",
+        "filter" : {
+          "point" : 134
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BV",
+        "filter" : {
+          "point" : 35
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BW",
+        "filter" : {
+          "point" : 85
+        },
+        "cell_field" : "value"
+      }, {
+        "key" : "BX",
+        "filter" : {
+          "point" : 135
+        },
+        "cell_field" : "value"
+      }],
+    "fixed_rowset" : false,
+    "template" : "xls/not_fixed_2.xlsx",
+    "short_name" : "ПСГ Опари",
+    "name" : "ПСГ Опари",
+    "full_name" : "ПСГ Опари ВТВ - пример фиксирований набор колонок, без фиксированного набора строк"
+  }

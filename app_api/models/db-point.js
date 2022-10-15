@@ -5,24 +5,26 @@ const model = new Schema({
   _id : Number,            // unique id
   
   name: { type: String, default: "point_name"},
-  short_name: { type: String, default: "point_short_name"},
-  full_name: { type: String, default: "point_full_name"},
-
+  full_name: { type: String, default: ""},
+  
   type: { type: String, default: "text"}, //HTML5 any input type
 
-  eu: { type: String, default: "kgs"},   //eng units
+  eu: { type: String, default: "kgf/cm2"},   //eng units
   min: { type: String, default: "0"},
   max: { type: String, default: "100"},
   step: { type: String, default: "0.1"},
   deadband: { type: Number, default: 0.1},
-  min_rate: { type: Number, default: 1},  //new values min creation rate in sec
-  readonly: { type: Boolean, default: false},
+
+  fixed: { type: Number, default: 2},     //digits after dec point
+
+  func: { type: Number, ref: 'functions' },
 
   options: { type: Number, ref: "digital_states" },  //ref
   
-  params: [ { type: Number, ref: "db_points" } ], 
-
-  func: String,   //function name
+  granularity: {
+    type: String,  default: "days",
+    enum: ["secs", "mins", "hours", "days", "months", "years"],
+  },
 
   createRole:{ type: Number, ref: "roles" },  //ref to roles collection
   readRole:  { type: Number, ref: "roles" },  //ref to roles collection

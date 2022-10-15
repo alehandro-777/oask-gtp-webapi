@@ -4,7 +4,6 @@ process.env.RSA_PRIVATE_KEY = fs.readFileSync('./keys/private.key');
 process.env.JWT_EXP_DAYS = 7;
 process.env.SELECT_LIMIT = 100;
 
-const mongoose = require('mongoose');
 const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
